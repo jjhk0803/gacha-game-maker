@@ -1,0 +1,14 @@
+{
+  "build": "2026.10.07.1",
+  "notes": [
+    "첫 공개 배포"
+  ],
+  "html": "www/index.html",
+  "sha256": "d07661915f1e0ad8ff490ba7dec00933c17918961dd462e193e9017e247c497e",
+  "apk": {
+    "url": "https://github.com/jjhk0803/starfall-contract/releases/latest/download/starfall-contract.apk",
+    "build": "2026.10.07.1"
+  },
+  "feedback": "",
+  "at": "2026-10-06T14:32:19.665278Z"
+}

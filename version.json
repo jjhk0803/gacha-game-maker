@@ -1,13 +1,13 @@
 {
-  "build": "2026.10.07.12",
+  "build": "2026.10.07.14",
   "notes": [],
   "notice": null,
   "html": "www/index.html",
-  "sha256": "10ed968320cfbe9a0d1369a215c6b76957cce1cde0b87cc9c0f805f1d1fd3356",
+  "sha256": "f9be8a6da2e83a494d93eef27c8077076f4a90171acbeddbcc37fe3b25d5396a",
   "apk": {
     "url": "https://github.com/jjhk0803/gacha-game-maker/releases/latest/download/gacha-game-maker.apk",
-    "build": "2026.10.07.12"
+    "build": "2026.10.07.14"
   },
   "feedback": "",
-  "at": "2026-10-07T01:10:39.981553Z"
+  "at": "2026-10-07T02:10:20.546749Z"
 }

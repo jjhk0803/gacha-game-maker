@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.10.07.12'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.10.07.14'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   try{
@@ -854,6 +854,14 @@ body.lb-hidden .top,body.lb-hidden .tabs{opacity:0;pointer-events:none}
 .lb-sortie span{position:relative;display:block;font-size:.76rem;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 :root[data-skin="pastel"] .lb-sortie{color:#fff}
 
+
+/* ===== 2026.10.07.13 그림체·첫 그림 ===== */
+.sty-prev{display:grid;place-items:center;margin-top:8px}.sty-prev img{max-height:280px;max-width:100%;background:repeating-conic-gradient(#2a2d36 0 25%,#1d2027 0 50%) 0 0/16px 16px}
+.bp-prev{height:min(46vh,380px);display:grid;place-items:center;background:repeating-conic-gradient(#22252d 0 25%,#1a1c22 0 50%) 0 0/18px 18px;border:1px solid rgba(255,255,255,.12);margin:10px 0}
+.bp-prev img{max-width:100%;max-height:min(46vh,380px);object-fit:contain;animation:sheet .4s ease-out}
+.bp-prev span{color:#9aa1ad;font-size:.85rem;animation:blink 1.4s infinite}
+.bp-bar{height:6px;background:rgba(255,255,255,.12)}.bp-bar i{display:block;height:100%;width:0;background:var(--rose);transition:width .4s}
+.bp-btns .btn{font-size:.9rem}
 /* ===== 2026.10.07.2 ===== */
 .mlist{display:grid;gap:6px}
 .mrow{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rose);cursor:pointer}
@@ -1271,13 +1279,11 @@ const NAI_MODELS=[['nai-diffusion-5-full','V5 Full'],['nai-diffusion-5-curated',
 const NAI_SIZES=[[832,1216,'세로 832×1216'],[1216,832,'가로 1216×832'],[896,1152,'세로 896×1152'],[1152,896,'가로 1152×896'],[1024,1024,'정사각 1024×1024']];
 const NAI_FRAMES=[['full body','전신'],['cowboy shot','무릎 위'],['upper body','상반신'],['portrait','얼굴']];
 const FRAME_TAGS=/^(full body|cowboy shot|upper body|portrait|lower body|feet out of frame)$/i;
-const AM_V5_STYLE={id:'am_v5',name:'V5 일러스트 (Asset Maid 검증 화풍)',tags:'1.5::artist:hwansang ::, 0.9::artist:solipsist ::, 0.4::artist:natwjeq ::, 0.6::artist:channel (caststation) ::, 1.2::artist:sushispin ::, 0.4::artist:wanke ::, year 2024, year 2025, incredibly absurdres, hyper detail, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, novel illustration',
-  neg:'watermark, reference, username, signature, artist collaboration, variant set, toon (style), oekaki, chibi, turnaround, monochrome, dated, old, distorted composition, bad perspective, animation error, blurry, upscaled, fewer details, unfinished, amateur, bad illustration, bad portrait'};
 const NAI_DEF={key:'',endpoint:NAI_ENDPOINT,model:'nai-diffusion-5-full',refModel:'nai-diffusion-4-5-full',steps:28,scale:6,cfgRescale:0.5,sampler:'k_euler_ancestral',noise:'karras',retries:3,timeoutSec:120,
-  cutout:true,transparent:true,quality:true,qtags:'',prefix:'',styleId:'s0',seeded:['am_v5'],
+  cutout:true,transparent:true,quality:true,qtags:'',prefix:'',styleId:'my_style',
   sizes:{char:'832x1216',bg:'1216x832',prop:'1024x1024',cg:'1216x832',enemy:'1024x1024',illust:'832x1216',lbcg:'832x1216',map:'832x1216',icon:'1024x1024'},
   ref:{type:'character',strength:1,fidelity:1},
-  styles:[{id:'s0',name:'기본 (화풍 태그 없음)',tags:'',neg:''},AM_V5_STYLE],
+  styles:[{id:'my_style',name:'내 그림체',tags:'',neg:''}],
   poses:NAI_POSES.map(([n,t])=>({n,t})),
   parts:{char:{suffix:'simple background, white background',neg:'gradient background, cast shadow, drop shadow, floor'},enemy:{suffix:'full body, simple background, white background',neg:'text, gradient background, cast shadow, drop shadow, floor'},bg:{suffix:'no humans, scenery, detailed background',neg:'people, character, text'},prop:{suffix:'no humans, object focus, simple background, white background',neg:'people, character, text'},cg:{suffix:'detailed background, cinematic lighting',neg:'text, speech bubble, multiple views'},illust:{suffix:'detailed background, depth of field, cinematic lighting',neg:'simple background, white background, transparent background, multiple views, text'},lbcg:{suffix:'detailed background, cinematic lighting, dramatic angle, light particles, depth of field, masterpiece illustration',neg:'simple background, white background, transparent background, multiple views, text'},map:{suffix:'no humans, scenery, map, from above, top-down view, detailed, game map',neg:'people, character, text, watermark, frame'},icon:{suffix:'no humans, game item icon, single object, object focus, centered, simple background, white background',neg:'text, people, character, frame, border, multiple views'}},
   neg:'lowres, artistic error, film grain, scan artifacts, worst quality, bad quality, jpeg artifacts, very displeasing, chromatic aberration, dithering, halftone, screentone, multiple views, logo, too many watermarks, negative space, blank page'};
@@ -1289,9 +1295,9 @@ function naiCfg(){let o={};try{o=JSON.parse(localStorage.getItem(NKEY))||{};}cat
   r.endpoint=String(r.endpoint||NAI_ENDPOINT).trim().replace(/^https?:\/\/api\.novelai\.net/i,'https://image.novelai.net')||NAI_ENDPOINT;
   r.parts={}; ['char','bg','prop','cg','enemy','illust','lbcg','map','icon'].forEach(k=>{r.parts[k]=Object.assign({},NAI_DEF.parts[k],(o.parts||{})[k]||{});});
   r.sizes=Object.assign({},NAI_DEF.sizes,o.sizes||{}); r.ref=Object.assign({},NAI_DEF.ref,o.ref||{});
-  if(!Array.isArray(r.styles)||!r.styles.length) r.styles=clone(NAI_DEF.styles); r.styles=r.styles.map(x=>Object.assign({neg:''},x));
-  if(!(o.seeded||[]).includes('am_v5')&&!r.styles.some(x=>x.id==='am_v5')) r.styles=[...r.styles,clone(AM_V5_STYLE)];
-  r.styles=r.styles.filter(x=>!((x.id==='s1'||x.id==='s2')&&/^예시:/.test(x.name||''))); if(!r.styles.length) r.styles=clone(NAI_DEF.styles); if(!r.styles.some(x=>x.id===r.styleId)) r.styleId=r.styles[0].id;
+  { const L=Array.isArray(o.styles)?o.styles:[]; let my=L.find(x=>x&&x.id==='my_style');
+    if(!my){ const cur=L.find(x=>x&&x.id===o.styleId), keep=cur&&!(cur.id==='s0'||cur.id==='am_v5'||/^sp_/.test(cur.id)||/^예시:/.test(cur.name||'')); my={tags:keep?cur.tags:'',neg:keep?cur.neg:''}; }
+    r.styles=[{id:'my_style',name:'내 그림체',tags:String(my.tags||''),neg:String(my.neg||'')}]; r.styleId='my_style'; }
   if(!Array.isArray(r.poses)||!r.poses.length) r.poses=NAI_DEF.poses;
   r.poses=r.poses.map(x=>x.t==='standing, looking at viewer, arms at sides'?{n:x.n,t:NAI_FRONT}:x);
   r.cut=Object.assign({},CUT_DEF,o.cut||{}); return r;}
@@ -1302,7 +1308,7 @@ const COMPO_TAGS=/^(full body|standing|straight-on|simple background|white backg
 function tagList(s){const t=String(s||''),out=[];let inW=false,st=0;for(let i=0;i<t.length;i++){if(t[i]===':'&&t[i+1]===':'){inW=!inW;i++;continue;}if(t[i]===','&&!inW){const x=t.slice(st,i).trim();if(x)out.push(x);st=i+1;}}const x=t.slice(st).trim();if(x)out.push(x);return out;}
 function tagKey(t){return String(t).replace(/^[-+]?\d+(?:\.\d+)?::\s*(.*?)\s*::$/,'$1').replace(/\s+/g,' ').trim().toLowerCase();}
 function joinTags(...parts){const seen=new Set(),out=[];parts.forEach(p=>tagList(p).forEach(t=>{const k=tagKey(t);if(k&&!seen.has(k)){seen.add(k);out.push(t);}}));return out.join(', ');}
-function naiStyle(c,id){return c.styles.find(x=>x.id===id)||c.styles.find(x=>x.id===c.styleId)||c.styles[0];}
+function naiStyle(c,id){const b=c.styles.find(x=>x.id===id)||c.styles.find(x=>x.id===c.styleId)||c.styles[0]||{id:'my_style',tags:'',neg:''};const m=(typeof G!=='undefined'&&G&&G.meta)?G.meta:null;if(m&&String(m.artTags||'').trim())return {id:b.id,name:'이 게임 그림체',tags:String(m.artTags),neg:String(m.artNeg||'')};return b;}
 function composeNai(kind,base,opt){
   opt=opt||{}; const c=naiCfg(), part=c.parts[kind]||c.parts.prop, st=naiStyle(c,opt.styleId);
   let body=tagList(base), suffix=part.suffix, frame='';
@@ -2859,8 +2865,8 @@ function openNaiSet(){
     <div class="g4"><div style="grid-column:span 2"><label class="f" for="nai_rt">종류</label><select class="in" id="nai_rt">${opt([['character','캐릭터'],['character&style','캐릭터+화풍'],['style','화풍만']],c.ref.type)}</select></div><div><label class="f" for="nai_rs">강도</label><input class="in" id="nai_rs" type="number" step="0.1" value="${c.ref.strength}"></div><div><label class="f" for="nai_rf">충실도</label><input class="in" id="nai_rf" type="number" step="0.1" value="${c.ref.fidelity}"></div></div>
     <h3 class="sec">프롬프트 조립</h3>
     <p class="muted" style="margin:0">화풍 → 공통 앞 → 각자의 프롬프트 → 자세·구도(스탠딩) → 종류별 뒤 → 품질 태그. 겹치는 태그는 한 번만 들어가요. CG는 장면 프롬프트에 인물별 프롬프트를 따로 붙여요.</p>
-    <div class="ep" style="margin-top:10px"><span class="t"><b>화풍 프리셋 ${c.styles.length}개</b><span class="muted">${esc(c.styles.map(x=>x.name).join(', '))}</span></span><button class="btn sm" data-act="styopen">관리</button></div>
-    <label class="f" for="nai_style">기본 화풍</label><select class="in" id="nai_style">${c.styles.map(x=>`<option value="${x.id}" ${x.id===c.styleId?'selected':''}>${esc(x.name)}</option>`).join('')}</select>
+    <label class="f" for="nai_stags">그림체 태그 (모든 그림 맨 앞에 붙어요. 게임 정의에서 게임마다 따로 정할 수도 있어요)</label><textarea class="in" id="nai_stags" placeholder="${esc(STYLE_EX)}">${esc(c.styles[0].tags)}</textarea>
+    <label class="f" for="nai_sneg">그림체 네거티브 (선택)</label><input class="in" id="nai_sneg" value="${esc(c.styles[0].neg||'')}" placeholder="예: 3d, realistic">
     <label class="f" for="nai_prefix">공통 앞 프롬프트 (모든 그림)</label><input class="in" id="nai_prefix" value="${esc(c.prefix)}">
     <label class="f" for="nai_poses">자세 프리셋 (한 줄에 하나: 이름 | 태그)</label><textarea class="in" id="nai_poses">${esc(c.poses.map(x=>x.n+' | '+x.t).join('\n'))}</textarea>
     ${['char','illust','lbcg','enemy','bg','prop','cg'].map(k=>`<div class="g2"><div><label class="f" for="nai_p_${k}">${({char:'스탠딩',illust:'일러스트',lbcg:'돌파 CG',enemy:'적',bg:'배경',prop:'소품·무기',cg:'CG'})[k]} 뒤</label><input class="in" id="nai_p_${k}" value="${esc(c.parts[k].suffix)}"></div><div><label class="f" for="nai_n_${k}">네거티브 추가</label><input class="in" id="nai_n_${k}" value="${esc(c.parts[k].neg)}"></div></div>`).join('')}
@@ -2874,13 +2880,13 @@ function readNai(){
   const old=naiCfg(), v=id=>$('#'+id).value.trim();
   const styles=old.styles;
   const poses=lines($('#nai_poses').value).map(l=>{const p=l.split('|');return {n:(p[0]||'').trim(),t:p.slice(1).join('|').trim()};}).filter(x=>x.n&&x.t);
-  const pick=$('#nai_style').value, parts={}; ['char','illust','lbcg','enemy','bg','prop','cg'].forEach(k=>{parts[k]={suffix:v('nai_p_'+k),neg:v('nai_n_'+k)};});
+  const parts={}; ['char','illust','lbcg','enemy','bg','prop','cg'].forEach(k=>{parts[k]={suffix:v('nai_p_'+k),neg:v('nai_n_'+k)};});
   return {key:v('nai_key'),endpoint:v('nai_ep')||NAI_ENDPOINT,model:v('nai_model')||NAI_DEF.model,refModel:v('nai_rmodel')||NAI_DEF.refModel,sampler:$('#nai_sampler').value,noise:$('#nai_noise').value,
     steps:num(v('nai_steps'),1,50,28),scale:num(v('nai_scale'),0,10,6),cfgRescale:num(v('nai_cfgr'),0,1,0),retries:num(v('nai_retry'),1,5,3),timeoutSec:old.timeoutSec,
-    provider:$('#nai_prov').value,comfy:{url:v('cf_url'),wf:$('#cf_wf').value.trim(),qtags:v('cf_q'),neg:v('cf_n'),timeoutSec:num(v('cf_t'),30,1200,300)},quality:$('#nai_q').value==='1',qtags:v('nai_qt'),cutout:$('#nai_cut').value==='1',transparent:$('#nai_tp').value==='1',prefix:v('nai_prefix'),neg:v('nai_neg'),seeded:['am_v5'],
+    provider:$('#nai_prov').value,comfy:{url:v('cf_url'),wf:$('#cf_wf').value.trim(),qtags:v('cf_q'),neg:v('cf_n'),timeoutSec:num(v('cf_t'),30,1200,300)},quality:$('#nai_q').value==='1',qtags:v('nai_qt'),cutout:$('#nai_cut').value==='1',transparent:$('#nai_tp').value==='1',prefix:v('nai_prefix'),neg:v('nai_neg'),
     sizes:{char:$('#nai_sz_char').value,bg:$('#nai_sz_bg').value,prop:$('#nai_sz_prop').value,cg:$('#nai_sz_cg').value,enemy:$('#nai_sz_enemy').value,illust:$('#nai_sz_illust').value},cut:Object.assign({},old.cut),
     ref:{type:$('#nai_rt').value,strength:num(v('nai_rs'),0,1,1),fidelity:num(v('nai_rf'),0,1,1)},
-    styles:styles.length?styles:NAI_DEF.styles,styleId:styles.some(x=>x.id===pick)?pick:(styles[0]||NAI_DEF.styles[0]).id,poses:poses.length?poses:NAI_DEF.poses,parts};
+    styles:[{id:'my_style',name:'내 그림체',tags:v('nai_stags'),neg:v('nai_sneg')}],styleId:'my_style',poses:poses.length?poses:NAI_DEF.poses,parts};
 }
 function naiTarget(kind,id){if(ILK(kind)){const c=charById(id);return c&&c[kind];}return kind==='char'?charById(id):libById(id);}
 /* 화풍 프리셋 편집 */
@@ -2942,7 +2948,7 @@ function openNaiPrep(kind,id){
   const base=(k==='char'?o.naiPrompt:ILK(k)?joinTags(owner.naiPrompt,o.prompt):o.prompt)||'';
   if(k==='cg'){ if(!String(o.prompt||'').trim()&&!cgCast(o).length){toast('장면 프롬프트나 등장 '+T('crew')+'을(를) 채워 주세요');return;} }
   else if(!String(base).trim()){toast('먼저 NAI 프롬프트를 채워 주세요');return;}
-  const styleId=o.naiStyle&&c.styles.some(x=>x.id===o.naiStyle)?o.naiStyle:c.styleId;
+  const styleId=naiStyle(c,o.naiStyle).id;
   const pose=k==='char'?(o.naiPose||NAI_FRONT):ILK(k)?(o.naiPose!=null?o.naiPose:'looking at viewer'):'', frame=k==='char'?(o.naiFrame||'full body'):ILK(k)?(o.naiFrame||'cowboy shot'):'';
   const p=k==='cg'?composeCG(o,{styleId}):composeNai(k,base,{pose,styleId,frame});
   const [w,h]=naiSize(k,c), sz=w+'x'+h, hasImg=!!imgSrc(o);
@@ -2950,8 +2956,8 @@ function openNaiPrep(kind,id){
   NPREP={kind,id,k,base};
   const sizes=[...NAI_SIZES.map(x=>[x[0]+'x'+x[1],x[2]])]; if(!sizes.some(x=>x[0]===sz)) sizes.unshift([sz,sz]);
   openModal(`${head('그리기 전 확인',`<span class="muted">${esc(o.name)}</span>`)}
-    <div class="g2"><div><label class="f" for="np_style">화풍</label><select class="in" id="np_style">${c.styles.map(st=>`<option value="${st.id}" ${st.id===styleId?'selected':''}>${esc(st.name)}</option>`).join('')}</select></div>
-    <div><label class="f" for="np_model">모델 <button class="linkb" data-act="styopen" data-back="prep">화풍 관리</button></label><select class="in" id="np_model">${opt([...NAI_MODELS,...(NAI_MODELS.some(m=>m[0]===c.model)?[]:[[c.model,c.model]])],c.model)}</select></div></div>
+    <input type="hidden" id="np_style" value="${esc(styleId)}"><div class="g2"><div><label class="f">그림체</label><p class="muted" style="margin:6px 0 0;font-size:.78rem;word-break:break-all">${esc(String(naiStyle(c).tags||'').slice(0,80)||'태그 없음 (모델 기본)')}</p></div>
+    <div><label class="f" for="np_model">모델</label><select class="in" id="np_model">${opt([...NAI_MODELS,...(NAI_MODELS.some(m=>m[0]===c.model)?[]:[[c.model,c.model]])],c.model)}</select></div></div>
     <div class="g2"><div><label class="f" for="np_size">크기</label><select class="in" id="np_size">${opt(sizes,sz)}</select></div>
     ${k==='char'||ILK(k)?`<div><label class="f" for="np_frame">구도</label><select class="in" id="np_frame">${opt(NAI_FRAMES,frame)}</select></div>`:'<div></div>'}</div>
     ${k==='char'||ILK(k)?`<div class="g2"><div><label class="f" for="np_posesel">자세</label><select class="in" id="np_posesel">${c.poses.map(x=>`<option value="${esc(x.t)}" ${x.t===pose?'selected':''}>${esc(x.n)}</option>`).join('')}<option value="__custom" ${c.poses.some(x=>x.t===pose)?'':'selected'}>직접 입력</option></select></div><div><label class="f" for="np_pose">자세 태그</label><input class="in" id="np_pose" value="${esc(pose)}"></div></div>`:''}
@@ -3183,22 +3189,25 @@ const APP_NAME='가챠 게임 메이커';
 const SETUP_KEY='starfall-setup-done';
 let SW=null;
 function needSetup(){ return !localStorage.getItem(SETUP_KEY)&&!AIP().list.length&&!imgReady(); }
-function showSetup(){ const s=SND(); APD={id:'',type:'gemini',pub:'google',name:'',region:'global',base:'https://openrouter.ai/api/v1'}; SW={step:0,ai:{type:'gemini',key:''},img:imgProvider(),cf:Object.assign({},comfyCfg()),nai:naiCfg().key||'',fish:s.fishKey||'',el:s.elKey||'',ok:{},hasAI:AIP().list.some(apValid)}; renderSetup(); $('#ov').hidden=false; }
+function showSetup(){ const s=SND(); APD={id:'',type:'gemini',pub:'google',name:'',region:'global',base:'https://openrouter.ai/api/v1'}; SW={step:0,ai:{type:'gemini',key:''},img:imgProvider(),cf:Object.assign({},comfyCfg()),nai:naiCfg().key||'',fish:s.fishKey||'',el:s.elKey||'',ok:{},hasAI:AIP().list.some(apValid),cst:{tags:myStyle().tags||'',neg:myStyle().neg||''},stPrev:''}; renderSetup(); $('#ov').hidden=false; }
 const SETUP_HELP={vertex:['Google Cloud 콘솔에서 서비스 계정 키나 익스프레스 키를 만들어요','https://console.cloud.google.com/vertex-ai'],gemini:['Google AI Studio에서 무료로 받을 수 있어요','https://aistudio.google.com/apikey'],anthropic:['Anthropic Console에서 받아요 (유료)','https://console.anthropic.com/settings/keys'],openai:['OpenRouter 등 OpenAI 호환 서비스의 키','https://openrouter.ai/keys']};
 function swRead(){ const v=id=>{const e=$('#'+id);return e?e.value.trim():null;};
   if($('#ap_type')){ readAp(); SW.ai.type=APD.type; SW.ai.key=APD.key||APD.sa||APD.vkey||''; }
   if(v('sw_img')!=null) SW.img=v('sw_img'); if(v('sw_cfurl')!=null) SW.cf.url=v('sw_cfurl'); if($('#sw_cfwf')) SW.cf.wf=$('#sw_cfwf').value.trim();
-  if(v('sw_nai')!=null) SW.nai=v('sw_nai'); if(v('sw_fish')!=null) SW.fish=v('sw_fish'); if(v('sw_el')!=null) SW.el=v('sw_el'); }
+  if(v('sw_nai')!=null) SW.nai=v('sw_nai'); if(v('sw_fish')!=null) SW.fish=v('sw_fish'); if(v('sw_el')!=null) SW.el=v('sw_el');
+  if($('#sw_stags')) SW.cst.tags=$('#sw_stags').value.trim(); if(v('sw_sneg')!=null) SW.cst.neg=v('sw_sneg'); }
+function swStyleId(){ setMyStyle(SW.cst.tags,SW.cst.neg); return 'my_style'; }
 function swProfile(){ return Object.assign({},APD,{id:'p'+uid(),name:APD.name||AITYPE[APD.type]}); }
 function swAddAI(){ const p=swProfile(); if(!apValid(p)) return false; const A=AIP(); if(A.list.some(x=>(x.key&&x.key===p.key)||(x.sa&&x.sa===p.sa&&x.model===p.model))) return true; A.list.push(p); if(!A.list.some(x=>x.id===A.active)) A.active=p.id; saveAIP(A); SW.hasAI=true; return true; }
 function swSave(){
   swAddAI();
   { let sv={}; try{sv=JSON.parse(localStorage.getItem(NKEY))||{};}catch(e){} sv.provider=SW.img; sv.comfy=Object.assign({},comfyCfg(),SW.cf); localStorage.setItem(NKEY,JSON.stringify(sv)); }
   if(SW.nai){ let sv={}; try{sv=JSON.parse(localStorage.getItem(NKEY))||{};}catch(e){} sv.key=SW.nai; localStorage.setItem(NKEY,JSON.stringify(sv)); }
+  if(SW.cst) swStyleId();
   if(SW.fish||SW.el){ const o=SND(); if(SW.fish) o.fishKey=SW.fish; if(SW.el) o.elKey=SW.el; localStorage.setItem(SKEY,JSON.stringify(o)); }
 }
 function renderSetup(){
-  const st=SW.step, dots=[0,1,2,3,4].map(i=>`<i class="${i<=st?'on':''}"></i>`).join(''), a=SW.ai, help=SETUP_HELP[a.type];
+  const st=SW.step, dots=[0,1,2,3,4,5].map(i=>`<i class="${i<=st?'on':''}"></i>`).join(''), a=SW.ai, help=SETUP_HELP[a.type];
   const card=[
     `<div class="sw-logo"><i>GACHA GAME MAKER</i><b>가챠 게임 메이커</b></div><p>내가 정한 세계관으로 나만의 가챠 게임을 만들어 노는 앱이에요. AI 키를 넣으면 세계관, 캐릭터, 스토리, 그림, 목소리까지 직접 만들 수 있어요. 키가 없으면 샘플 게임 「낙성계약」으로 바로 시작해요.</p>
      <ul class="sw-list"><li><b>글 AI</b> · 세계관, 캐릭터, 스토리, 메신저 만들기</li><li><b>NovelAI</b> · 스탠딩, 일러스트, 배경 그림</li><li><b>Fish Audio / ElevenLabs</b> · 목소리와 배경음 (선택)</li></ul>
@@ -3221,6 +3230,13 @@ function renderSetup(){
      <p class="muted" style="margin:6px 0 0">novelai.net 로그인 → 설정(톱니) → Account → Get Persistent API Token <button class="linkb" data-act="swlink" data-url="https://novelai.net/image">NovelAI 열기</button></p>
      <div class="sw-test"><button class="btn sm ghost" data-act="swtestnai">연결 확인</button><span id="sw_res">${SW.ok.nai?'✓ 연결됨':''}</span></div>
      <div class="sw-btns"><button class="btn ghost" data-act="swprev">이전</button><button class="btn" data-act="swnext">다음</button></div>`}`,
+    `<h2>그림체</h2><p class="muted">모든 그림 맨 앞에 붙는 화풍 태그예요. 비워 두면 모델 기본 그림체로 그려요. 게임마다 따로 정할 수도 있고, 나중에 설정 → 그림 AI에서 고칠 수 있어요.</p>
+     ${imgReady()||(SW.img==='comfy'?SW.cf.url:SW.nai)?'':'<p style="color:var(--rose);font-size:.85rem">그림 AI를 안 넣었으면 건너뛰어도 돼요.</p>'}
+     <label class="f" for="sw_stags">그림체 태그 (쉼표로 구분)</label><textarea class="in" id="sw_stags" style="min-height:90px" placeholder="${esc(STYLE_EX)}">${esc(SW.cst.tags||'')}</textarea>
+     <label class="f" for="sw_sneg">빼고 싶은 것 (선택)</label><input class="in" id="sw_sneg" value="${esc(SW.cst.neg||'')}" placeholder="예: 3d, realistic">
+     <div class="sw-test"><button class="btn sm ghost" data-act="swstytest">시험 그리기</button><span id="sw_sres"></span></div>
+     ${SW.stPrev?`<div class="sty-prev"><img src="${SW.stPrev}" alt="시험 그림"></div>`:''}
+     <div class="sw-btns"><button class="btn ghost" data-act="swprev">이전</button><button class="btn" data-act="swnext">다음</button></div>`,
     `<h2>목소리와 배경음 (선택)</h2><p class="muted">없어도 돼요. 넣으면 ${esc(T('crew'))}이(가) 말을 하고, 장면에 맞는 배경음을 만들 수 있어요.</p>
      <label class="f" for="sw_fish">Fish Audio API 키 (목소리)</label><input class="in" id="sw_fish" type="password" autocomplete="off" value="${esc(SW.fish)}">
      <label class="f" for="sw_el">ElevenLabs API 키 (배경음·효과음)</label><input class="in" id="sw_el" type="password" autocomplete="off" value="${esc(SW.el)}">
@@ -3232,6 +3248,7 @@ function renderSetup(){
        <label class="f" for="ng_kw">장르와 키워드</label><textarea class="in" id="ng_kw" placeholder="예: 몰락한 왕국을 되찾는 용병단. 엘프 궁수, 드워프 기술자, 마녀. 마법석으로 소환 계약을 맺는다.">${esc(SW.kw||'')}</textarea>
        <label class="f" for="ng_tone">분위기 (선택)</label><input class="in" id="ng_tone" value="${esc(SW.tone||'')}" placeholder="예: 진지하지만 동료들끼리는 유쾌하게">
        <div class="g2"><div><label class="f" for="ng_theme">화면 테마</label><select class="in" id="ng_theme">${opt([['auto','AI가 고르기'],['tactical','택티컬'],['fantasy','판타지'],['neon','네온 사이버'],['pastel','파스텔'],['noir','모노 누아르']],'auto')}</select></div><div><label class="f" for="ng_n">캐릭터 수</label><select class="in" id="ng_n">${opt([[6,'6명'],[8,'8명'],[10,'10명']],8)}</select></div></div>
+       <label class="f" for="ng_style">이 게임 그림체 태그 (선택, 비우면 앞에서 적은 그림체)</label><input class="in" id="ng_style" placeholder="예: dark fantasy, muted colors">
        <p class="muted" id="ng_stat" style="margin:8px 0 0"></p>
        <button class="btn block" data-act="swmake" style="margin-top:10px">AI로 만들기</button>`:`<span class="muted">글 AI 키를 넣으면 쓸 수 있어요. <button class="linkb" data-act="swgo1">키 넣으러 가기</button></span>`}</div>
      <div class="sw-opt"><b>☆ 샘플 게임 「낙성계약」</b><span>미리 만들어 둔 SF 이능 세계관이에요. 나중에 설정 → 게임 목록에서 AI로 새 게임을 언제든 만들 수 있어요.</span><button class="btn ghost block" data-act="swdone" style="margin-top:10px">샘플로 시작</button></div>
@@ -3700,11 +3717,13 @@ async function aiEventGen(dir,n,mk,cast,t){
 async function newGame(t){
   const kw=$('#ng_kw').value.trim(); if(!kw){toast('장르와 키워드를 적어 주세요');return;}
   const tone=$('#ng_tone').value.trim(), th=$('#ng_theme').value, n=+$('#ng_n').value, stat=m=>{const e=$('#ng_stat');if(e)e.textContent=m;};
+  const ngSty=$('#ng_style')?$('#ng_style').value.trim():'';
   t.disabled=true; const base=`규칙: 모든 등장인물은 성인이지만 나이는 언급하지 않는다. 학교 설정 금지. 서브컬처 수집형 RPG. 노골적인 성적 묘사 금지. 한국어로 쓴다.`;
   stat('1/3 세계관과 게임 정의를 만드는 중…');
   const a=await aiJSON(`${base}\n새 가챠 게임을 기획한다. 장르와 키워드: "${kw}". 분위기: "${tone||'자유'}".\n게임 이름은 키워드에서 떠올린 고유한 이름으로 짓는다. 샘플 게임 이름(낙성계약)과 비슷하게 짓지 말고, '계약'이라는 단어는 쓰지 않는다.\n화면 테마는 ${th==='auto'?'tactical, fantasy, neon, pastel, noir 중 어울리는 것':th}.\nJSON만 출력: {"title":"게임 이름","sub":"영문 부제","theme":"tactical|fantasy|neon|pastel|noir","accent":"#rrggbb","terms":{"player":"플레이어 호칭","currency":"유료 재화","gold":"일반 재화","expMat":"경험치 재료","wMat":"무기 재료","core":"돌파 재료","gacha":"뽑기 이름(2~3자)","ops":"전투 메뉴 이름(2~3자)","crew":"아군 호칭(2~3자)","talk":"메신저 앱 이름","dispatch":"파견 이름","farm":"재료 던전 이름","pass":"패스 이름","event":"이벤트","weapon":"전용 무기 호칭","files":"캐릭터 비밀 기록 호칭","skin":"의상 호칭","enhance":"강화","limit":"돌파 호칭"},"elems":[{"n":"속성1(1~2자)","c":"#색"},{"n":"속성2","c":"#색"},{"n":"속성3","c":"#색"}],"roles":{"atk":"","def":"","sup":""},"farms":[{"key":"exp","name":""},{"key":"gold","name":""},{"key":"wmat","name":""},{"key":"core","name":""}],"world":{"name":"","summary":"2~3문장, 플레이어 입장 포함","lore":"6~10문장","plot":"숨겨진 진실, 복선, 1부 전체 전개 6~10문장","factions":[{"name":"","desc":""}]},"dispatches":[{"name":"","desc":"","hours":1,"need":2}]}  파견은 6개, hours는 0.5~12.`,null,'complex');
   if(!a){t.disabled=false;stat('');return;}
   const ng=defaults(); ng.meta=Object.assign(clone(DEFAULT_META),{title:String(a.title||'새 게임'),sub:String(a.sub||''),theme:['tactical','fantasy','neon','pastel','noir'].includes(a.theme)?a.theme:'tactical',accent:/^#[0-9a-f]{6}$/i.test(a.accent||'')?a.accent:'#ffb400'});
+  ng.meta.artTags=ngSty;
   ng.meta.terms=Object.assign(clone(DEFAULT_META.terms),a.terms||{}); if(Array.isArray(a.elems)&&a.elems.length===3) ng.meta.elems=a.elems.map((e,i)=>({n:String(e.n||DEFAULT_META.elems[i].n).slice(0,4),c:/^#[0-9a-f]{6}$/i.test(e.c||'')?e.c:DEFAULT_META.elems[i].c}));
   ng.meta.roles=Object.assign(clone(DEFAULT_META.roles),a.roles||{}); if(Array.isArray(a.farms)&&a.farms.length===4) ng.meta.farms=a.farms.map((f,i)=>({key:DEFAULT_META.farms[i].key,name:String(f.name||DEFAULT_META.farms[i].name)}));
   ng.world=Object.assign(clone(DEFAULT_WORLD),a.world||{}); if(!Array.isArray(ng.world.factions)) ng.world.factions=[];
@@ -3757,6 +3776,8 @@ function openMeta(){
   const m=G.meta;
   openModal(`${head('게임 정의',`<span class="muted">이름, 용어, 속성, 테마를 바꾸면 화면 전체와 AI가 쓰는 글에 반영돼요</span>`)}
     <div class="g2"><div><label class="f" for="mt_title">게임 이름</label><input class="in" id="mt_title" value="${esc(m.title)}"></div><div><label class="f" for="mt_sub">영문 부제</label><input class="in" id="mt_sub" value="${esc(m.sub)}"></div></div>
+    <label class="f" for="mt_art">이 게임 그림체 태그 (비우면 설정의 기본 그림체)</label><textarea class="in" id="mt_art" style="min-height:60px" placeholder="${esc(naiCfg().styles[0].tags||STYLE_EX)}">${esc(m.artTags||'')}</textarea>
+    <label class="f" for="mt_artn">이 게임 그림체 네거티브 (선택)</label><input class="in" id="mt_artn" value="${esc(m.artNeg||'')}">
     <div class="g2"><div><label class="f" for="mt_theme">화면 테마</label><select class="in" id="mt_theme">${opt([['tactical','택티컬'],['fantasy','판타지'],['neon','네온 사이버'],['pastel','파스텔 (밝은 화면)'],['noir','모노 누아르']],m.theme)}</select></div><div><label class="f" for="mt_acc">강조 색</label><input class="in" id="mt_acc" type="color" value="${esc(m.accent)}" style="height:42px;padding:4px"></div></div>
     <h3 class="sec">용어</h3><div class="g2">${Object.keys(DEFAULT_META.terms).map(k=>`<div><label class="f" for="mt_t_${k}">${TERM_LABEL[k]||k}</label><input class="in" id="mt_t_${k}" value="${esc(T(k))}"></div>`).join('')}</div>
     <h3 class="sec">속성 (첫째가 둘째에, 둘째가 셋째에, 셋째가 첫째에 강해요)</h3>
@@ -3779,6 +3800,7 @@ function openNewGame(){
     <label class="f" for="ng_tone">분위기</label><input class="in" id="ng_tone" placeholder="예: 진지하고 비장하지만 동료들끼리는 유쾌하게">
     <div class="g2"><div><label class="f" for="ng_theme">화면 테마</label><select class="in" id="ng_theme">${opt([['auto','AI가 고르기'],['tactical','택티컬'],['fantasy','판타지'],['neon','네온 사이버'],['pastel','파스텔'],['noir','모노 누아르']],'auto')}</select></div>
     <div><label class="f" for="ng_n">${T('crew')} 수</label><select class="in" id="ng_n">${opt([[6,'6명'],[8,'8명'],[10,'10명']],8)}</select></div></div>
+    <label class="f" for="ng_style">이 게임 그림체 태그 (선택, 비우면 기본 그림체)</label><input class="in" id="ng_style" placeholder="예: dark fantasy, muted colors">
     <p class="muted" id="ng_stat"></p>
     <div class="row" style="margin-top:12px"><button class="btn" data-act="newgame">만들기</button></div>`);
 }
@@ -3916,23 +3938,25 @@ function openPrep(ask){
 }
 function prepChip(){
   let el=$('#prepChip'); const j=PREPJOB;
-  if(!j){ if(el) el.remove(); return; }
+  if(!j||j.fg){ if(el) el.remove(); return; }
   if(!el){ el=document.createElement('div'); el.id='prepChip'; el.className='prepchip'; document.body.appendChild(el); }
   el.innerHTML=`<span class="pg"><i style="width:${j.total?j.done/j.total*100:0}%"></i></span><b>그림 준비 ${j.done}/${j.total}</b><span class="lb">${esc(j.label||'')}</span><button data-act="prepstop" aria-label="멈추기">${j.stop?'멈추는 중':'■'}</button>`;
 }
-async function runPrep(cats,filter){
-  if(PREPJOB){ toast('이미 준비 중이에요'); return; }
-  const list=drawTodo(cats).filter(filter||(()=>true)); if(!list.length){ toast('그릴 그림이 없어요'); return; }
-  const j={total:list.length,done:0,stop:false,label:''}; PREPJOB=j; prepChip();
+async function runPrep(cats,filter,opt){
+  opt=opt||{};
+  if(PREPJOB){ toast('이미 준비 중이에요'); if(opt.done) opt.done(null); return; }
+  const list=drawTodo(cats).filter(filter||(()=>true)); if(!list.length){ toast('그릴 그림이 없어요'); if(opt.done) opt.done(null); return; }
+  if(opt.order) list.sort((a,b)=>opt.order.indexOf(a.cat)-opt.order.indexOf(b.cat));
+  const j={total:list.length,done:0,stop:false,label:'',fg:!!opt.fg}; PREPJOB=j; prepChip();
   for(const it of list){
-    if(j.stop) break; j.label=it.label; prepChip();
+    if(j.stop) break; j.label=it.label; prepChip(); if(opt.step) opt.step(it,j,'start');
     try{ const b=await naiDrawItem(it);
       if(it.k==='char') await storeImage(it.o,b,'c:'); else if(it.k==='illust'||it.k==='weapon'){ await storeImage(it.o,b,''); mark('c:'+it.c.id); } else await storeImage(it.o,b,'l:');
-      j.done++; prepChip(); if(!$('#modal').hidden||tab==='crew'||tab==='lobby'||tab==='ops'||tab==='shop') { if($('#modal').hidden) render(); }
+      j.done++; prepChip(); if(opt.step) opt.step(it,j,'done'); if(!$('#modal').hidden||tab==='crew'||tab==='lobby'||tab==='ops'||tab==='shop') { if($('#modal').hidden) render(); }
       await wait(700);
     }catch(e){ toast(naiErr(e,it.label+' 실패')); if(e&&['nai_nokey','bad_key','low_credit'].includes(e.code)) break; await wait(1500); }
   }
-  PREPJOB=null; prepChip(); render(); toast(`그림 ${j.done}장을 준비했어요`);
+  PREPJOB=null; prepChip(); render(); toast(`그림 ${j.done}장을 준비했어요`); if(opt.done) opt.done(j);
 }
 async function naiAll(btn){
   const list=drawTodo(); if(!list.length){toast('그릴 것이 없어요');return;}
@@ -3949,6 +3973,43 @@ function noticeHTML(){
   return `${pageHead('공지','NOTICE','lobby')}
   ${L.notices.length?L.notices.map((n,i)=>`<div class="panel"><h3>${esc(n.title)}</h3><ul class="notice">${n.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul></div>`).join(''):'<div class="panel"><p class="muted">아직 공지가 없어요. 설정의 라이브 운영을 켜 두면 날짜에 맞춰 새 콘텐츠가 생겨요.</p></div>'}
   <div class="panel"><h3>NAI로 그릴 것 ${todo.length}개</h3><p class="muted" style="margin:0 0 10px">${todo.slice(0,12).map(x=>esc(x.label)).join(', ')}${todo.length>12?' 외':''}</p>${todo.length?'<button class="btn" data-act="prepopen">그림 준비실 열기</button>':''}</div>`;
+}
+
+/* ===== 그림체 (직접 입력) ===== */
+const STYLE_EX='예: anime coloring, cel shading, vibrant colors  /  watercolor (medium), soft colors  /  1.2::artist:이름 ::';
+function naiSaved(){let sv={};try{sv=JSON.parse(localStorage.getItem(NKEY))||{};}catch(e){}return sv;}
+function setMyStyle(tags,neg){const sv=naiSaved();sv.styles=[{id:'my_style',name:'내 그림체',tags:String(tags||'').trim(),neg:String(neg||'').trim()}];sv.styleId='my_style';localStorage.setItem(NKEY,JSON.stringify(sv));}
+function myStyle(){return naiCfg().styles[0];}
+const BOOT_CATS=[['char','스탠딩',true],['illust','일러스트 (타이틀·로비·픽업)',true],['bg','배경',true],['icon','재화 아이콘',true],['enemy','적',false],['map','작전 지도',false]];
+let BP=null;
+function bootPrepNeeded(){ const p=P(); return !p.seenOpening&&!p.bootPrep&&imgReady()&&drawTodo(BOOT_CATS.map(x=>x[0])).length>0; }
+function showStart(){ if(bootPrepNeeded()) showBootPrep(); else showTitle(); }
+function showBootPrep(){
+  const all=drawTodo(BOOT_CATS.map(x=>x[0])), cnt=k=>all.filter(x=>x.cat===k).length, c=naiCfg();
+  if(!BP) BP={cats:new Set(BOOT_CATS.filter(x=>x[2]).map(x=>x[0]))};
+  $('#ov').innerHTML=`<div class="setup"><div class="sw-bg" style="${bgStyle(P().titleBg||'')}"></div><div class="sw-card">
+    <div class="sw-logo"><i>BEFORE THE OPENING</i><b>${esc(G.meta.title)}</b></div>
+    <p>오프닝 전에 그림부터 준비할까요? 미리 그려 두면 타이틀, 오프닝, 로비가 처음부터 그림으로 채워져요.</p>
+    <label class="f" for="bp_tags">이 게임의 그림체 태그 (비우면 기본 그림체)</label><textarea class="in" id="bp_tags" style="min-height:60px" placeholder="${esc(c.styles[0].tags||STYLE_EX)}">${esc(G.meta.artTags||'')}</textarea>
+    <div class="prepcats" style="margin-top:10px">${BOOT_CATS.map(([k,l])=>cnt(k)?`<label class="pc"><input type="checkbox" data-bpc="${k}" ${BP.cats.has(k)?'checked':''}><b>${esc(l)}</b><span>${cnt(k)}장</span></label>`:'').join('')}</div>
+    <p class="muted" style="margin:8px 0 0">한 장에 10~30초쯤 걸려요.${imgProvider()==='nai'?' Opus 구독이면 기본 크기는 Anlas가 들지 않아요.':''} 그리는 도중에도 언제든 시작할 수 있어요.</p>
+    <div class="sw-btns bp-btns"><button class="btn" data-act="bpgo">그리고 시작</button><button class="btn ghost" data-act="bpbg">게임하면서 그리기</button></div>
+    <button class="linkb" data-act="bpskip" style="margin-top:10px">그림 없이 시작</button>
+  </div></div>`;
+  $('#ov').hidden=false;
+}
+function bpRead(){ if($('#bp_tags')){ G.meta.artTags=$('#bp_tags').value.trim(); mark('meta'); }
+  const cats=BOOT_CATS.map(x=>x[0]).filter(k=>{const e=document.querySelector(`[data-bpc="${k}"]`);return e&&e.checked;}); BP.cats=new Set(cats); P().bootPrep=1; mark('prog'); return cats; }
+function bootPrepRun(cats){
+  $('#ov').innerHTML=`<div class="setup"><div class="sw-bg" style="${bgStyle(P().titleBg||'')}"></div><div class="sw-card">
+    <div class="sw-logo"><i>DRAWING</i><b>그림 준비 중</b></div>
+    <div class="bp-prev" id="bp_prev"><span>첫 그림을 그리는 중…</span></div>
+    <div class="bp-bar"><i id="bp_bar"></i></div><p class="muted" id="bp_lb" style="margin:6px 0 0">준비 중</p>
+    <div class="sw-btns"><button class="btn ghost" data-act="bpleave">나머지는 게임하면서 그리기</button></div></div></div>`;
+  const upd=(it,j,ph)=>{ const pv=$('#bp_prev'); if(!pv) return; $('#bp_bar').style.width=(j.total?j.done/j.total*100:0)+'%';
+    $('#bp_lb').textContent=`${j.done}/${j.total} · ${ph==='done'?'완성: ':'그리는 중: '}${it.label}`;
+    if(ph==='done'){ const s=imgSrc(it.o); if(s) pv.innerHTML=`<img src="${esc(s)}" alt="">`; } };
+  runPrep(cats,null,{fg:true,order:BOOT_CATS.map(x=>x[0]),step:upd,done:()=>{ if($('#bp_prev')) setTimeout(showTitle,700); }});
 }
 /* ===== 앱 업데이트 (GitHub에서 index.html 받기) ===== */
 const LVKEY='starfall-live';
@@ -4458,17 +4519,24 @@ document.addEventListener('click',async e=>{
   case 'mailget': { const x=mailBox().find(q=>q.id===id); const r=claimMail(x); if(!r){toast('받을 수 없는 우편이에요');break;} sfx('확인'); render(); openMail(); buyFx(rewardText(r)||'수령 완료',x.title); break; }
   case 'mailall': { let tot={}; mailBox().forEach(x=>{ if(mailLive(x)&&Object.keys(x.reward||{}).length){ const r=claimMail(x); Object.entries(r).forEach(([k,v])=>tot[k]=(tot[k]||0)+v); } }); if(!Object.keys(tot).length){toast('받을 우편이 없어요');break;} render(); openMail(); buyFx('모두 받기',rewardText(tot)); break; }
   case 'mailclean': { const p2=P(); p2.mail=mailBox().filter(x=>mailLive(x)); mark('prog'); openMail(); toast('정리했어요'); break; }
-  case 'swnext': swRead(); if(SW.step===1) swAddAI(); SW.step=Math.min(4,SW.step+1); renderSetup(); break;
+  case 'swnext': swRead(); if(SW.step===1) swAddAI(); SW.step=Math.min(5,SW.step+1); renderSetup(); break;
   case 'swaddai': swRead(); if(!swAddAI()){toast('키와 모델 정보를 확인해 주세요');break;} APD={id:'',type:APD.type,pub:APD.pub||'google',name:'',region:'global',base:APD.base||'https://openrouter.ai/api/v1'}; SW.ok.ai=false; renderSetup(); toast('추가했어요. 하나 더 넣거나 다음으로 가세요'); break;
   case 'swprev': swRead(); SW.step=Math.max(0,SW.step-1); renderSetup(); break;
   case 'swlink': openUrl(t.dataset.url); break;
-  case 'swskipall': localStorage.setItem(SETUP_KEY,'1'); SW=null; showTitle(); break;
+  case 'swskipall': localStorage.setItem(SETUP_KEY,'1'); SW=null; showStart(); break;
   case 'swgenre': { const k=$('#ng_kw'); if(k){ k.value=t.dataset.v+(k.value.trim()?'. '+k.value.trim():'. '); k.focus(); } break; }
   case 'swgo1': swRead(); SW.step=1; renderSetup(); break;
   case 'swmake': { swRead(); const kw=$('#ng_kw').value.trim(); if(!kw){toast('장르와 키워드를 적어 주세요');break;} SW.kw=kw; SW.tone=$('#ng_tone').value.trim(); swSave(); if(!SAMPLE){toast('글 AI 키를 확인해 주세요');break;}
       localStorage.setItem(SETUP_KEY,'1'); document.querySelectorAll('.sw-card button').forEach(b=>{ if(b!==t) b.disabled=true; }); t.textContent='만드는 중… 화면을 끄지 마세요';
       await newGame(t); document.querySelectorAll('.sw-card button').forEach(b=>b.disabled=false); if(t.isConnected) t.textContent='다시 시도'; break; }
-  case 'swdone': swRead(); swSave(); localStorage.setItem(SETUP_KEY,'1'); SW=null; render(); showTitle(); toast('설정을 저장했어요'); break;
+  case 'swdone': swRead(); swSave(); { const v=$('#ng_style')?$('#ng_style').value.trim():''; if(v){ G.meta.artTags=v; mark('meta'); } } localStorage.setItem(SETUP_KEY,'1'); SW=null; render(); showStart(); toast('설정을 저장했어요'); break;
+  case 'bpgo': { const cats=bpRead(); if(!cats.length){ toast('하나 이상 골라 주세요'); P().bootPrep=0; break; } bootPrepRun(cats); break; }
+  case 'bpbg': { const cats=bpRead(); showTitle(); if(cats.length) runPrep(cats,null,{order:BOOT_CATS.map(x=>x[0])}); break; }
+  case 'bpskip': P().bootPrep=1; mark('prog'); showTitle(); break;
+  case 'bpleave': if(PREPJOB){ PREPJOB.fg=false; prepChip(); } showTitle(); toast('남은 그림은 위쪽 진행 표시에서 확인할 수 있어요'); break;
+  case 'swstytest': { swRead(); swSave(); if(!imgReady()){ toast(imgNeed()); break; } const r0=$('#sw_sres'); t.disabled=true; if(r0) r0.textContent='그리는 중… 20초쯤 걸려요';
+      try{ const b=await naiDraw('char','1girl, solo, long hair, smile, jacket, hand on hip',{styleId:swStyleId()}); if(SW.stPrev) URL.revokeObjectURL(SW.stPrev); SW.stPrev=URL.createObjectURL(b); renderSetup(); }
+      catch(err){ toast(naiErr(err,'시험 그리기 실패')); if(r0) r0.textContent=''; t.disabled=false; } break; }
   case 'swtestai': { swRead(); const pr=swProfile(), r0=$('#sw_res'); if(!apValid(pr)){toast('키를 넣어 주세요');break;} t.disabled=true; if(r0) r0.textContent='확인 중…';
       try{ const r=await aiOne(Object.assign(pr,{id:'tmp'}),'연결 테스트다. {"ok":true}를 그대로 출력하라.','quick'); SW.ok.ai=!!(r&&r.ok); if(r0) r0.textContent=SW.ok.ai?'✓ 연결됨':'응답은 왔지만 형식이 달라요'; }
       catch(err){ if(r0) r0.textContent='✗ '+(AIERR[err&&err.code]||((err&&err.message)||'연결 실패')); } finally{ t.disabled=false; } break; }
@@ -4746,7 +4814,7 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
   case 'pget': { const l=+t.dataset.lv; if(l>passLv()||P().pass.got.includes(l)) break; P().pass.got.push(l); const r=passReward(l); giveReward(r); sfx('확인'); toast(`패스 ${l}단계: ${rewardText(r)}`); render(); break; }
   case 'passreset': if(confirm('새 시즌을 시작할까요? 패스 단계가 처음으로 돌아가요.')){ P().pass={xp:0,got:[]}; mark('prog'); render(); } break;
   case 'meta-open': openMeta(); break;
-  case 'metasave': { const m=G.meta, old=m.elems.map(e=>e.n);
+  case 'metasave': { const m=G.meta, old=m.elems.map(e=>e.n); if($('#mt_art')){ m.artTags=$('#mt_art').value.trim(); m.artNeg=$('#mt_artn').value.trim(); }
       m.title=$('#mt_title').value.trim()||m.title; m.sub=$('#mt_sub').value.trim(); m.theme=$('#mt_theme').value; m.accent=$('#mt_acc').value;
       Object.keys(DEFAULT_META.terms).forEach(k=>{const v=$('#mt_t_'+k).value.trim(); if(v) m.terms[k]=v;});
       m.elems=[0,1,2].map(i=>({n:$('#mt_e'+i).value.trim()||old[i],c:$('#mt_c'+i).value}));
@@ -4925,7 +4993,7 @@ document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.datase
    시작
    ========================================================= */
 render(); loadIdbImages();
-applyMeta(); if(needSetup()) showSetup(); else showTitle(); dm();
+applyMeta(); if(needSetup()) showSetup(); else showStart(); dm();
 
 /* =========================================================
    독립 앱 전용: AI 연결, 백업 파일, 안드로이드 뒤로가기

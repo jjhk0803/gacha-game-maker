@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.10.08.2'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.10.08.10'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   try{
@@ -943,15 +943,23 @@ kbd{display:inline-block;min-width:1.4em;padding:1px 6px;font:600 .75rem/1.4 var
 .ph-tabs button{flex:1;padding:10px 0;font-weight:700;color:var(--sub);border-bottom:2px solid transparent}
 .ph-tabs button.on{color:var(--ink);border-bottom-color:var(--rose)}
 .fc-tag{font-size:.62rem;font-weight:700;padding:1px 5px;margin-left:4px;background:var(--rose);color:var(--rose-ink);vertical-align:middle}
+.ph-sw{flex:none;height:38px;padding:0 10px}
+.ph-sw2{align-self:center;font-size:.8rem;color:var(--sub);padding:4px 8px}
+.ph-in[hidden]{display:none!important}
 .fc-go{font-size:.78rem;font-weight:700;color:var(--rose);padding:4px 10px;border:1px solid var(--rose)}
-.ph-in.fc{flex-direction:row;align-items:flex-end;gap:8px}
-.ph-in.fc textarea{flex:1;resize:none;min-height:38px;max-height:120px;padding:8px 12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;line-height:1.4;border-radius:18px}
-.ph-in.fc .btn{flex:none;height:38px}
+.ph-in.fcin{flex-direction:row;align-items:flex-end;gap:8px}
+.ph-in.fcin textarea{flex:1;resize:none;min-height:38px;max-height:120px;padding:8px 12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;line-height:1.4;border-radius:18px}
+.ph-in.fcin .btn{flex:none;height:38px}
 
 /* ===== 2026.10.08 ===== */
 .lobby.lbsz-fit .lb-stage .lobby-art{height:calc(94% - 78px)}
 .lobby.lbsz-small .lb-stage .lobby-art{height:72%;left:14%;width:72%}
-.lobby.lbsz-fit .lobby-ill{object-position:50% 0}
+.lobby.lbsz-fit .lobby-ill{top:84px;height:calc(100% - 84px);object-position:50% 0}
+.lobby.lbsz-fit .lb-stage{background:#000}
+.lb-banner{opacity:.92}
+.phone .ph-chat{flex:1 1 0;min-height:0}
+.phone .ph-in{flex:0 0 auto}
+.phone .ph-top{flex:0 0 auto;position:relative;z-index:2}
 .pk-list{display:grid;gap:8px;margin-top:6px}
 .pk-g{display:flex;flex-direction:column;align-items:flex-start;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff;text-align:left}
 .pk-g b{font-family:var(--hd);font-size:1.1rem}.pk-g span{font-size:.75rem;color:#9aa1ad}
@@ -982,6 +990,21 @@ kbd{display:inline-block;min-width:1.4em;padding:1px 6px;font:600 .75rem/1.4 var
 .rg-u .hpb{width:100%;height:5px;background:var(--panel2)}.rg-u .hpb i{display:block;height:100%;background:#4fd18b}
 .rg-rel{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.rg-rel span{font-size:.7rem;padding:2px 8px;background:rgba(154,134,255,.15);border:1px solid rgba(154,134,255,.5)}
 .rg-msg{color:#b4a6ff!important;font-weight:600}
+
+.fc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.fc-it{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;background:var(--panel2);border:1px solid var(--line)}
+.fc-it img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:50% 8%}
+.fc-empty{width:100%;aspect-ratio:3/4;display:grid;place-items:center;font-size:.7rem;color:var(--sub);border:1px dashed var(--line)}
+.fc-it b{font-size:.78rem}.fc-it .row{gap:4px}.fc-it .btn.sm{padding:3px 7px;font-size:.7rem}
+
+.vn-char.up .art.upimg{height:100%;align-self:flex-end;object-position:50% 100%}
+.cs-art.up .art.upimg{height:100%;object-position:50% 100%}
+.up-box img{object-fit:contain;background:repeating-conic-gradient(#2a2d36 0 25%,#1d2027 0 50%) 0 0/16px 16px}
+
+.gf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.gf-it{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;background:var(--panel2);border:1px solid var(--line);color:var(--ink)}
+.gf-it em{font-style:normal;font-size:1.8rem;line-height:1.1}.gf-it b{font-size:.82rem}.gf-it span{font-size:.7rem;color:var(--sub)}
+.gf-like{font-style:normal;color:#ff6a9a;font-weight:700}.gf-meh{font-style:normal;opacity:.7}
 /* ===== 2026.10.07.2 ===== */
 .mlist{display:grid;gap:6px}
 .mrow{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rose);cursor:pointer}
@@ -1226,7 +1249,8 @@ kbd{display:inline-block;min-width:1.4em;padding:1px 6px;font:600 .75rem/1.4 var
 /* =========================================================
    규칙과 형식
    ========================================================= */
-function rulesText(){return `규칙: 모든 등장인물은 성인이지만 나이는 절대 언급하지 않는다. 학교나 학생 설정은 쓰지 않는다. 서브컬처 수집형 게임의 분위기로, 진지한 전개 사이에 캐릭터 간 개그와 ${T('player')}을(를) 향한 가벼운 플러팅을 섞고 완급을 둔다. 노골적인 성적 묘사는 쓰지 않는다. 모든 글은 한국어로 쓴다. 이 게임의 용어: 플레이어 호칭 "${T('player')}", 유료 재화 "${T('currency')}", 뽑기 "${T('gacha')}", 전투 "${T('ops')}", 아군 "${T('crew')}", 메신저 "${T('talk')}". 속성: ${ELEMS.join(', ')} (${ELEMS.map((e,i)=>e+'은 '+ELEMS[(i+1)%3]+'에 강함').join(', ')}).`;}
+function genderText(){ const g=P().gender; return g==='m'?`플레이어(${T('player')})는 남성이다. 호칭과 반응을 그에 맞춘다. `:g==='f'?`플레이어(${T('player')})는 여성이다. 호칭과 반응을 그에 맞춘다. `:`플레이어(${T('player')})의 성별은 정하지 않는다. 성별이 드러나는 호칭은 피한다. `; }
+function rulesText(){return genderText()+`규칙: 모든 등장인물은 성인이지만 나이는 절대 언급하지 않는다. 학교나 학생 설정은 쓰지 않는다. 서브컬처 수집형 게임의 분위기로, 진지한 전개 사이에 캐릭터 간 개그와 ${T('player')}을(를) 향한 가벼운 플러팅을 섞고 완급을 둔다. 노골적인 성적 묘사는 쓰지 않는다. 모든 글은 한국어로 쓴다. 이 게임의 용어: 플레이어 호칭 "${T('player')}", 유료 재화 "${T('currency')}", 뽑기 "${T('gacha')}", 전투 "${T('ops')}", 아군 "${T('crew')}", 메신저 "${T('talk')}". 속성: ${ELEMS.join(', ')} (${ELEMS.map((e,i)=>e+'은 '+ELEMS[(i+1)%3]+'에 강함').join(', ')}).`;}
 function scriptFmt(){return `대본 형식(한 줄에 하나): "이름: 대사" / 표정을 바꾸려면 "이름[표정]: 대사" (표정은 각 캐릭터의 표정 목록에서 고른다) / 그 외 문장은 나레이션 / [배경: 배경이름]은 배경 전환 / [장소이름]은 장소 자막과 배경 전환 / [소품: 소품이름]은 소품 클로즈업, [소품 끝]으로 닫음 / [효과: 흔들림], [효과: 플래시], [효과: 암전] / [효과음: 이름] / [음악: 음악이름]은 배경음 전환, [음악 끝]은 정지 / [톡: 캐릭터이름]부터 [톡 끝]까지는 휴대폰 메신저 화면으로 대화가 진행되는 장면 / [CG: CG이름]은 일러스트 한 장을 화면 가득 보여 주고, [CG 끝]으로 닫음 / "선택: 보기1 | 보기2"는 플레이어 선택지이고, 이어지는 줄 앞에 "1) "이나 "2) "를 붙이면 그 선택을 했을 때만 나온다. 플레이어 대사는 "${T('player')}: "로 쓰고, 문장 속에서 플레이어 이름은 {관리관}으로 쓴다. 배경, 소품, 음악, 효과음은 가능한 한 기존 목록의 이름을 그대로 쓴다.`;}
 function threadFmt(){return `메신저 형식(한 줄에 하나): "캐릭터이름: 메시지" / "나: 메시지"는 플레이어가 보낸 메시지 / "선택: 답장1 | 답장2"는 플레이어 답장 선택지(고른 답장이 자동 전송됨), 이어지는 줄 앞에 "1) " 같은 번호를 붙이면 그 답장을 골랐을 때만 나온다 / [사진: 소품 또는 배경 이름]은 사진 전송. 실제 메신저처럼 짧은 메시지를 여러 번 나눠 보내고, ㅋㅋ와 이모지를 써도 된다. 세계관과 메인 스토리의 사건, 떡밥을 자연스럽게 언급한다.`;}
 Object.defineProperty(window,'RULES',{get:rulesText});
@@ -1294,6 +1318,11 @@ const IS_NATIVE=!!(window.Capacitor&&(typeof window.Capacitor.isNativePlatform==
 const IS_IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const IS_STANDALONE=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
 const PXHOSTS=new Set();
+function PCS(){ try{ const o=JSON.parse(localStorage.getItem('ggm-pc')||'null'); return o&&o.base&&o.key?o:null; }catch(e){ return null; } }
+function setPCS(o){ try{ if(o) localStorage.setItem('ggm-pc',JSON.stringify(o)); else localStorage.removeItem('ggm-pc'); }catch(e){} }
+function parsePcLink(s){ try{ const u=new URL(String(s).trim()); const k=u.searchParams.get('pc'); return k?{base:u.origin,key:k}:null; }catch(e){ return null; } }
+(function(){ try{ const u=new URL(location.href), k=u.searchParams.get('pc'); if(k){ setPCS({base:location.origin,key:k,at:Date.now()}); u.searchParams.delete('pc'); history.replaceState(null,'',u.pathname+(u.search||'')+u.hash); window.__PC_NEW=1; } }catch(e){} })();
+const isLocalHost=h=>/^(localhost|127\.0\.0\.1|\[::1\]|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(h);
 function webProxy(){ if(IS_NATIVE) return ''; try{ return String(localStorage.getItem('ggm-proxy')||'').trim(); }catch(e){ return ''; } }
 function b64ToBytes(b){const s=atob(b);const u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u;}
 function b64url(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
@@ -1308,6 +1337,10 @@ async function http(url,{method='GET',headers={},body,binary=false,form=false,ti
     if(binary&&r.status>=400&&text&&!/^[\[{]/.test(text.trim())&&/^[A-Za-z0-9+/=\s]{8,}$/.test(text)){ try{const d=new TextDecoder().decode(b64ToBytes(text.replace(/\s/g,'')));if(!/[\u0000-\u0008\uFFFD]/.test(d))text=d;}catch(e){} }
     const hd={}; Object.entries(r.headers||{}).forEach(([k,v])=>{hd[String(k).toLowerCase()]=String(v);});
     return {status:r.status,bytes,text,headers:hd};
+  }
+  const pc=PCS(); let tgt=null; try{ tgt=new URL(url); }catch(e){}
+  if(pc&&tgt&&tgt.origin!==pc.base&&(!IS_NATIVE||isLocalHost(tgt.hostname))&&!url.startsWith(pc.base)){
+    return http(pc.base+'/api/proxy?u='+encodeURIComponent(url),{method,headers:Object.assign({},headers,{'X-GGM-Key':pc.key}),body,binary,form,timeout});
   }
   const h={...headers}; delete h.Origin; delete h.Referer;
   const init={method,headers:h,body:body==null?undefined:(form?new URLSearchParams(body).toString():JSON.stringify(body))};
@@ -1478,6 +1511,7 @@ function naiDraw(kind,base,opt){
   const k=kind==='weapon'?'prop':kind, p=composeNai(k,base,opt); return naiGenerate(p.input,k,Object.assign({},opt,{neg:p.neg}));
 }
 function naiDrawItem(it){
+  if(it.k==='upper'){ const c=it.c; return naiDraw('char',joinTags(c.naiPrompt,it.o.prompt),{frame:'upper body',pose:'looking at viewer, smile',styleId:c.naiStyle}); }
   if(it.k==='illust'||it.k==='lbcg'){ const c=it.c; return naiDraw(it.k,joinTags(c.naiPrompt,it.o.prompt),{pose:it.o.naiPose!=null?it.o.naiPose:undefined,styleId:c.naiStyle,frame:it.o.naiFrame}); }
   if(it.k==='cg') return naiDraw('cg',null,{item:it.o,styleId:it.o.naiStyle});
   if(it.k==='char') return naiDraw('char',it.o.naiPrompt,{pose:it.o.naiPose||undefined,styleId:it.o.naiStyle,frame:it.o.naiFrame});
@@ -2078,7 +2112,7 @@ const DEFAULT_DISP=[
  {id:'d1',name:'회색구 순찰',desc:'시민회 요청으로 골목을 돈다.',hours:1,need:2,reward:{gold:3000,exp:5}},
  {id:'d2',name:'물자 호송',desc:'상층 구역에서 의약품을 받아 온다.',hours:2,need:2,reward:{gold:5000,wmat:4}},
  {id:'d3',name:'잔광 잔해 수거',desc:'전투가 끝난 구역의 성핵 조각을 회수한다.',hours:4,need:3,reward:{exp:20,core:2}},
- {id:'d4',name:'헬릭스 동향 정찰',desc:'상층 구역 물류 이동을 몰래 기록한다.',hours:8,need:3,reward:{gems:150,wmat:10}},
+ {id:'d4',name:'헬릭스 동향 정찰',desc:'상층 구역 물류 이동을 몰래 기록한다.',hours:8,need:3,reward:{gold:15000,wmat:10}},
  {id:'d5',name:'항만 야간 경비',desc:'밤새 옛 항구를 지킨다.',hours:12,need:4,reward:{gold:20000,exp:30,core:4}},
  {id:'d6',name:'카지노 정보 수집',desc:'딜러들 사이의 소문을 모은다.',hours:0.5,need:1,reward:{gold:1500}}
 ];
@@ -2400,7 +2434,7 @@ const DEFAULT_OPENING = {
 const DEFAULT_PROG = {gems:3600,pity:0,total:0,owned:{},cleared:{},squad:[],sec:null,daily:'',
   settings:{ssr:4,sr:18,pity:70},firstTen:true,adult:true,show19:true,history:[],savedAt:0,
   gold:20000,mat:{exp:40,wmat:20,core:10},pities:{},tokens:{},disp:{},dm:{date:'',cnt:{},got:{}},pass:{xp:0,got:[]},farmClear:{},shopBuy:{},curBanner:'',curEvent:'',live:{on:{talk:true,event:true,rerun:true,rotate:true,pass:true,chapter:false},last:{},notices:[],seen:0,recentPU:[]},
-  player:'',inbox:{},seenOpening:false,lobbyBg:'',titleBg:'',titleChar:'',gachaBg:''};
+  player:'',gender:'',inbox:{},seenOpening:false,lobbyBg:'',titleBg:'',titleChar:'',gachaBg:''};
 
 /* =========================================================
    유틸
@@ -2491,6 +2525,7 @@ function fix(g){
     if(!c.weapon) c.weapon={id:'w_'+c.id,name:'',desc:'',prompt:'',img:null}; if(!c.weapon.id) c.weapon.id='w_'+c.id;
     c.episodes.forEach(e=>{e.dup=e.dup||0;e.after=e.after||'';});
     if(!c.illust||typeof c.illust!=='object') c.illust={id:'il_'+c.id,kind:'illust',name:c.name+' 일러스트',prompt:'',img:null}; c.illust.kind='illust'; c.illust.id=c.illust.id||'il_'+c.id; c.illust.name=c.name+' 일러스트';
+    if(!c.upper||typeof c.upper!=='object') c.upper={id:'up_'+c.id,kind:'upper',name:c.name+' 상반신',prompt:'',img:null}; c.upper.id=c.upper.id||'up_'+c.id;
     if(!c.lbcg||typeof c.lbcg!=='object') c.lbcg={id:'lb_'+c.id,kind:'lbcg',name:'',prompt:'',img:null}; c.lbcg.kind='lbcg'; c.lbcg.id=c.lbcg.id||'lb_'+c.id; c.lbcg.name=c.name+' '+((g.meta&&g.meta.terms&&g.meta.terms.limit)||'돌파')+' CG';
   });
   g.chapters.forEach(ch=>{ch.kind=ch.kind||'main';});
@@ -2522,6 +2557,7 @@ const dirty=new Set(); let flushT=null;
 function mark(...k){k.forEach(x=>dirty.add(x));clearTimeout(flushT);flushT=setTimeout(flush,700);}
 function markAll(){mark('meta','world','prog','opening',...G.chars.map(c=>'c:'+c.id),...G.chapters.map(c=>'ch:'+c.id),...G.lib.map(l=>'l:'+l.id),...G.threads.map(t=>'t:'+t.id));}
 async function flush(){
+  if(window.__NOFLUSH) return;
   G.prog.savedAt=Date.now(); dirty.add('prog');
   try{localStorage.setItem(LKEY,JSON.stringify(G));}catch(e){ if(!window.__saveWarned){ window.__saveWarned=1; setTimeout(()=>{ try{ toast('기기 저장 공간이 부족해서 저장하지 못했어요. 설정 → 백업으로 내보내고 안 쓰는 게임을 지워 주세요'); }catch(_){} },300); } }
   if(!DB){dirty.clear();return;}
@@ -2555,7 +2591,7 @@ async function idbKeys(){const d=await idbOpen();return new Promise((res,rej)=>{
 async function idbDel(k){const d=await idbOpen();return new Promise((res,rej)=>{const t=d.transaction('img','readwrite');t.objectStore('img').delete(k);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
 async function voiceStats(){let n=0,b=0;try{for(const k of await idbKeys()){if(String(k).startsWith('v_')){n++;const x=await idbGet(k);b+=x&&x.size||0;}}}catch(e){}return {n,mb:(b/1048576).toFixed(1)};}
 async function idbGet(k){const d=await idbOpen();return new Promise((res,rej)=>{const t=d.transaction('img');const q=t.objectStore('img').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}
-function imgObjsOf(g){const a=[...(g.chars||[]),...(g.lib||[])];(g.chars||[]).forEach(c=>{a.push(...(c.faces||[]),...(c.skins||[]));if(c.weapon)a.push(c.weapon);if(c.illust)a.push(c.illust);if(c.lbcg)a.push(c.lbcg);});return a.filter(o=>o&&o.id);}
+function imgObjsOf(g){const a=[...(g.chars||[]),...(g.lib||[])];(g.chars||[]).forEach(c=>{a.push(...(c.faces||[]),...(c.skins||[]));if(c.weapon)a.push(c.weapon);if(c.illust)a.push(c.illust);if(c.upper)a.push(c.upper);if(c.lbcg)a.push(c.lbcg);});return a.filter(o=>o&&o.id);}
 function allImgObjs(){return imgObjsOf(G);}
 async function loadIdbImages(){
   let ch=false;
@@ -2570,6 +2606,8 @@ function charSrc(c,face){
   return imgSrc(c);
 }
 function art(c,cls='',opt){
+  if(opt&&opt.upper){ const o=P().owned[c.id], sk=o&&o.skin&&(c.skins||[]).find(x=>x.id===o.skin), hasFace=opt.face&&(c.faces||[]).some(x=>x.name===opt.face&&imgSrc(x)), us=c.upper&&imgSrc(c.upper);
+    if(us&&!hasFace&&!(sk&&imgSrc(sk))) return `<img class="art upimg ${cls}" src="${esc(us)}" alt="${esc(c.name)}" loading="lazy" draggable="false">`; }
   const s=charSrc(c,opt&&opt.face);
   if(s) return `<img class="art ${cls}" src="${esc(s)}" alt="${esc(c.name)}" loading="lazy" draggable="false">`;
   return `<div class="art ph ${cls}" style="--ec:${ECOL[c.elem]||'var(--rose)'}"><span>${esc((c.name||'?').slice(0,1))}</span><small>스탠딩 미등록</small></div>`;
@@ -2616,13 +2654,20 @@ async function storeImage(o,blob,prefix){
   mark(prefix+o.id);
 }
 let uploadFor=null, uploadAudioFor=null;
+async function addFaceFile(c,name,file){ let fc=c.faces.find(q=>q.name===name); if(!fc){ fc={id:'f'+uid(),name,img:null}; c.faces.push(fc); } await storeImage(fc,await shrink(file,1800),''); mark('c:'+c.id); }
+document.addEventListener('DOMContentLoaded',()=>{});
+(function(){ const i=document.createElement('input'); i.type='file'; i.id='filesm'; i.accept='image/*'; i.multiple=true; i.hidden=true; document.body.appendChild(i);
+  i.addEventListener('change',async e=>{ const fs=[...e.target.files]; e.target.value=''; if(!fs.length||!uploadFor||uploadFor.kind!=='faces') return; const c=charById(uploadFor.id); if(!c) return; let n=0;
+    for(const f of fs){ const nm=f.name.replace(/\.[^.]+$/,'').trim().slice(0,12); if(!nm) continue; try{ await addFaceFile(c,nm,f); n++; }catch(err){} }
+    openFaces(c.id); toast(`표정 ${n}개를 넣었어요`); }); })();
 document.getElementById('afile').addEventListener('change',async e=>{
   const f=e.target.files[0]; e.target.value=''; const l=libById(uploadAudioFor); if(!f||!l) return;
   try{ await storeAudio(l,f); toast(`「${l.name}」 음악을 등록했어요`); bgm(l.name,true); openLibItem(l.id); }catch(err){ toast('음악 파일을 저장하지 못했어요'); }
 });
 $('#file').addEventListener('change',async e=>{
   const f=e.target.files[0]; e.target.value=''; if(!f||!uploadFor) return;
-  if(ILK(uploadFor.kind)){ const c=charById(uploadFor.id); if(!c) return; toast('그림을 등록하는 중이에요'); try{ await storeImage(c[uploadFor.kind],await shrink(f,2200),''); mark('c:'+c.id); render(); openChar(c.id); toast('일러스트를 등록했어요'); }catch(err){ toast('이미지를 올리지 못했어요'); } return; }
+  if(uploadFor.kind==='face'){ const c=charById(uploadFor.id); if(!c) return; try{ await addFaceFile(c,uploadFor.name,f); openFaces(c.id); toast(`표정 「${uploadFor.name}」을(를) 넣었어요`); }catch(err){ toast('이미지를 올리지 못했어요'); } return; }
+  if(ILK(uploadFor.kind)||uploadFor.kind==='upper'){ const c=charById(uploadFor.id); if(!c) return; toast('그림을 등록하는 중이에요'); try{ await storeImage(c[uploadFor.kind],await shrink(f,2200),''); mark('c:'+c.id); render(); openChar(c.id); toast(uploadFor.kind==='upper'?'상반신을 등록했어요':'일러스트를 등록했어요'); }catch(err){ toast('이미지를 올리지 못했어요'); } return; }
   const o=uploadFor.kind==='char'?charById(uploadFor.id):libById(uploadFor.id); if(!o) return;
   toast('이미지를 등록하는 중이에요');
   const blob=await shrink(f,uploadFor.kind==='char'?1800:2000);
@@ -2638,8 +2683,8 @@ $('#file').addEventListener('change',async e=>{
    ========================================================= */
 function own(id){return P().owned[id];}
 const levelCap=o=>Math.min(70,20+10*(o?o.dup:0));
-function rewardText(r){const p=[];if(r.gems)p.push(`◆${nf(r.gems)} ${T('currency')}`);if(r.gold)p.push(`${T('gold')} ${nf(r.gold)}`);if(r.exp)p.push(`${T('expMat')} ${nf(r.exp)}`);if(r.wmat)p.push(`${T('wMat')} ${nf(r.wmat)}`);if(r.core)p.push(`${T('core')} ${nf(r.core)}`);if(r.token)p.push(`${r.tokenName||'토큰'} ${nf(r.token)}`);return p.join(', ');}
-function giveReward(r,evId){const p=P();if(r.gems)p.gems+=r.gems;if(r.gold)p.gold+=r.gold;['exp','wmat','core'].forEach(k=>{if(r[k])p.mat[k]=(p.mat[k]||0)+r[k];});if(r.token&&evId)p.tokens[evId]=(p.tokens[evId]||0)+r.token;mark('prog');}
+function rewardText(r){const p=[];if(r.gems)p.push(`◆${nf(r.gems)} ${T('currency')}`);if(r.gold)p.push(`${T('gold')} ${nf(r.gold)}`);if(r.exp)p.push(`${T('expMat')} ${nf(r.exp)}`);if(r.wmat)p.push(`${T('wMat')} ${nf(r.wmat)}`);if(r.core)p.push(`${T('core')} ${nf(r.core)}`);if(r.token)p.push(`${r.tokenName||'토큰'} ${nf(r.token)}`);if(r.gift)p.push(`선물 ${r.gift}개`);return p.join(', ');}
+function giveReward(r,evId){const p=P();if(r.gift)addGifts(r.gift);if(r.gems)p.gems+=r.gems;if(r.gold)p.gold+=r.gold;['exp','wmat','core'].forEach(k=>{if(r[k])p.mat[k]=(p.mat[k]||0)+r[k];});if(r.token&&evId)p.tokens[evId]=(p.tokens[evId]||0)+r.token;mark('prog');}
 const MISSIONS=[{k:'login',name:'출석하기',goal:1,xp:100},{k:'battle',name:'전투 3회',goal:3,xp:150},{k:'pull',name:'뽑기 1회',goal:1,xp:100},{k:'dispatch',name:'파견 보내기',goal:1,xp:100},{k:'touch',name:'로비 터치 5회',goal:5,xp:60},{k:'enhance',name:'강화 1회',goal:1,xp:100}];
 function dm(){const p=P();if(p.dm.date!==today())p.dm={date:today(),cnt:{login:1},got:{}};return p.dm;}
 function bump(k,n){const d=dm();d.cnt[k]=(d.cnt[k]||0)+(n||1);mark('prog');}
@@ -2719,32 +2764,49 @@ let PH=null;
 function openPhone(tid){ $('#notif').innerHTML=''; $('#phone').hidden=false; if(tid&&P().inbox[tid]) openThread(tid); else phoneList(); }
 function closePhone(){ PH=null; $('#phone').hidden=true; $('#phone').innerHTML=''; render(); }
 function phoneList(){
-  PH=null;
-  const items=Object.entries(P().inbox).map(([id,s])=>({t:threadById(id),s,at:s.at||0})).filter(x=>threadChar(x.t)).map(x=>Object.assign(x,{k:'t'}));
-  const fcs=Object.entries(FC()).map(([cid,f])=>({c:charById(cid),f,at:f.at||0,k:'f'})).filter(x=>x.c&&x.f.log.length);
-  const rows=[...items,...fcs].sort((a,b)=>b.at-a.at);
-  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phclose" aria-label="닫기">✕</button><b>${esc(T('talk'))}</b><span style="width:30px"></span></div>${phTabs()}<div class="ph-list">${
-    PHT==='friends'?friendsHTML():rows.length?rows.map(x=>{ if(x.k==='f') return fcRowHTML(x.c,x.f); const t=x.t,s=x.s,c=threadChar(t);const last=s.log.filter(l=>l.w!=='s').at(-1);
-      return `<button class="ph-row" data-act="openthread" data-id="${t.id}"><div class="av">${art(c)}</div><div class="t"><b>${esc(c.name)}</b><span>${esc(last?(last.w==='p'?'사진을 보냈어요':last.t):t.title)}</span></div>${s.done?'':'<i class="dot"></i>'}</button>`;}).join('')
-    :`<p class="muted" style="text-align:center;padding:40px 16px">아직 온 메시지가 없어요. ${esc(T('crew'))}과(와) 친해지거나 ${esc(T('ops'))}을(를) 진행하면 연락이 와요.<br><br><button class="btn sm" data-act="phtab" data-v="friends">친구에게 먼저 말 걸기</button></p>`}</div></div>`;
+  PH=null; const rooms=phRooms();
+  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phclose" aria-label="닫기">✕</button><b>${esc(T('talk'))}</b><button data-act="phnew" aria-label="새 대화">＋</button></div><div class="ph-list">${
+    rooms.length?rooms.map(x=>{ const l=x.last; return `<button class="ph-row" data-act="openfc" data-id="${esc(x.c.id)}"><div class="av">${art(x.c)}</div><div class="t"><b>${esc(x.c.name)}</b><span>${esc(l?(l.w==='p'?'사진을 보냈어요':(l.w==='me'?'나: ':'')+l.t):(x.title||'대화를 시작해 보세요'))}</span></div>${x.unread?'<i class="dot"></i>':''}</button>`; }).join('')
+    :`<p class="muted" style="text-align:center;padding:40px 16px">아직 대화가 없어요. ${esc(T('crew'))}과(와) 친해지거나 ${esc(T('ops'))}을(를) 진행하면 연락이 와요.<br><br><button class="btn sm" data-act="phnew">먼저 말 걸기</button></p>`}</div></div>`;
 }
+function phRooms(){ const m={};
+  Object.entries(P().inbox).forEach(([id,s])=>{ const t=threadById(id), c=threadChar(t); if(!c) return; const r=m[c.id]||(m[c.id]={c,at:0,unread:false}); r.at=Math.max(r.at,s.at||0); if(!s.done){ r.unread=true; r.title=r.title||t.title; } });
+  Object.entries(FC()).forEach(([cid,f])=>{ const c=charById(cid); if(!c||!f.log.length) return; const r=m[cid]||(m[cid]={c,at:0,unread:false}); r.at=Math.max(r.at,f.at||0); if(f.unread) r.unread=true; });
+  return Object.values(m).map(r=>Object.assign(r,{last:roomLog(r.c.id).filter(l=>l.w!=='s').at(-1)})).sort((a,b)=>b.at-a.at); }
+function roomThreads(cid){ return Object.entries(P().inbox).map(([id,s])=>({t:threadById(id),s})).filter(x=>{ const c=threadChar(x.t); return c&&c.id===cid; }).sort((a,b)=>(a.s.t0||a.s.at||0)-(b.s.t0||b.s.at||0)); }
+function roomLog(cid){ const out=[];
+  roomThreads(cid).forEach(({s})=>{ const n=s.log.length, base=s.t0||s.at||0; s.log.forEach((l,i)=>{ if(l.w==='s'&&l.t==='대화가 끝났어요') return; out.push({l,k:l.at||(s.t0?base+i:base-(n-i))}); }); });
+  const f=FC()[cid]; if(f) f.log.forEach((l,i)=>out.push({l,k:l.at||i}));
+  return out.sort((a,b)=>a.k-b.k).map(x=>x.l); }
+function phNewList(){ PH=null; const list=G.chars.filter(c=>own(c.id));
+  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phback" aria-label="뒤로">‹</button><b>새 대화</b><span style="width:30px"></span></div><div class="ph-list">${
+    list.length?`${SAMPLE?'':`<p class="muted" style="margin:10px 14px;font-size:.82rem">직접 말을 걸려면 글 AI가 있어야 해요. 설정 → 글 AI에서 등록해 주세요.</p>`}${list.map(c=>`<button class="ph-row" data-act="openfc" data-id="${esc(c.id)}"><div class="av">${art(c)}</div><div class="t"><b>${esc(c.name)}</b><span>${esc(c.faction||'')} · 호감도 Lv.${affLv(own(c.id))}</span></div><span class="fc-go">대화</span></button>`).join('')}`
+    :`<p class="muted" style="text-align:center;padding:40px 16px">아직 ${esc(T('crew'))}이(가) 없어요.</p>`}</div></div>`; }
 function bubbleHTML(l,c){
   if(l.w==='s') return `<div class="sys">${esc(l.t)}</div>`;
   if(l.w==='me') return `<div class="msg me"><div class="bub">${esc(l.t)}</div></div>`;
   const inner=l.w==='p'?`<div class="bub photo">${libArt(l.t)}</div>`:`<div class="bub">${esc(l.t)}</div>`;
   return `<div class="msg"><div class="av sm">${art(c)}</div>${inner}</div>`;
 }
-function openThread(tid){
-  const t=threadById(tid), c=threadChar(t), s=P().inbox[tid]; if(!t||!c||!s) return;
-  const token={}; PH={tid,token};
-  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phback" aria-label="뒤로">‹</button><b>${esc(c.name)}</b><button data-act="char" data-id="${c.id}" aria-label="대원 정보">ⓘ</button></div><div class="ph-chat" id="phChat">${s.log.map(l=>bubbleHTML(l,c)).join('')}</div><div class="ph-in" id="phIn"><span class="muted" style="text-align:center">${s.done?'대화가 끝났어요':'…'}</span></div></div>`;
-  phScroll(); phPlay(t,c,s,token);
+function openThread(tid){ const t=threadById(tid), c=threadChar(t); if(!t||!c||!P().inbox[tid]) return; openRoom(c.id); }
+function openRoom(cid){
+  const c=charById(cid); if(!c) return; const f=fcOf(cid); const token={};
+  const act=roomThreads(cid).find(x=>!x.s.done&&x.t);
+  PH={fc:cid,tid:act?act.t.id:null,token,mode:'free'};
+  const log=roomLog(cid);
+  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phback" aria-label="뒤로">‹</button><b>${esc(c.name)}</b><button data-act="fcmenu" data-id="${esc(c.id)}" aria-label="메뉴">⋯</button></div>
+    <div class="ph-chat" id="phChat">${log.length?log.map(l=>bubbleHTML(l,c)).join(''):`<div class="sys">${esc(c.name)}와(과)의 대화방이에요. 무엇이든 말을 걸어 보세요.</div>`}</div>
+    <div class="ph-in" id="phIn" hidden></div>
+    <div class="ph-in fcin" id="phFree"><button class="btn sm ghost ph-sw" data-act="phmode" data-v="pick" hidden aria-label="선택지 보기">선택지</button><textarea id="fcIn" rows="1" maxlength="400" placeholder="${SAMPLE?'메시지 보내기':'글 AI를 등록하면 직접 말을 걸 수 있어요'}" ${SAMPLE?'':'disabled'}></textarea><button class="btn sm" data-act="fcsend" ${SAMPLE?'':'disabled'}>전송</button></div></div>`;
+  phScroll(); f.unread=0; mark('prog');
+  if(act){ act.s.t0=act.s.t0||Date.now(); phPlay(act.t,c,act.s,token); }
+  else setTimeout(()=>{ const i=$('#fcIn'); if(i&&!IS_NATIVE&&!i.disabled) i.focus(); },50);
 }
-
-
+function phMode(m){ if(!PH) return; PH.mode=m; const a=$('#phIn'), b=$('#phFree'); if(!a||!b) return; const hasPick=!!a.querySelector('[data-act=phpick]');
+  if(m==='pick'&&hasPick){ a.hidden=false; b.hidden=true; } else { a.hidden=true; b.hidden=false; const sw=b.querySelector('.ph-sw'); if(sw) sw.hidden=!hasPick; } phScroll(); }
 /* ===== 도전: 레이드 · 심연 탐사 ===== */
 const RAID_TICKS=700, RG_FLOORS=12;
-const RAID_MS=[[0.05,{gems:100,gold:5000}],[0.15,{gems:150,wmat:10}],[0.3,{gems:200,core:3}],[0.5,{gems:300,exp:40}],[0.75,{gems:400,core:5}],[1,{gems:800,core:10,wmat:20}]];
+const RAID_MS=[[0.05,{gems:100,gold:5000}],[0.15,{gems:150,wmat:10,gift:2}],[0.3,{gems:200,core:3}],[0.5,{gems:300,exp:40}],[0.75,{gems:400,core:5}],[1,{gems:800,core:10,wmat:20}]];
 function weekKey(){ const d=new Date(Date.now()+9*3600e3), day=(d.getUTCDay()+6)%7; return new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()-day)).toISOString().slice(0,10); }
 function progK(){ const main=G.chapters.filter(c=>c.kind==='main'); let k=0; main.forEach((ch,i)=>{ if(ch.stages.some(s=>P().cleared[s.id])) k=i; }); return k; }
 function hashN(s){ let h=0; for(const ch of String(s)) h=(h*31+ch.charCodeAt(0))|0; return Math.abs(h); }
@@ -2786,9 +2848,9 @@ function rogueEnd(win){ const g=RG(), run=g.run; if(!run) return '<button class=
   if(!win){ return rgFinish(false); }
   run.floor++; run.opts=rgOpts(run); if(node==='elite') run.pick=rgPick3(run); mark('prog'); sfx('승리');
   return `<h2 class="disp" style="color:var(--rose);margin:0">${run.floor-1}층 돌파</h2><p>${node==='elite'?'정예를 쓰러뜨렸어요. 유물을 하나 고를 수 있어요.':'다음 층으로 가요.'}${heal?'<br>응급 키트로 체력을 회복했어요.':''}</p><button class="btn" data-act="bdone">계속</button>`; }
-function rgReward(f,done){ let r={gems:25*f+(done?300:0),gold:1200*f,exp:3*f,wmat:2*f,core:Math.floor(f/3)+(done?5:0)}; const m=(1+0.3*rgCount('loot'))*(RG().n>=2?0.25:1); Object.keys(r).forEach(k=>r[k]=Math.round(r[k]*m)); return r; }
-function rgFinish(done){ const g=RG(), run=g.run, f=done?RG_FLOORS:run.floor-1; if(g.day!==today()){ g.day=today(); g.n=0; } const r=rgReward(f,done); giveReward(r); g.n++; g.best=Math.max(g.best||0,f); g.run=null; mark('prog'); sfx(done?'SSR':'확인');
-  return `<h2 class="disp" style="color:${done?'var(--rose)':'#ff5277'};margin:0">${done?'심연 정복!':'탐사 종료'}</h2><p>${f}층까지 갔어요.${g.n>2?' (오늘 3번째부터는 보상 25%)':''}<br>${rewardText(r)}</p><button class="btn" data-act="bdone">계속</button>`; }
+function rgReward(f,done,prev,won){ prev=prev||0; const nf2=Math.max(0,f-prev); let r={gold:1200*f,exp:3*f,wmat:2*f,core:Math.floor(f/3)+(done?5:0),gift:Math.floor(f/4)+(done?2:0)}; const m=(1+0.3*rgCount('loot'))*(RG().n>=2?0.25:1); Object.keys(r).forEach(k=>r[k]=Math.round(r[k]*m)); const gm=40*nf2+(done&&!won?500:0); if(gm) r.gems=gm; return r; }
+function rgFinish(done){ const g=RG(), run=g.run, f=done?RG_FLOORS:run.floor-1; if(g.day!==today()){ g.day=today(); g.n=0; } const r=rgReward(f,done,g.best||0,!!g.won); giveReward(r); g.n++; g.best=Math.max(g.best||0,f); if(done) g.won=true; g.run=null; mark('prog'); sfx(done?'SSR':'확인');
+  return `<h2 class="disp" style="color:${done?'var(--rose)':'#ff5277'};margin:0">${done?'심연 정복!':'탐사 종료'}</h2><p>${f}층까지 갔어요.${g.n>2?' (오늘 3번째부터는 보상 25%)':''}<br>${rewardText(r)}${r.gems?'':`<br><small class="muted">${esc(T('currency'))}은(는) 최고 기록을 넘긴 층에서만 받아요</small>`}</p><button class="btn" data-act="bdone">계속</button>`; }
 function rgNode(kind){ const g=RG(), run=g.run; if(!run) return;
   if(kind==='battle'||kind==='elite'||kind==='boss'){ rgBattle(kind); return; }
   let msg='';
@@ -2818,6 +2880,35 @@ function challengeHTML(){
       ${nodes}<div class="row" style="margin-top:10px"><button class="btn sm ghost" data-act="rgquit">탐사 끝내기</button></div></section>`; }
   return `${pageHead('도전','CHALLENGE','lobby')}${raid}${rog}`;
 }
+
+
+/* ===== 선물 ===== */
+const GIFTS=[['g_cake','달콤한 케이크','🍰',20],['g_tea','고급 찻잎','🍵',20],['g_flower','꽃다발','💐',25],['g_book','두꺼운 책','📖',25],['g_tool','공구 세트','🔧',25],['g_doll','봉제 인형','🧸',30],['g_perfume','향수','🧴',35],['g_music','음반','💿',30],['g_brooch','보석 브로치','💎',50],['g_letter','손편지','✉️',60]];
+const giftById=id=>GIFTS.find(g=>g[0]===id);
+function GI(){ const p=P(); if(!p.gifts||typeof p.gifts!=='object') p.gifts={}; return p.gifts; }
+function addGifts(n){ const inv=GI(), got=[]; for(let i=0;i<n;i++){ const w=GIFTS.map(g=>g[3]>=50?1:g[3]>=30?3:5), tot=w.reduce((a,b)=>a+b,0); let x=Math.random()*tot, k=0; while((x-=w[k])>0) k++; const id=GIFTS[k][0]; inv[id]=(inv[id]||0)+1; got.push(id); } mark('prog'); return got; }
+function giftLikes(c){ const h=hashN(c.id+'likes'); const a=h%GIFTS.length, b=(Math.floor(h/7)+3)%GIFTS.length; return new Set([GIFTS[a][0],GIFTS[b===a?(b+1)%GIFTS.length:b][0]]); }
+function openGift(cid){
+  const c=charById(cid), inv=GI(), likes=giftLikes(c), seen=(P().giftSeen||{})[cid]||{};
+  const items=GIFTS.filter(g=>inv[g[0]]>0);
+  openModal(`${head(`${esc(c.name)}에게 선물하기`,`<span class="muted">호감도 Lv.${affLv(own(c.id))} · 좋아하는 선물은 효과가 2배예요</span>`)}
+    ${items.length?`<div class="gf-grid">${items.map(g=>`<button class="gf-it" data-act="giftgive" data-id="${esc(cid)}" data-v="${g[0]}"><em>${g[2]}</em><b>${esc(g[1])}</b><span>×${inv[g[0]]} · +${g[3]}${seen[g[0]]===2?' <i class="gf-like">♥ 좋아해요</i>':seen[g[0]]===1?' <i class="gf-meh">무난</i>':''}</span></button>`).join('')}</div>`
+      :`<p class="muted">가진 선물이 없어요. 상점의 '선물 꾸러미', 일일 보급, 파견, 도전 보상에서 얻을 수 있어요.</p><div class="row"><button class="btn sm" data-act="go" data-to="shop">상점 가기</button></div>`}`);
+}
+/* ===== 신규 픽업 만들기 ===== */
+let NEWPU=false;
+function openNewPickup(){
+  openModal(`${head('신규 픽업 만들기',`<span class="muted">새 ${esc(T('crew'))}을(를) 구상하면 픽업 배너로 올라와요. ${esc(T('gacha'))}으로 데려와요.</span>`)}
+    <label class="f" for="pu_c">어떤 ${esc(T('crew'))}인가요? (설정, 성격, 외모, 무기 등 자유롭게)</label><textarea class="in" id="pu_c" style="min-height:110px" placeholder="예: 몰락한 기사단의 마지막 단장. 말수가 적고 단 것을 좋아한다. 은발, 검은 갑옷, 대검."></textarea>
+    <div class="g2"><div><label class="f" for="pu_r">희귀도</label><select class="in" id="pu_r">${opt([['3','SSR'],['2','SR'],['ai','AI가 정하기']],'3')}</select></div><div><label class="f" for="pu_lim">배너</label><select class="in" id="pu_lim">${opt([['pickup','픽업 (상시 풀에도 들어감)'],['limited','한정 (이 배너에서만)']],'pickup')}</select></div></div>
+    <div class="row" style="margin-top:12px"><button class="btn" data-act="newpu-ai" ${SAMPLE?'':'disabled'}>AI로 구상해서 올리기</button><button class="btn ghost" data-act="newpu-hand">직접 설정 입력</button></div>
+    ${SAMPLE?'':'<p class="muted">AI로 구상하려면 설정 → 글 AI를 먼저 등록해 주세요.</p>'}`);
+}
+function addPickupFor(c,lim){
+  if(lim){ c.limited=true; mark('c:'+c.id); }
+  const b={id:'b'+uid(),name:`${c.name} 픽업`,type:'pickup',desc:`신규 ${RL[c.rarity]} ${c.name} 등장!`,pool:{mode:'all',factions:[],ids:[]},pickup:[c.id],rate:lim?70:50,active:true,bg:'',newAt:Date.now()};
+  G.banners.push(b); P().curBanner=b.id; mark('prog'); return b;
+}
 /* ===== 갠톡 (자유 채팅) ===== */
 let PHT='chat', FCBUSY=false;
 function FC(){ const p=P(); if(!p.fchat||typeof p.fchat!=='object') p.fchat={}; return p.fchat; }
@@ -2827,24 +2918,18 @@ function phTabs(){ return `<div class="ph-tabs"><button class="${PHT==='chat'?'o
 function friendsHTML(){ const list=G.chars.filter(c=>own(c.id));
   if(!list.length) return `<p class="muted" style="text-align:center;padding:40px 16px">아직 ${esc(T('crew'))}이(가) 없어요.</p>`;
   return `${SAMPLE?'':`<p class="muted" style="margin:10px 14px;font-size:.82rem">자유 채팅은 글 AI가 있어야 해요. 설정 → 글 AI에서 등록해 주세요.</p>`}${list.map(c=>{ const o=own(c.id); return `<button class="ph-row" data-act="openfc" data-id="${esc(c.id)}"><div class="av">${art(c)}</div><div class="t"><b>${esc(c.name)}</b><span>${esc(c.faction||'')} · 호감도 Lv.${affLv(o)}</span></div><span class="fc-go">대화</span></button>`; }).join('')}`; }
-function openFree(cid){
-  const c=charById(cid); if(!c) return; const f=fcOf(cid); const token={}; PH={fc:cid,token};
-  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phback" aria-label="뒤로">‹</button><b>${esc(c.name)}</b><button data-act="fcmenu" data-id="${esc(c.id)}" aria-label="메뉴">⋯</button></div>
-    <div class="ph-chat" id="phChat">${f.log.length?f.log.map(l=>bubbleHTML(l,c)).join(''):`<div class="sys">${esc(c.name)}와(과)의 1:1 대화예요. 무엇이든 말을 걸어 보세요.</div>`}</div>
-    <div class="ph-in fc"><textarea id="fcIn" rows="1" maxlength="400" placeholder="${SAMPLE?'메시지 보내기':'글 AI를 먼저 등록해 주세요'}" ${SAMPLE?'':'disabled'}></textarea><button class="btn sm" data-act="fcsend" ${SAMPLE?'':'disabled'}>전송</button></div></div>`;
-  phScroll(); f.unread=0; mark('prog'); setTimeout(()=>{ const i=$('#fcIn'); if(i&&!IS_NATIVE) i.focus(); },50);
-}
+function openFree(cid){ openRoom(cid); }
 function fcProgress(){ const st=(typeof mainStages==='function'?mainStages():[]).filter(s=>P().cleared[s.id]); return st.length?st.map(s=>s.code+' '+s.title).join(', '):'아직 이야기를 시작하지 않았다'; }
 async function fcSend(){
   if(FCBUSY||!PH||!PH.fc) return; const cid=PH.fc, c=charById(cid), inp=$('#fcIn'); if(!c||!inp) return; const text=inp.value.trim(); if(!text) return;
   if(!SAMPLE){ toast('설정의 글 AI에서 AI를 먼저 등록해 주세요'); return; }
   const f=fcOf(cid), token=PH.token, alive=()=>PH&&PH.token===token&&$('#phChat'); inp.value=''; inp.style.height='';
-  const me={w:'me',t:text,at:Date.now()}; f.log.push(me); f.at=me.at; if(alive()){ const ch=$('#phChat'); if(ch.querySelector('.sys')&&f.log.length===1) ch.innerHTML=''; ch.insertAdjacentHTML('beforeend',bubbleHTML(me,c)); phScroll(); } mark('prog');
+  const me={w:'me',t:text,at:Date.now()}; f.log.push(me); f.at=me.at; if(alive()){ const ch=$('#phChat'); if(ch.children.length===1&&ch.querySelector('.sys')&&roomLog(cid).length===1) ch.innerHTML=''; ch.insertAdjacentHTML('beforeend',bubbleHTML(me,c)); phScroll(); } mark('prog');
   FCBUSY=true; const ty=document.createElement('div'); ty.className='msg'; ty.innerHTML=`<div class="av sm">${art(c)}</div><div class="bub typing"><i></i><i></i><i></i></div>`; if(alive()){ $('#phChat').appendChild(ty); phScroll(); }
   try{
     const o=own(c.id), lv=affLv(o), files=(c.files||[]).filter(x=>o&&o.dup>=(x.dup||0)).map(x=>x.text).filter(Boolean);
     const pool=typeof affLinePool==='function'?affLinePool(c).slice(0,8):(c.lines||[]).slice(0,6);
-    const recent=f.log.slice(-24).map(l=>l.w==='me'?`${playerName()}: ${l.t}`:l.w==='c'?`${c.name}: ${l.t}`:`(${l.t})`).join('\n');
+    const recent=roomLog(cid).slice(-24).map(l=>l.w==='me'?`${playerName()}: ${l.t}`:l.w==='c'?`${c.name}: ${l.t}`:l.w==='p'?`(${c.name}이(가) 사진을 보냄)`:`(${l.t})`).join('\n');
     const r=await aiJSON(`${RULES}
 ${ctx()}
 
@@ -2888,7 +2973,7 @@ async function phPlay(t,c,s,token){
     if(!alive()) return;
     const L=lines[s.pos];
     if(L.cond&&L.cond!==s.pick){s.pos++;continue;}
-    if(L.type==='choice'){ $('#phIn').innerHTML=L.opts.map((o,i)=>`<button class="btn ghost block" data-act="phpick" data-n="${i+1}">${esc(sub(o))}</button>`).join(''); phScroll(); return; }
+    if(L.type==='choice'){ $('#phIn').innerHTML=L.opts.map((o,i)=>`<button class="btn ghost block" data-act="phpick" data-n="${i+1}">${esc(sub(o))}</button>`).join('')+`<button class="linkb ph-sw2" data-act="phmode" data-v="free">⌨ 직접 입력으로 전환</button>`; phMode('pick'); return; }
     let entry=null;
     if(L.type==='say'){
       if(isMe(L.who)){ await wait(400); entry={w:'me',t:sub(L.text)}; }
@@ -2902,12 +2987,12 @@ async function phPlay(t,c,s,token){
     else if(L.type==='nar'||L.type==='place'){ entry={w:'s',t:sub(L.text)}; }
     if(!alive()) return;
     s.pos++;
-    if(entry){ s.log.push(entry); s.at=Date.now(); $('#phChat').insertAdjacentHTML('beforeend',bubbleHTML(entry,c)); phScroll(); mark('prog'); }
+    if(entry){ entry.at=Date.now(); s.log.push(entry); s.at=entry.at; $('#phChat').insertAdjacentHTML('beforeend',bubbleHTML(entry,c)); phScroll(); mark('prog'); }
   }
   if(!s.done){
-    s.done=true; const end={w:'s',t:'대화가 끝났어요'}; s.log.push(end);
-    if(alive()){ $('#phChat').insertAdjacentHTML('beforeend',bubbleHTML(end,c)); $('#phIn').innerHTML='<span class="muted" style="text-align:center">대화가 끝났어요</span>'; phScroll(); }
+    s.done=true; s.at=Date.now();
     mark('prog'); if(own(c.id)) addAff(c,10); updateBadge(); checkTriggers();
+    if(alive()){ $('#phIn').innerHTML=''; const nx=roomThreads(c.id).find(x=>!x.s.done&&x.t); if(nx){ PH.tid=nx.t.id; nx.s.t0=nx.s.t0||Date.now(); phMode('free'); phPlay(nx.t,c,nx.s,token); } else { PH.tid=null; phMode('free'); } }
   }
 }
 
@@ -3020,7 +3105,7 @@ function contractHTML(){
   const BIG={std:'STAN<br>DARD',pickup:'PICK<span>✦</span>UP',pool:'SQUAD<br>UP',event:'EVENT<br>LIMITED'};
   const KR={std:'상시 모집',pickup:'신규 '+T('crew')+' 등장!',pool:'소속 모집',event:'기간 한정!'};
   const rows=[3,2,1].map(r=>{const n=pool.filter(c=>c.rarity===r).length;return `<tr><td><span class="badge r${r}c">${RL[r]}</span> ${n}명</td><td style="text-align:right">${rOf(r)}%</td></tr>`;}).join('');
-  return `<div class="bsel" style="margin-top:6px">${bs.map(x=>`<button class="${x.id===b.id?'on':''}" data-act="bsel" data-id="${x.id}">${esc(x.name)}</button>`).join('')}<button data-act="bnew">＋</button></div>
+  return `<div class="bsel" style="margin-top:6px">${bs.map(x=>`<button class="${x.id===b.id?'on':''}" data-act="bsel" data-id="${x.id}">${esc(x.name)}</button>`).join('')}<button data-act="newpu" title="신규 픽업 만들기">✦ 신규</button><button data-act="bnew" title="배너 직접 만들기">＋</button></div>
   <section class="pk-hero ${esc(b.type||'')}">
     <div class="pk-bg" style="${b.bg?bgStyle(b.bg):bgStyle(P().gachaBg||'낙성 분화구')}"></div>
     ${hero&&(hill||imgSrc(hero))?`<div class="pk-ghost">${hill?`<img src="${esc(hill)}" alt="">`:art(hero)}</div>`:''}
@@ -3049,7 +3134,7 @@ function contractHTML(){
 }
 function crewHTML(){
   const busy=busyIds(), list=[...G.chars].sort((a,b)=>(own(b.id)?1:0)-(own(a.id)?1:0)||b.rarity-a.rarity||(a.ord||0)-(b.ord||0));
-  return `${pageHead(T('crew'),'UNITS')}<div class="chap"><span class="muted">${G.chars.filter(c=>own(c.id)).length} / ${G.chars.length}</span><div class="row"><button class="btn sm ghost" data-act="charnew">직접 추가</button><button class="btn sm" data-act="aichar-open">AI로 만들기</button></div></div>
+  return `${pageHead(T('crew'),'UNITS')}<div class="chap"><span class="muted">${G.chars.filter(c=>own(c.id)).length} / ${G.chars.length}</span><div class="row"><button class="btn sm" data-act="newpu">✦ 신규 픽업 만들기</button></div></div>
   <div class="grid">${list.map(c=>{const o=own(c.id);return `<button class="cc r${c.rarity} ${o?'':'off'}" data-act="char" data-id="${c.id}">${art(c)}<span class="el" style="--ec:${ECOL[c.elem]}">${esc(c.elem)}</span>${o&&o.dup?`<span class="dup">${'★'.repeat(o.dup)}</span>`:''}${busy.has(c.id)?'<span class="busy">파견 중</span>':''}<span class="lbl"><i>${RL[c.rarity]} · ${ROLE_EN[c.role]}</i><b>${esc(c.name)}</b>${o?`Lv.${o.lv}`:'미보유'}</span></button>`;}).join('')}</div>`;
 }
 function eventsHTML(){
@@ -3394,7 +3479,8 @@ function studioHTML(){
   <div class="panel"><h3>라이브 운영</h3><p class="muted" style="margin:0 0 10px">앱을 켤 때 날짜를 보고 새 콘텐츠를 자동으로 만들어요. 켠 항목만큼 글 AI 요금이 들어요.</p>
     <div class="chips">${[['talk','매일 새 '+T('talk')],['event','매주 새 이벤트'],['rerun','이벤트 복각'],['rotate','2주마다 확률 업 교체'],['pass','매달 '+T('pass')+' 초기화'],['chapter','매달 메인 다음 장']].map(([k,l])=>`<button class="chip ${P().live.on[k]?'on':''}" data-act="livetog" data-k="${k}">${esc(l)}</button>`).join('')}</div>
     <div class="row" style="margin-top:10px"><button class="btn sm" data-act="liverun">지금 업데이트 실행</button><button class="btn sm ghost" data-act="go" data-to="notice">공지 보기</button></div></div>
-  <div class="panel"><h3>${esc(T('player'))}</h3><label class="f" for="pname">이름 (대사 속 {관리관} 자리에 들어가요)</label><input class="in" id="pname" data-pset="player" value="${esc(P().player)}" placeholder="${esc(T('player'))}" maxlength="12"></div>
+  <div class="panel"><h3>${esc(T('player'))}</h3><label class="f" for="pname">이름 (대사 속 {관리관} 자리에 들어가요)</label><input class="in" id="pname" data-pset="player" value="${esc(P().player)}" placeholder="${esc(T('player'))}" maxlength="12">
+    <label class="f">성별 (AI가 쓰는 대사·호칭에 반영돼요)</label><select class="in" data-pset="gender">${opt([['','정하지 않음'],['m','남성'],['f','여성']],P().gender||'')}</select></div>
   <div class="panel"><h3>연출</h3>
     <div class="g2"><div><label class="f">타이틀 ${T('crew')}</label><select class="in" data-pset="titleChar"><option value="">자동</option>${G.chars.map(c=>`<option value="${c.id}" ${P().titleChar===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
     <div><label class="f">타이틀 배경</label><select class="in" data-pset="titleBg">${bgOptions(P().titleBg)}</select></div></div>
@@ -3410,7 +3496,7 @@ function studioHTML(){
   <div class="panel"><h3>글 AI</h3>${aiProfilesHTML()}
     <div class="row" style="margin-top:10px"><button class="btn sm" data-act="apnew">AI 추가</button><button class="btn sm ghost" data-act="apfb">실패하면 다음 AI로 ${AIP().fallback?'켜짐':'꺼짐'}</button></div></div>
   <div class="panel"><h3>그림 AI</h3><p class="muted" style="margin:0 0 8px">${imgProvider()==='comfy'?'ComfyUI '+(imgReady()?'연결 설정됨':'설정 미완료'):'NovelAI '+(naiCfg().key?'토큰 등록됨':'미등록')}</p><div class="row"><button class="btn sm ghost" data-act="naiopen">그림 AI 설정</button><button class="btn sm" data-act="prepopen">그림 준비실 (${drawTodo().length})</button><button class="btn sm ghost" data-act="setupopen">처음 설정 다시</button></div></div>
-  <div class="panel"><h3>AI 창작실</h3><div class="row"><button class="btn sm" data-act="aichar-open">새 ${T('crew')}</button><button class="btn sm" data-act="aichapter-open">다음 장</button><button class="btn sm" data-act="aievent-open">새 이벤트</button></div></div>
+  <div class="panel"><h3>AI 창작실</h3><div class="row"><button class="btn sm" data-act="newpu">신규 픽업</button><button class="btn sm" data-act="aichapter-open">다음 장</button><button class="btn sm" data-act="aievent-open">새 이벤트</button></div></div>
   <div class="panel"><h3>${T('gacha')} 규칙</h3>
     <div class="slider"><label for="r_ssr"><span>SSR 확률</span><b id="v_ssr">${s.ssr}%</b></label><input id="r_ssr" type="range" min="1" max="60" value="${s.ssr}" data-set="ssr"></div>
     <div class="slider"><label for="r_sr"><span>SR 확률</span><b id="v_sr">${s.sr}%</b></label><input id="r_sr" type="range" min="0" max="80" value="${s.sr}" data-set="sr"></div>
@@ -3418,6 +3504,8 @@ function studioHTML(){
   <div class="panel"><h3>재화</h3><p class="muted" style="margin:0 0 10px">${T('currency')}와 재료는 로비의 상점과 캐시 상점에서 받을 수 있어요.</p><div class="row"><button class="btn sm" data-act="go" data-to="cash">캐시 상점</button><button class="btn sm ghost" data-act="go" data-to="shop">상점</button></div></div>
   <div class="panel"><h3>공유와 피드백</h3><p class="muted" style="margin:0 0 10px">친구에게 게임을 보내고 의견을 받아요. 공유 팩에는 API 키, 업데이트 토큰, 진행 상황, 음성이 들어가지 않아요.</p>
     <div class="row"><button class="btn sm" data-act="shareopen">공유 팩 만들기</button><button class="btn sm ghost" data-act="fbopen">피드백 보내기</button><button class="btn sm ghost" data-act="guidecopy">친구용 안내문</button></div></div>
+  <div class="panel"><h3>PC 서버</h3><p class="muted" style="margin:0 0 10px">${PCS()?`연결됨 · ${esc(PCS().base.replace(/^https?:\/\//,''))}${PCS().last?' · 마지막 저장 '+esc(new Date(PCS().last).toLocaleString()):''}`:'내 컴퓨터를 켜 두고 QR로 휴대폰에서 접속해요. 게임이 PC에 저장되고, PC의 ComfyUI·Ollama도 휴대폰에서 써요.'}</p>
+    <div class="row">${PCS()?'<button class="btn sm" data-act="pcpush">PC에 저장</button><button class="btn sm ghost" data-act="pcpull">PC에서 받기</button>':''}<button class="btn sm ${PCS()?'ghost':''}" data-act="pcopen">${PCS()?'설정':'PC 서버 연결'}</button></div></div>
   <div class="panel"><h3>PC·폰 연동</h3><p class="muted" style="margin:0 0 10px">${syReady()?`저장소 <b>${esc(SY().repo)}</b> · 이 기기: ${esc(syDevice())}${SY().last?' · 마지막 '+(SY().lastDir==='down'?'받기':'올리기')+' '+esc(new Date(SY().last).toLocaleString()):''}`:'내 GitHub 비공개 저장소를 거쳐 폰과 PC(웹 버전)가 같은 게임을 이어서 할 수 있어요.'}</p>
     <div class="row">${syReady()?'<button class="btn sm" data-act="sypush">올리기</button><button class="btn sm ghost" data-act="sypull">받기</button>':''}<button class="btn sm ${syReady()?'ghost':''}" data-act="syopen">${syReady()?'설정':'연동 설정'}</button></div></div>
   <div class="panel"><h3>데이터</h3>
@@ -3443,7 +3531,9 @@ const SHOP_ITEMS=()=>[
   {id:'wmat',name:T('wMat')+' ×10',give:{wmat:10},cost:{gold:6000},limit:5},
   {id:'core',name:T('core')+' ×5',give:{core:5},cost:{gold:15000},limit:3},
   {id:'gem',name:T('currency')+' ×60',give:{gems:60},cost:{gold:20000},limit:2,tag:'HOT'},
-  {id:'exp2',name:T('expMat')+' ×5',give:{exp:5},cost:{gold:800},limit:30}];
+  {id:'exp2',name:T('expMat')+' ×5',give:{exp:5},cost:{gold:800},limit:30},
+  {id:'gift1',name:'선물 꾸러미 (무작위 1개)',give:{gift:1},cost:{gold:3000},limit:5,tag:'NEW'},
+  {id:'gift5',name:'선물 꾸러미 ×5',give:{gift:5},cost:{gold:13000},limit:1}];
 const SHOP_SWAP=()=>[
   {id:'x1',give:{wmat:10},cost:{exp:30}},{id:'x2',give:{exp:20},cost:{wmat:10}},
   {id:'x3',give:{gold:3000},cost:{core:1}},{id:'x4',give:{gold:1500},cost:{exp:10}},{id:'x5',give:{core:1},cost:{wmat:25}}];
@@ -3572,9 +3662,11 @@ function renderSetup(){
        <label class="f" for="ng_kw">장르와 키워드</label><textarea class="in" id="ng_kw" placeholder="예: 몰락한 왕국을 되찾는 용병단. 엘프 궁수, 드워프 기술자, 마녀. 마법석으로 소환 계약을 맺는다.">${esc(SW.kw||'')}</textarea>
        <label class="f" for="ng_tone">분위기 (선택)</label><input class="in" id="ng_tone" value="${esc(SW.tone||'')}" placeholder="예: 진지하지만 동료들끼리는 유쾌하게">
        <div class="g2"><div><label class="f" for="ng_theme">화면 테마</label><select class="in" id="ng_theme">${opt([['auto','AI가 고르기'],['tactical','택티컬'],['fantasy','판타지'],['neon','네온 사이버'],['pastel','파스텔'],['noir','모노 누아르']],'auto')}</select></div><div><label class="f" for="ng_n">캐릭터 수</label><select class="in" id="ng_n">${opt([[6,'6명'],[8,'8명'],[10,'10명']],8)}</select></div></div>
-<label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ng_fan" onchange="document.getElementById('ng_srcw').hidden=!this.checked"><span><b>2차 창작</b> <span class="muted" style="font-size:.8rem">(원작 세계관·캐릭터로 만들기)</span></span></label>
+<label class="f" for="ng_gender">주인공(${esc(T('player'))}) 성별</label><select class="in" id="ng_gender">${opt([['','정하지 않음'],['m','남성'],['f','여성']],P().gender||'')}</select>
+       <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ng_fan" onchange="document.getElementById('ng_srcw').hidden=!this.checked"><span><b>2차 창작</b> <span class="muted" style="font-size:.8rem">(원작 세계관·캐릭터로 만들기)</span></span></label>
        <div id="ng_srcw" hidden><label class="f" for="ng_src">원작 이름</label><input class="in" id="ng_src" placeholder="예: 작품 이름"><p class="muted" style="margin:4px 0 0;font-size:.78rem">원작 설정을 최대한 따르되, 원작에서 미성년자·학생인 캐릭터는 넣지 않고 성인 캐릭터만 써요. 개인 감상용으로만 써 주세요.</p></div>
-   <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ng_fan" onchange="document.getElementById('ng_srcw').hidden=!this.checked"><span><b>2차 창작</b> <span class="muted" style="font-size:.8rem">(원작 세계관·캐릭터로 만들기)</span></span></label>
+   <label class="f" for="ng_gender">주인공(${esc(T('player'))}) 성별</label><select class="in" id="ng_gender">${opt([['','정하지 않음'],['m','남성'],['f','여성']],P().gender||'')}</select>
+       <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ng_fan" onchange="document.getElementById('ng_srcw').hidden=!this.checked"><span><b>2차 창작</b> <span class="muted" style="font-size:.8rem">(원작 세계관·캐릭터로 만들기)</span></span></label>
        <div id="ng_srcw" hidden><label class="f" for="ng_src">원작 이름</label><input class="in" id="ng_src" placeholder="예: 작품 이름"><p class="muted" style="margin:4px 0 0;font-size:.78rem">원작 설정을 최대한 따르되, 원작에서 미성년자·학생인 캐릭터는 넣지 않고 성인 캐릭터만 써요. 개인 감상용으로만 써 주세요.</p></div>
     <label class="f" for="ng_style">이 게임 그림체 태그 (선택, 비우면 앞에서 적은 그림체)</label><input class="in" id="ng_style" placeholder="예: dark fantasy, muted colors">
        <p class="muted" id="ng_stat" style="margin:8px 0 0"></p>
@@ -3686,6 +3778,10 @@ function openChar(id){
     <h3 class="sec">스탠딩 (전투·편성·${T('crew')} 화면)</h3>
     <p class="muted" style="margin:0 0 6px">배경 없는 전신 그림이에요. ${T('crew')} 목록과 ${T('talk')}에서는 위쪽(상반신, 얼굴)만 잘라서 보여 줘요.</p>
     <div class="row"><button class="btn sm" data-act="naigen" data-k="char" data-id="${c.id}">NAI로 스탠딩</button><button class="btn sm ghost" data-act="upload" data-k="char" data-id="${c.id}">이미지 올리기</button>${imgSrc(c)?`<button class="btn sm ghost" data-act="cutopen" data-k="char" data-id="${c.id}">배경 지우기</button>`:''}</div>
+    <h3 class="sec">상반신 (스토리·프로필)</h3>
+    <p class="muted" style="margin:0 0 6px">배경 없는 상반신 그림이에요. 있으면 스토리와 ${T('crew')} 프로필에서 전신을 잘라 쓰는 대신 이 그림을 써요. 표정 그림이 있는 장면에서는 표정이 먼저예요.</p>
+    <div class="ill-box up-box">${c.upper&&imgSrc(c.upper)?`<img src="${esc(imgSrc(c.upper))}" alt="">`:'<span>아직 없어요 · 없으면 전신 위쪽을 잘라서 보여 줘요</span>'}</div>
+    <div class="row" style="margin-top:8px"><button class="btn sm" data-act="upgen" data-id="${c.id}">NAI로 상반신</button><button class="btn sm ghost" data-act="upload" data-k="upper" data-id="${c.id}">올리기</button>${c.upper&&imgSrc(c.upper)?`<button class="btn sm ghost" data-act="updel" data-id="${c.id}">지우기</button>`:''}</div>
     <h3 class="sec">일러스트 (로비·타이틀·픽업)</h3>
     <p class="muted" style="margin:0 0 6px">배경까지 그려진 세로 한 장 그림이에요. 있으면 로비, 타이틀, ${T('gacha')} 픽업 화면에 크게 쓰여요.</p>
     <div class="ill-box">${ill?`<img src="${esc(ill)}" alt="">`:'<span>아직 없어요</span>'}</div>
@@ -3703,7 +3799,7 @@ function openChar(id){
     <div class="facegrid">${c.faces.map(f=>`<button class="fc" data-act="faceview" data-id="${c.id}" data-f="${f.id}">${imgSrc(f)?`<img src="${esc(imgSrc(f))}" alt="">`:''}<span>${esc(f.name)}</span></button>`).join('')}</div>
     <div class="row" style="margin:8px 0"><button class="btn sm ghost" data-act="faces-open" data-id="${c.id}">표정 만들기</button><button class="btn sm ghost" data-act="skin-open" data-id="${c.id}">${T('skin')} 만들기</button></div>`;
   const info=`
-    ${o?`<div class="row" style="margin-top:4px">${P().sec!==c.id?`<button class="btn sm" data-act="setsec" data-id="${c.id}">로비에 세우기</button>`:''}<button class="btn sm ghost" data-act="gift" data-id="${c.id}">선물 ◆300</button></div>`:''}
+    ${o?`<div class="row" style="margin-top:4px">${P().sec!==c.id?`<button class="btn sm" data-act="setsec" data-id="${c.id}">로비에 세우기</button>`:''}<button class="btn sm ghost" data-act="gift" data-id="${c.id}">🎁 선물하기</button></div>`:''}
     <p style="margin:12px 2px 4px">${esc(c.profile)}</p>
     ${(c.files||[]).length?`<h3 class="sec">${T('files')}</h3>${c.files.map(f=>o&&o.dup>=f.dup?`<div class="file"><i>FILE ${f.dup}</i>${esc(f.text)}</div>`:`<div class="file lock"><i>FILE ${f.dup}</i>${T('limit')} ${f.dup}단계에서 공개</div>`).join('')}`:''}
     <h3 class="sec">목소리</h3>
@@ -3713,7 +3809,7 @@ function openChar(id){
   openModal(`<div class="cs" style="--ec:${ECOL[c.elem]||'var(--rose)'}">
     <div class="cs-hero">
       <div class="cs-bg" style="${bgStyle(P().lobbyBg||'새벽등대 사무소')}"></div><div class="cs-stripe"></div>
-      <div class="cs-art ${P().csFull?'':'up'}" data-act="cspoke" data-id="${c.id}">${art(c)}</div><div class="cs-say" id="csSay" hidden></div>${imgSrc(c)?`<button class="cs-frame" data-act="csframe">${P().csFull?'상반신':'전신'}</button>`:''}
+      <div class="cs-art ${P().csFull?'':'up'}" data-act="cspoke" data-id="${c.id}">${art(c,'',{upper:!P().csFull})}</div><div class="cs-say" id="csSay" hidden></div>${imgSrc(c)?`<button class="cs-frame" data-act="csframe">${P().csFull?'상반신':'전신'}</button>`:''}
       <div class="cs-top"><button class="cs-back" data-act="close" aria-label="닫기">‹ <b>${esc(T('crew'))}</b></button><span class="cs-cap">${esc(T('crew')).toUpperCase()} INFORMATION</span></div>
       ${list.length>1?`<button class="cs-nav l" data-act="char" data-id="${prev.id}" aria-label="이전">‹</button><button class="cs-nav r" data-act="char" data-id="${next.id}" aria-label="다음">›</button>`:''}
       <div class="cs-panel">
@@ -4058,6 +4154,7 @@ async function newGame(t){
   const tone=$('#ng_tone').value.trim(), th=$('#ng_theme').value, n=+$('#ng_n').value, stat=m=>{const e=$('#ng_stat');if(e)e.textContent=m;};
   const ngSty=$('#ng_style')?$('#ng_style').value.trim():'';
   const src=($('#ng_fan')&&$('#ng_fan').checked&&$('#ng_src'))?$('#ng_src').value.trim():'';
+  const gen=$('#ng_gender')?$('#ng_gender').value:'';
   const FAN=src?`\n2차 창작: 원작 「${src}」을(를) 바탕으로 한다. 세계관·세력·용어·인물을 원작 설정에 최대한 충실하게 쓰고, 원작 캐릭터는 원작 이름 그대로 쓴다. 원작에서 미성년자이거나 학생인 캐릭터는 등장시키지 않고 성인 캐릭터만 고른다(모자라면 원작 세계에 있을 법한 오리지널 성인 캐릭터로 채운다). 학교 배경은 쓰지 않는다.`:'';
   const DK=JSON.stringify({kw,tone,th,n,ngSty,src}); let DR=null; try{ DR=JSON.parse(localStorage.getItem('ggm-ng-draft')||'null'); }catch(e){} if(!DR||DR.key!==DK) DR={key:DK,r:{}};
   const saveDR=()=>{ try{ localStorage.setItem('ggm-ng-draft',JSON.stringify(DR)); }catch(e){} };
@@ -4072,10 +4169,10 @@ async function newGame(t){
   ng.meta.terms=Object.assign(clone(DEFAULT_META.terms),a.terms||{}); if(Array.isArray(a.elems)&&a.elems.length===3) ng.meta.elems=a.elems.map((e,i)=>({n:String(e.n||DEFAULT_META.elems[i].n).slice(0,4),c:/^#[0-9a-f]{6}$/i.test(e.c||'')?e.c:DEFAULT_META.elems[i].c}));
   ng.meta.roles=Object.assign(clone(DEFAULT_META.roles),a.roles||{}); if(Array.isArray(a.farms)&&a.farms.length===4) ng.meta.farms=a.farms.map((f,i)=>({key:DEFAULT_META.farms[i].key,name:String(f.name||DEFAULT_META.farms[i].name)}));
   ng.world=Object.assign(clone(DEFAULT_WORLD),a.world||{}); if(!Array.isArray(ng.world.factions)) ng.world.factions=[];
-  const rw=[{gold:3000,exp:5},{gold:5000,wmat:4},{exp:20,core:2},{gems:150,wmat:10},{gold:20000,exp:30,core:4},{gold:1500}];
+  const rw=[{gold:3000,exp:5},{gold:5000,wmat:4},{exp:20,core:2},{gold:15000,wmat:10},{gold:20000,exp:30,core:4},{gold:1500}];
   ng.dispatches=(Array.isArray(a.dispatches)?a.dispatches:[]).slice(0,6).map((d,i)=>({id:'d'+(i+1),name:String(d.name||'파견'),desc:String(d.desc||''),hours:num(d.hours,0.5,24,2),need:num(parseInt(d.need,10),1,4,2),reward:rw[i%rw.length]}));
   if(!ng.dispatches.length) ng.dispatches=clone(DEFAULT_DISP);
-  const oldG=G; G=ng; applyMeta();
+  const oldG=G; G=ng; applyMeta(); G.prog.gender=gen;
   const b=await ngStep('b',`2/4 ${T('crew')} ${n}명을 만드는 중…`,()=>aiJSON(`${RULES}${FAN}\n세계관: ${ng.world.summary}\n${ng.world.lore}\n플롯: ${ng.world.plot}\n세력: ${ng.world.factions.map(f=>f.name+'('+f.desc+')').join(', ')}\n\n이 게임의 ${T('crew')} ${n}명을 만들어라. SSR 2~3명, SR 3명, 나머지 R. 세력을 고르게 나누고, 역할(atk/def/sup)과 속성도 고르게. 각자 플롯과 연결된 비밀을 files에 넣는다. 이름은 세계관에 어울리게.\nJSON만 출력: {"chars":[${charSchema()}, ...]} ${NAI_CHAR}${src?' 원작 캐릭터라면 naiPrompt 앞부분에 Danbooru 캐릭터 태그와 작품 태그(예: 이름 (작품명), 작품명)를 넣는다.':''}`,null,'complex'),r=>r&&Array.isArray(r.chars)&&r.chars.length);
   if(!b){G=oldG;applyMeta();t.disabled=false;stat('캐릭터 생성에 실패했어요. 같은 내용으로 다시 누르면 1단계는 건너뛰고 이어서 만들어요.');return;}
   ng.chars=[]; b.chars.slice(0,12).forEach(x=>{const c=cleanChar(x); if(!c.name)return; c.ord=ng.chars.length; ng.chars.push(c);});
@@ -4101,7 +4198,7 @@ async function newGame(t){
   if(pu) ng.banners.push({id:'b_pu',name:String((bn.pickup&&bn.pickup.name)||pu.name+' 확률 업'),type:'pickup',desc:`SSR ${pu.name} 확률 상승`,pool:{mode:'all',factions:[],ids:[]},pickup:[pu.id],rate:50,active:true,bg:''});
   if(fac) ng.banners.push({id:'b_fac',name:String((bn.faction&&bn.faction.name)||fac+' 모집'),type:'pool',desc:`${fac} 소속만 등장`,pool:{mode:'faction',factions:[fac],ids:[]},pickup:[],rate:50,active:true,bg:''});
   ng.threads=(Array.isArray(c3.threads)?c3.threads:[]).map(x=>{const c=ng.chars.find(q=>q.name===String(x.char||'').trim());if(!c||!x.script)return null;const st=ng.chapters[0].stages[Math.min(ng.chapters[0].stages.length,Math.max(1,+x.afterStage||1))-1];return {id:uid(),charId:c.id,title:String(x.title||'메시지'),trigger:x.trigger==='start'?{type:'start'}:{type:'clear',value:st.id},needOwn:x.trigger==='start',script:nl(x.script)};}).filter(Boolean);
-  ng.events=[]; ng.prog=clone(DEFAULT_PROG);
+  ng.events=[]; ng.prog=clone(DEFAULT_PROG); ng.prog.gender=gen;
   const bgs=ng.lib.filter(l=>l.kind==='bg').map(l=>l.name);
   ng.prog.lobbyBg=bgs[0]||''; ng.prog.titleBg=bgs[bgs.length-1]||'';
   const snd=SND(); snd.scene={title:pickM(/타이틀|title/i,0),lobby:pickM(/로비|lobby/i,1),battle:pickM(/전투|battle/i,4),boss:pickM(/보스|boss/i,5),gacha:pickM(/뽑기|소환|계약|gacha|summon/i,6)};
@@ -4158,8 +4255,15 @@ function openNewGame(){
 }
 let FACESEL=new Set();
 function openFaces(id){
-  const c=charById(id); if(!imgSrc(c)){toast('먼저 기본 스탠딩이 있어야 해요');return;}
-  openModal(`${head(`${esc(c.name)} 표정 만들기`)}
+  const c=charById(id); if(!c) return; const names=[...new Set([...FACE_PRESETS.map(p=>p[0]),...c.faces.map(f=>f.name)])];
+  openModal(`${head(`${esc(c.name)} 표정`)}
+    <h4 class="sec" style="margin-top:0">직접 넣기</h4>
+    <p class="muted" style="margin:0 0 8px">갖고 있는 표정 그림을 넣어요. 스토리 대본의 "이름[표정]: 대사"와 터치 반응에 쓰여요. 스탠딩과 같은 크기·구도면 가장 자연스러워요.</p>
+    <div class="fc-grid">${names.map(nm=>{ const f=c.faces.find(x=>x.name===nm), s=f&&imgSrc(f); return `<div class="fc-it">${s?`<img src="${esc(s)}" alt="">`:'<span class="fc-empty">없음</span>'}<b>${esc(nm)}</b><div class="row"><button class="btn sm ghost" data-act="faceup" data-id="${esc(id)}" data-v="${esc(nm)}">${s?'바꾸기':'넣기'}</button>${f?`<button class="btn sm ghost" data-act="facedel" data-id="${esc(id)}" data-v="${esc(nm)}">✕</button>`:''}</div></div>`; }).join('')}</div>
+    <div class="row" style="margin-top:8px"><input class="in" id="fc_new" placeholder="새 표정 이름 (예: 삐짐)" style="flex:1"><button class="btn sm" data-act="faceupnew" data-id="${esc(id)}">이 이름으로 넣기</button></div>
+    <div class="row" style="margin-top:6px"><button class="btn sm ghost" data-act="faceupmany" data-id="${esc(id)}">여러 장 한꺼번에 넣기</button><span class="muted" style="font-size:.78rem">파일 이름이 표정 이름이 돼요 (예: 웃음.png)</span></div>
+    <h4 class="sec">NovelAI로 만들기</h4>
+    ${imgSrc(c)?'':'<p class="muted">NAI로 만들려면 먼저 기본 스탠딩이 있어야 해요.</p>'}
     <p class="muted">기본 스탠딩을 바탕으로 NAI 감정 변환을 써서 얼굴 표정만 바꾼 이미지를 만들어요. 표정 하나당 생성 1회예요.</p>
     <div class="chips">${FACE_PRESETS.map(([ko,en])=>`<button class="chip ${FACESEL.has(ko)?'on':''} ${c.faces.some(f=>f.name===ko&&f.img)?'has':''}" data-act="facesel" data-v="${ko}" data-id="${id}">${ko}${c.faces.some(f=>f.name===ko&&f.img)?' ✓':''}</button>`).join('')}</div>
     <label class="f" for="fc_m">만드는 방법</label><select class="in" id="fc_m">${opt([['emo','표정 변환 (원본 그대로 얼굴만, 추천)'],['ref','캐릭터 레퍼런스로 새로 그리기 (V4.5, 몸짓도 바뀜)']],'emo')}</select>
@@ -4187,7 +4291,7 @@ function openDispSel(did){
   DSEL=DSEL&&DSEL.id===did?DSEL:{id:did,ids:[]};
   openModal(`${head(esc(d.name),`<span class="muted">${d.hours}시간 · ${d.need}명 필요 · ${rewardText(d.reward)}</span>`)}
     <div class="chips" style="margin-top:10px">${owned.map(c=>`<button class="chip ${DSEL.ids.includes(c.id)?'on':''}" data-act="dsel" data-id="${c.id}">${esc(c.name)} Lv.${own(c.id).lv}</button>`).join('')||'<span class="muted">보낼 수 있는 '+T('crew')+'이(가) 없어요</span>'}</div>
-    <div class="row" style="margin-top:14px"><button class="btn" data-act="dispgo" ${DSEL.ids.length>=d.need?'':'disabled'}>${DSEL.ids.length}/${d.need} 보내기</button></div>`);
+    <div class="row" style="margin-top:14px"><button class="btn" data-act="dispgo" ${DSEL.ids.length===d.need?'':'disabled'}>${DSEL.ids.length}/${d.need} 보내기</button></div>`);
 }
 let DSEL=null;
 function openAiEvent(){
@@ -4237,7 +4341,7 @@ async function liveTick(force){
       const close=()=>act.forEach(e=>{e.active=false;const b=G.banners.find(x=>x.id===e.bannerId);if(b)b.active=false;});
       let opened=null;
       if(on.rerun&&past.length&&(!on.event||!SAMPLE||Math.random()<0.25)){ const ev=rand(past); close(); ev.active=true; P().shopBuy[ev.id]={}; const b=G.banners.find(x=>x.id===ev.bannerId); if(b)b.active=true; opened=`복각 이벤트 「${ev.title}」가 다시 열렸어요`; }
-      else if(on.event&&SAMPLE){ liveBar('새 이벤트를 만드는 중… 몇 분 걸려요. 그동안 플레이해도 돼요.'); const res=await aiEventGen('',3,Math.random()<0.35,[],null);
+      else if(on.event&&SAMPLE){ liveBar('새 이벤트를 만드는 중… 몇 분 걸려요. 그동안 플레이해도 돼요.'); const res=await aiEventGen('',3,true,[],null);
         if(res){ act.forEach(e=>{if(e!==res.ev){e.active=false;const b=G.banners.find(x=>x.id===e.bannerId);if(b)b.active=false;}}); opened=`새 이벤트 「${res.ev.title}」 개최${res.nc?`, 한정 ${T('crew')} ${res.nc.name} 등장`:''}`; } }
       if(opened){ if(act.length) notes.push(`이벤트 종료: ${act.map(e=>e.title).join(', ')}`); notes.push(opened); }
       L.last.week=keys.week;
@@ -4269,13 +4373,14 @@ function drawTodo(cats){
   const a=[], on=k=>!cats||cats.includes(k);
   G.chars.forEach(c=>{ if(!c.naiPrompt) return;
     if(on('char')&&!c.img) a.push({k:'char',cat:'char',o:c,c,label:c.name+' 스탠딩'});
+    if(on('upper')&&c.upper&&!c.upper.img) a.push({k:'upper',cat:'upper',o:c.upper,c,label:c.name+' 상반신'});
     if(on('illust')&&c.illust&&!c.illust.img) a.push({k:'illust',cat:'illust',o:c.illust,c,label:c.name+' 일러스트'});
     if(on('weapon')&&c.weapon&&!c.weapon.img&&c.weapon.prompt) a.push({k:'weapon',cat:'weapon',o:c.weapon,c,label:c.name+' '+T('weapon')}); });
   if(on('map')) G.chapters.filter(ch=>ch.kind==='main').forEach(ch=>{ if(!chMapLib(ch)) ensureChMap(ch); });
   G.lib.forEach(l=>{ if(['bg','prop','cg','enemy','icon','map'].includes(l.kind)&&on(l.kind)&&!l.img&&(l.prompt||(l.kind==='cg'&&cgCast(l).length))) a.push({k:l.kind,cat:l.kind,o:l,label:({bg:'배경 ',prop:'소품 ',cg:'CG ',enemy:'적 ',icon:'',map:''})[l.kind]+l.name}); });
   return a;
 }
-const PREP_CATS=()=>[['char','스탠딩',true],['illust','일러스트 (로비·픽업)',true],['enemy','적',true],['bg','배경',true],['icon','재화 아이콘',true],['map','작전 지도',true],['prop','소품',true],['weapon',T('weapon'),true],['cg','이벤트 CG',false]];
+const PREP_CATS=()=>[['char','스탠딩',true],['upper','상반신',true],['illust','일러스트 (로비·픽업)',true],['enemy','적',true],['bg','배경',true],['icon','재화 아이콘',true],['map','작전 지도',true],['prop','소품',true],['weapon',T('weapon'),true],['cg','이벤트 CG',false]];
 let PREPJOB=null;
 function prepAsk(){ const p=P(); if(p.prepNever||p.prepAsked===today()||PREPJOB||!imgReady()||!$('#modal').hidden||!$('#ov').hidden) return; if(!drawTodo().length) return; p.prepAsked=today(); mark('prog'); openPrep(true); }
 function openPrep(ask){
@@ -4303,7 +4408,7 @@ async function runPrep(cats,filter,opt){
   for(const it of list){
     if(j.stop) break; j.label=it.label; prepChip(); if(opt.step) opt.step(it,j,'start');
     try{ const b=await naiDrawItem(it);
-      if(it.k==='char') await storeImage(it.o,b,'c:'); else if(it.k==='illust'||it.k==='weapon'){ await storeImage(it.o,b,''); mark('c:'+it.c.id); } else await storeImage(it.o,b,'l:');
+      if(it.k==='char') await storeImage(it.o,b,'c:'); else if(it.k==='illust'||it.k==='weapon'||it.k==='upper'){ await storeImage(it.o,b,''); mark('c:'+it.c.id); } else await storeImage(it.o,b,'l:');
       j.done++; prepChip(); if(opt.step) opt.step(it,j,'done'); if(!$('#modal').hidden||tab==='crew'||tab==='lobby'||tab==='ops'||tab==='shop') { if($('#modal').hidden) render(); }
       await wait(700);
     }catch(e){ toast(naiErr(e,it.label+' 실패')); if(e&&['nai_nokey','bad_key','low_credit','network','nai_locked','comfy_nourl','comfy_nowf'].includes(e.code)){ toast('그림 준비를 멈췄어요. 연결을 확인한 뒤 그림 준비실에서 이어서 그려 주세요'); break; } await wait(1500); }
@@ -4316,7 +4421,7 @@ async function naiAll(btn){
   if(!confirm(`${list.length}장을 차례로 그려요. Opus 구독이 아니면 Anlas가 들어요. 진행할까요?`)) return;
   btn.disabled=true; let n=0;
   for(const it of list){ if(btn.isConnected) btn.textContent=`그리는 중 ${n}/${list.length} · ${it.label}`;
-    try{ const b=await naiDrawItem(it); await wait(600); await storeImage(it.o,b,it.k==='char'?'c:':it.k==='weapon'?'x:':'l:'); if(it.k==='weapon') mark('c:'+it.c.id); n++; }
+    try{ const b=await naiDrawItem(it); await wait(600); await storeImage(it.o,b,it.k==='char'?'c:':(it.k==='weapon'||it.k==='upper')?'':'l:'); if(it.k==='weapon'||it.k==='upper') mark('c:'+it.c.id); n++; }
     catch(e){ toast(naiErr(e)); break; } }
   toast(`${n}장을 그렸어요`); render();
 }
@@ -4431,7 +4536,7 @@ function cxFromChapter(r,ch){ if(!r||!Array.isArray(r.codex)) return; const last
   r.codex.slice(0,3).forEach(x=>{ if(!x||!x.title||!x.body) return; cxStore().push({id:'cx'+uid(),cat:CX_LABEL[x.cat]&&x.cat!=='all'?x.cat:'term',title:String(x.title).slice(0,40),body:String(x.body),unlock:last?{type:'clear',value:last.id}:{type:'start'},src:'ai',at:Date.now()}); }); mark('world'); }
 /* ===== AI가 새로 만든 것 그림 ===== */
 let ART_ASK=null;
-const ART_ORDER=['char','illust','bg','enemy','icon','map','cg','prop','weapon'];
+const ART_ORDER=['char','upper','illust','bg','enemy','icon','map','cg','prop','weapon'];
 function artKey(it){return it.k+':'+((it.o&&it.o.id)||'')+':'+((it.c&&it.c.id)||'');}
 function artSnap(){try{return new Set(drawTodo().map(artKey));}catch(e){return new Set();}}
 function artRun(keys){ const go=()=>{ if(PREPJOB) return setTimeout(go,5000); runPrep(null,x=>keys.has(artKey(x)),{order:ART_ORDER}); }; go(); }
@@ -4455,10 +4560,58 @@ const STYLE_EX='예: anime coloring, cel shading, vibrant colors  /  watercolor 
 function naiSaved(){let sv={};try{sv=JSON.parse(localStorage.getItem(NKEY))||{};}catch(e){}return sv;}
 function setMyStyle(tags,neg){const sv=naiSaved();sv.styles=[{id:'my_style',name:'내 그림체',tags:String(tags||'').trim(),neg:String(neg||'').trim()}];sv.styleId='my_style';localStorage.setItem(NKEY,JSON.stringify(sv));}
 function myStyle(){return naiCfg().styles[0];}
-const BOOT_CATS=[['char','스탠딩',true],['illust','일러스트 (타이틀·로비·픽업)',true],['bg','배경',true],['icon','재화 아이콘',true],['prop','소품 (스토리에 나오는 물건)',true],['weapon','전용 무기',true],['enemy','적',false],['map','작전 지도',false],['cg','이벤트 CG',false]];
+const BOOT_CATS=[['char','스탠딩 (전신)',true],['upper','상반신 (스토리·프로필)',true],['illust','일러스트 (타이틀·로비·픽업)',true],['bg','배경',true],['icon','재화 아이콘',true],['prop','소품 (스토리에 나오는 물건)',true],['weapon','전용 무기',true],['enemy','적',false],['map','작전 지도',false],['cg','이벤트 CG',false]];
 let BP=null;
 function bootPrepNeeded(){ const p=P(); return !p.seenOpening&&!p.bootPrep&&imgReady()&&drawTodo(BOOT_CATS.map(x=>x[0])).length>0; }
 
+
+/* ===== PC 서버 (내 컴퓨터에 저장 · 휴대폰으로 접속) ===== */
+async function pcApi(path,opt){ const pc=PCS(); if(!pc) throw {code:'network',message:'PC 서버가 연결돼 있지 않아요'}; opt=opt||{};
+  const r=await http(pc.base+path,{method:opt.method||'GET',headers:Object.assign({'X-GGM-Key':pc.key},opt.body?{'Content-Type':'application/json'}:{}),body:opt.body,binary:!!opt.binary,timeout:opt.timeout||120000});
+  if(r.status===404&&opt.ok404) return null; if(r.status===401) throw {code:'bad_key',message:'PC 서버 키가 맞지 않아요. QR을 다시 찍어 주세요'}; if(r.status>=400) throw errOf(r);
+  if(opt.binary) return r; try{ return r.text?JSON.parse(r.text):{}; }catch(e){ return {}; } }
+let PCJOB=false;
+async function pcPush(silent){
+  if(PCJOB||!PCS()) return; PCJOB=true; try{
+    if(!silent) syBar('PC에 저장하는 중…'); await flush();
+    const have=new Set(((await pcApi('/api/store/list'))||{}).blobs||[]), idx=syIdx(), keys=await idbKeys(), bin={}, types={};
+    for(const k of keys){ const b=await idbGet(k); if(!b||!(b instanceof Blob)) continue; types[k]=b.type||''; const ent=idx[k]; let h;
+      if(ent&&ent.size===b.size&&ent.hash) h=ent.hash; else { h=await shaHex(await b.arrayBuffer()); idx[k]={hash:h,size:b.size}; } bin[k]=h;
+      if(!have.has(h)){ await pcApi('/api/store/blob/'+h,{method:'POST',body:{content:bytesToB64(new Uint8Array(await b.arrayBuffer()))}}); have.add(h); } }
+    saveSyIdx(idx);
+    const ls={}; syLsKeys(true).forEach(k=>{ const v=localStorage.getItem(k); if(v!=null) ls[k]=v; });
+    const state={v:1,at:Date.now(),device:syDevice(),build:APP_BUILD,ls,bin,types};
+    await pcApi('/api/store/state',{method:'POST',body:state});
+    const o=PCS(); o.last=state.at; o.localAt=G.prog.savedAt||Date.now(); setPCS(o); if(!silent) toast('PC에 저장했어요');
+  }catch(e){ if(!silent) toast('PC 저장 실패. '+syErr(e)); } finally{ PCJOB=false; syBar(''); }
+}
+async function pcPull(){
+  if(PCJOB||!PCS()) return; PCJOB=true; try{
+    syBar('PC에서 받는 중…'); const S=await pcApi('/api/store/state',{ok404:true}); if(!S){ toast('PC에 아직 저장된 게임이 없어요'); return; }
+    const idx=syIdx(); let n=0; const todo=Object.entries(S.bin||{}).filter(([k,h])=>!(idx[k]&&idx[k].hash===h));
+    for(const [k,h] of todo){ n++; syBar(`그림 받는 중 ${n}/${todo.length}`); const r=await pcApi('/api/store/blob/'+h,{binary:true}); if(!r.bytes) continue; const blob=new Blob([r.bytes],{type:(S.types||{})[k]||''}); await idbPut(k,blob); idx[k]={hash:h,size:blob.size}; }
+    saveSyIdx(idx); window.__NOFLUSH=true; clearTimeout(flushT); Object.entries(S.ls||{}).forEach(([k,v])=>{ try{ localStorage.setItem(k,v); }catch(e){} });
+    const o=PCS(); o.last=S.at; o.localAt=0; setPCS(o); toast('PC의 게임을 받았어요. 다시 시작할게요'); setTimeout(()=>location.reload(),800);
+  }catch(e){ toast('PC에서 받기 실패. '+syErr(e)); } finally{ PCJOB=false; syBar(''); }
+}
+async function pcStart(){
+  const pc=PCS(); if(!pc) return;
+  try{ const S=await pcApi('/api/store/state',{ok404:true});
+    if(window.__PC_NEW&&!S){ openModal(`${head('PC 서버에 연결됐어요')}<p>이제 게임 진행과 그림이 PC(ggm-data 폴더)에 저장돼요. 이 기기의 게임을 PC로 올려 둘까요?</p><div class="row" style="margin-top:12px"><button class="btn" data-act="pcpush">PC에 저장</button><button class="btn ghost" data-act="close">나중에</button></div>`); return; }
+    if(S&&S.at>(pc.last||0)&&S.device!==syDevice()){ const show=()=>{ if(!$('#modal').hidden||!$('#ov').hidden&&!$('#ov').querySelector('.title')) return setTimeout(show,2500);
+        openModal(`${head('PC에 더 새 게임이 있어요')}<p><b>${esc(S.device||'다른 기기')}</b> · ${esc(new Date(S.at).toLocaleString())}</p><div class="row" style="margin-top:12px"><button class="btn" data-act="pcpull">받기</button><button class="btn ghost" data-act="close">나중에</button></div>`); }; show(); }
+  }catch(e){ toast('PC 서버에 연결하지 못했어요. PC에서 서버 창이 켜져 있는지 확인해 주세요'); }
+}
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'){ const pc=PCS(); if(pc&&pc.auto!==false&&(G.prog.savedAt||0)>(pc.localAt||0)+3000) pcPush(true); } });
+setInterval(()=>{ const pc=PCS(); if(pc&&pc.auto!==false&&!PCJOB&&(G.prog.savedAt||0)>(pc.localAt||0)+60000) pcPush(true); },5*60000);
+function openPcSet(){ const pc=PCS();
+  openModal(`${head('PC 서버',`<span class="muted">내 컴퓨터를 저장소·AI 중계로 쓰기</span>`)}
+    <p class="muted">PC에서 <b>PC서버-시작.bat</b>을 켜면 QR이 떠요. 휴대폰으로 찍으면 연결되고, 게임이 PC에 저장돼요. 내 PC의 ComfyUI·Ollama 주소(127.0.0.1)도 그대로 쓸 수 있어요.</p>
+    <label class="f" for="pc_link">PC 서버 주소 (QR 주소를 붙여 넣기)</label><input class="in" id="pc_link" value="${pc?esc(pc.base+'/?pc='+pc.key):''}" placeholder="https://xxxx.trycloudflare.com/?pc=...">
+    <label style="display:flex;gap:8px;margin-top:10px"><input type="checkbox" id="pc_auto" ${!pc||pc.auto!==false?'checked':''}><span>자동으로 PC에 저장 (앱을 나갈 때, 5분마다)</span></label>
+    <div class="row" style="margin-top:12px"><button class="btn" data-act="pcsave">연결</button>${pc?'<button class="btn ghost" data-act="pcoff">연결 끊기</button>':''}</div>
+    ${pc?`<div class="row" style="margin-top:8px"><button class="btn sm" data-act="pcpush">지금 PC에 저장</button><button class="btn sm ghost" data-act="pcpull">PC에서 받기</button></div>`:''}
+    <p class="muted" style="margin-top:10px;font-size:.8rem">PC 서버 프로그램은 공개 저장소의 gacha-game-maker-pc.zip에 있어요(Python 필요). 주소는 PC 서버를 켤 때마다 바뀌어요.</p>`); }
 /* ===== 시작할 때 게임 고르기 ===== */
 function startMode(){ try{ return localStorage.getItem('ggm-start')||'last'; }catch(e){ return 'last'; } }
 function showPicker(){
@@ -4568,7 +4721,7 @@ async function syPull(){
       const r=await gh(o,'/git/blobs/'+sha,{binary:true}); let bytes=r.bytes; if(!bytes&&r.text){ try{ bytes=b64ToBytes(JSON.parse(r.text).content.replace(/\s/g,'')); }catch(e){} }
       if(!bytes) continue; const blob=new Blob([bytes],{type:(S.types||{})[k]||''}); await idbPut(k,blob); idx[k]={hash:h,size:blob.size}; }
     saveSyIdx(idx);
-    Object.entries(S.ls||{}).forEach(([k,v])=>{ try{ localStorage.setItem(k,syMerge(k,v)); }catch(e){} });
+    window.__NOFLUSH=true; clearTimeout(flushT); Object.entries(S.ls||{}).forEach(([k,v])=>{ try{ localStorage.setItem(k,syMerge(k,v)); }catch(e){} });
     const o2=SY(); o2.last=S.at; o2.lastDir='down'; o2.localAt=0; saveSY(o2);
     toast(`${S.device||'다른 기기'}의 데이터를 받았어요. 다시 시작할게요`); setTimeout(()=>location.reload(),900);
   }catch(e){ toast('받기 실패. '+syErr(e)); }
@@ -4667,6 +4820,11 @@ async function checkUpdate(manual){
   if(o.mode==='silent'&&!manual) return applyUpdate(true);
   openModal(`${head('업데이트가 있어요',`<span class="muted">${esc(APP_BUILD)} → <b>${esc(man.build)}</b></span>`)}${notesHTML(man)}
     <div class="row" style="margin-top:12px"><button class="btn" data-act="updget">받기</button><button class="btn ghost" data-act="updskip">이번 버전 건너뛰기</button><button class="btn ghost" data-act="close">나중에</button></div>`);
+}
+async function checkNoticeWeb(){
+  const o=LV(); let man=null; try{ const r=await fetch(`https://raw.githubusercontent.com/${updRepo(o)}/main/version.json?t=${Date.now()}`); if(r.ok) man=await r.json(); }catch(e){} if(!man) return;
+  if(man.feedback){ o.feedback=String(man.feedback); saveLV(o); }
+  if(man.notice&&man.notice.id&&man.notice.title&&o.noticeSeen!==String(man.notice.id)){ o.noticeSeen=String(man.notice.id); saveLV(o); const nb=String(man.notice.body||''); sendMail({kind:'notice',from:'운영팀',title:String(man.notice.title).slice(0,60),body:nb,days:30}); const L=P().live; L.notices=L.notices.filter(x=>!x.dev); L.notices.unshift({dev:true,at:Date.now(),title:String(man.notice.title).slice(0,60),lines:nb.split('\n').map(x=>x.trim()).filter(Boolean)}); mark('prog'); if(tab==='lobby') render(); }
 }
 function notesHTML(man){const n=Array.isArray(man.notes)?man.notes:String(man.notes||'').split('|').map(x=>x.trim()).filter(Boolean);return n.length?`<div class="panel" style="margin:8px 0"><h3>바뀐 점</h3><ul style="margin:0;padding-left:18px">${n.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:'';}
 async function applyUpdate(silent){
@@ -4846,7 +5004,7 @@ function vnShow(L){
   }
   if(L.type==='say'){
     const me=isMe(L.who), c=me?null:findSpeaker(L.who), key=c?c.id+'|'+(L.face||''):'';
-    if(c&&key!==S.curKey){ const same=S.cur===c; S.cur=c; S.curKey=key; ch.innerHTML=art(c,'',{face:L.face}); if(!same){ch.classList.remove('enter');void ch.offsetWidth;ch.classList.add('enter');} }
+    if(c&&key!==S.curKey){ const same=S.cur===c; S.cur=c; S.curKey=key; ch.innerHTML=art(c,'',{face:L.face,upper:true}); if(!same){ch.classList.remove('enter');void ch.offsetWidth;ch.classList.add('enter');} }
     ch.classList.toggle('dim',!c);
     $('#vnName').textContent=me?playerName():L.who; $('#vnText').classList.remove('nar');
     if(c&&c.voiceId&&SND().voiceStory) speak(c,L.text); else stopVoice();
@@ -4920,11 +5078,11 @@ function startStage(s,ctx){
   const allies=squad.map(c=>{const st=stats(c),o=own(c.id);return {side:'a',slot:squad.indexOf(c),c,name:c.name,elem:c.elem,role:c.role,maxhp:st.hp,hp:st.hp,atk:Math.round(st.atk*(1+(fbon[c.faction]||0)/100)),def:st.def,spd:st.spd,g:Math.random()*600,cd:Math.ceil(c.skill.cd/2),sh:0,mul:1,wlv:o.wlv||0};});
   const enemies=s.enemies.map(e=>({side:'e',name:e.name,elem:e.elem,boss:e.boss,maxhp:e.hp,hp:e.hp,atk:e.atk,def:e.def,spd:e.spd,g:Math.random()*400,turns:0,sh:0,mul:1}));
   if(ctx.prep) ctx.prep(allies,enemies);
-  B={ch:ctx.ch||null,ctx,s,allies,enemies,auto:true,speed:1,timer:null,over:false,log:[],burst:ctx.burst0||0,ticks:0};
+  B={ch:ctx.ch||null,ctx,s,allies,enemies,auto:true,speed:[1,2,3].includes(P().settings.bspeed)?P().settings.bspeed:1,timer:null,over:false,log:[],burst:ctx.burst0||0,ticks:0};
   allies.forEach(u=>{u.dmg=0;});
   if(Object.keys(fbon).length) setTimeout(()=>B&&blog(Object.entries(fbon).map(([f,v])=>`${f} 소속 보너스 공격 +${v}%`).join(', ')),300);
   $('#ov').innerHTML=`<div class="bt"><div class="bt-bg" style="${bgStyle(stageBg(s)||'폐선로')}"></div>
-    <div class="bt-top"><span class="ttl"><i>${ctx.kind==='farm'?'TRAINING':ctx.kind==='event'?'EVENT':ctx.kind==='raid'?'RAID · '+Math.ceil(RAID_TICKS/11)+'s':ctx.kind==='rogue'?'EXPEDITION':'OPERATION'}</i>${esc(s.title)}</span><button data-act="bauto" class="on">자동</button><button data-act="bspeed">1x</button><button data-act="bquit">후퇴</button></div>
+    <div class="bt-top"><span class="ttl"><i>${ctx.kind==='farm'?'TRAINING':ctx.kind==='event'?'EVENT':ctx.kind==='raid'?'RAID · '+Math.ceil(RAID_TICKS/11)+'s':ctx.kind==='rogue'?'EXPEDITION':'OPERATION'}</i>${esc(s.title)}</span><button data-act="bauto" class="on">자동</button><button data-act="bspeed" class="${(P().settings.bspeed||1)>1?'on':''}">${[1,2,3].includes(P().settings.bspeed)?P().settings.bspeed:1}x</button><button data-act="bquit">후퇴</button></div>
     <div class="bt-en">${enemies.map((u,i)=>`<div class="eu ${u.boss?'boss':''} ${enemyLib(u.name)&&imgSrc(enemyLib(u.name))?'hasimg':''}" id="u_e${i}" style="--ec:${ECOL[u.elem]}">${enemyArt(u)}<b>${esc(u.name)}</b><div class="hpb"><i></i></div><div class="gg"><i></i></div></div>`).join('')}</div>
     <div class="bt-log" id="bLog"></div>
     <button class="burst" id="bBurst" data-act="burst"><span class="bfill"></span><b>BURST</b><small>0%</small></button>
@@ -4993,10 +5151,10 @@ function bEnd(win){
   if(win){
     sfx('승리'); const p=P(); let r={}, first=false, exp=60, note='';
     if(kind==='farm'){ const f=s.farm; r=farmReward(f.key,f.lv); p.farmClear[s.id]=true; exp=25*f.lv; }
-    else if(kind==='event'){ const ev=G.events.find(e=>e.id===B.ch.eventId); first=!p.cleared[s.id]; r={token:s.reward*(first?2:1),tokenName:ev?ev.token:'토큰',gems:first?100:0}; giveReward(r,ev&&ev.id); r={...r}; p.cleared[s.id]=true; exp=80; }
-    else { first=!p.cleared[s.id]; r={gems:s.reward*(first?2:1),gold:1500,exp:first?10:3}; p.cleared[s.id]=true; exp=120+Math.max(0,G.chapters.filter(c=>c.kind==='main').indexOf(B.ch))*40; }
+    else if(kind==='event'){ const ev=G.events.find(e=>e.id===B.ch.eventId); first=!p.cleared[s.id]; r={token:s.reward*(first?2:1),tokenName:ev?ev.token:'토큰'}; if(first) r.gems=100; giveReward(r,ev&&ev.id); r={...r}; p.cleared[s.id]=true; exp=80; }
+    else { first=!p.cleared[s.id]; r=first?{gems:s.reward*2,gold:3000,exp:10}:{gold:1500,exp:3}; p.cleared[s.id]=true; exp=120+Math.max(0,G.chapters.filter(c=>c.kind==='main').indexOf(B.ch))*40; }
     if(kind!=='event') giveReward(r);
-    B.allies.forEach(u=>{const o=own(u.c.id);if(o)gainExp(o,exp);addAff(u.c,15);});
+    B.allies.forEach(u=>{const o=own(u.c.id);if(o)gainExp(o,exp);});
     mark('prog');
     const noDeath=B.allies.every(u=>u.hp>0), fast=B.ticks<=420, stars=1+(noDeath?1:0)+(fast?1:0);
     p.stars=p.stars||{}; const was=p.stars[s.id]||0; if(stars>was) p.stars[s.id]=stars; let bonus='';
@@ -5007,7 +5165,7 @@ function bEnd(win){
       <div class="rs-cond"><span class="on">✓ 승리</span><span class="${noDeath?'on':''}">${noDeath?'✓':'✗'} 전원 생존</span><span class="${fast?'on':''}">${fast?'✓':'✗'} 빠른 클리어</span></div>
       ${mvp?`<div class="rs-mvp"><div class="rs-art">${art(mvp.c)}</div><div class="rs-mt"><i>MVP</i><b>${esc(mvp.name)}</b>${ml?`<span>“${esc(sub(ml))}”</span>`:''}</div></div>
       <div class="rs-dmg">${B.allies.map(u=>`<div><b>${esc(u.name)}</b><span class="bar"><i style="width:${Math.round((u.dmg||0)/tot*100)}%"></i></span><em>${nf(u.dmg||0)}</em></div>`).join('')}</div>`:''}
-      <p style="margin:4px 0">${rewardText(r)}${first?' (첫 클리어 2배)':''}${bonus}<br>참가 ${T('crew')} 경험치 +${exp}, 호감도 +15</p><button class="btn" data-act="bdone" data-win="1" data-first="${first?1:0}">계속</button>`;
+      <p style="margin:4px 0">${rewardText(r)}${first?' (첫 클리어 보상)':(kind==='farm'?'':`<br><small class="muted">${esc(T('currency'))}은(는) 첫 클리어 때만 받아요</small>`)}${bonus}<br>참가 ${T('crew')} 경험치 +${exp}</p><button class="btn" data-act="bdone" data-win="1" data-first="${first?1:0}">계속</button>`;
     if(mvp&&mvp.c.voiceId&&SND().voiceLobby&&ml) setTimeout(()=>speak(mvp.c,ml),700);
   } else { sfx('패배'); html=`<h2 class="disp" style="color:#ff5277">작전 실패</h2><p>${T('enhance')}로 레벨을 올리거나 편성과 속성을 바꿔 보세요.<br>${ELEMS.map((e,i)=>e+'은 '+ELEMS[(i+1)%3]+'에').join(', ')} 강해요.</p><div class="row"><button class="btn ghost" data-act="bdone">돌아가기</button><button class="btn" data-act="bretry">다시 도전</button></div>`; }
   const d=document.createElement('div');d.className='result';d.innerHTML=html;$('.bt').appendChild(d);
@@ -5159,7 +5317,7 @@ document.addEventListener('click',async e=>{
   case 'swmake': { swRead(); const kw=$('#ng_kw').value.trim(); if(!kw){toast('장르와 키워드를 적어 주세요');break;} SW.kw=kw; SW.tone=$('#ng_tone').value.trim(); swSave(); if(!SAMPLE){toast('글 AI 키를 확인해 주세요');break;}
       localStorage.setItem(SETUP_KEY,'1'); document.querySelectorAll('.sw-card button').forEach(b=>{ if(b!==t) b.disabled=true; }); t.textContent='만드는 중… 화면을 끄지 마세요';
       await newGame(t); document.querySelectorAll('.sw-card button').forEach(b=>b.disabled=false); if(t.isConnected) t.textContent='다시 시도'; break; }
-  case 'swdone': swRead(); swSave(); { const v=$('#ng_style')?$('#ng_style').value.trim():''; if(v){ G.meta.artTags=v; mark('meta'); } } localStorage.setItem(SETUP_KEY,'1'); SW=null; render(); showStart(); toast('설정을 저장했어요'); break;
+  case 'swdone': swRead(); swSave(); if($('#ng_gender')){ P().gender=$('#ng_gender').value; mark('prog'); } { const v=$('#ng_style')?$('#ng_style').value.trim():''; if(v){ G.meta.artTags=v; mark('meta'); } } localStorage.setItem(SETUP_KEY,'1'); SW=null; render(); showStart(); toast('설정을 저장했어요'); break;
   case 'rebal': if(!confirm('모든 메인 스토리 적의 능력치를 새 성장 곡선에 맞춰 다시 계산할까요? (체력·공격·방어 비율은 유지돼요)')) break; rebalanceAll(); render(); toast('적 능력치를 다시 맞췄어요'); break;
   case 'cxcat': CXCAT=t.dataset.v; render(); break;
   case 'cxview': openCx(t.dataset.k); break;
@@ -5204,7 +5362,15 @@ document.addEventListener('click',async e=>{
   case 'rgnode': { const run=RG().run; if(!run) break; run.msg=''; rgNode(t.dataset.v); break; }
   case 'rgrelic': { const run=RG().run; if(!run) break; run.relics.push(t.dataset.v); run.pick=null; run.msg=RELICS[t.dataset.v][0]+'을(를) 얻었어요'; mark('prog'); render(); break; }
   case 'rgquit': { if(!confirm('탐사를 끝낼까요? 지금까지 간 층만큼 보상을 받아요.')) break; const html=rgFinish(false); openModal(`<div class="result" style="position:static">${html.replace('data-act="bdone"','data-act="close"')}</div>`); render(); break; }
-  case 'csframe': { const p2=P(); p2.csFull=!p2.csFull; mark('prog'); const a2=$('.cs-art'); if(a2) a2.classList.toggle('up',!p2.csFull); t.textContent=p2.csFull?'상반신':'전신'; break; }
+  case 'pcopen': openPcSet(); break;
+  case 'pcsave': { const o=parsePcLink($('#pc_link').value); if(!o){ toast('주소에 ?pc=키가 들어 있어야 해요'); break; } o.auto=$('#pc_auto').checked; t.disabled=true;
+      try{ const r=await http(o.base+'/api/hello',{headers:{'X-GGM-Key':o.key},timeout:15000}); const j=JSON.parse(r.text||'{}'); if(!j.app) throw 0; if(!j.auth){ toast('키가 맞지 않아요. QR 주소를 다시 붙여 넣어 주세요'); t.disabled=false; break; }
+        const old=PCS(); setPCS(Object.assign({},old&&old.key===o.key?old:{},o)); closeModal(); render(); toast(`PC 서버(${j.host||'PC'})에 연결했어요`); window.__PC_NEW=1; pcStart(); }
+      catch(err){ toast('PC 서버에 연결하지 못했어요. PC에서 서버 창이 켜져 있는지 확인해 주세요'); t.disabled=false; } break; }
+  case 'pcoff': setPCS(null); closeModal(); render(); toast('PC 서버 연결을 끊었어요'); break;
+  case 'pcpush': closeModal(); pcPush(false); break;
+  case 'pcpull': { const pc=PCS(); if(pc&&pc.last&&(G.prog.savedAt||0)>(pc.localAt||0)+5000&&!confirm('이 기기에 아직 PC에 저장하지 않은 진행이 있어요. 받으면 덮어써져요. 받을까요?')) break; closeModal(); pcPull(); break; }
+  case 'csframe': { const p2=P(); p2.csFull=!p2.csFull; mark('prog'); const a2=$('.cs-art'); if(a2){ a2.classList.toggle('up',!p2.csFull); const cc=charById(a2.dataset.id); if(cc) a2.innerHTML=art(cc,'',{upper:!p2.csFull}); } t.textContent=p2.csFull?'상반신':'전신'; break; }
   case 'artgo': { const k=ART_ASK; ART_ASK=null; closeModal(); if(k) artRun(k); break; }
   case 'artalways': { const sv=naiSaved(); sv.autoArt='auto'; localStorage.setItem(NKEY,JSON.stringify(sv)); const k=ART_ASK; ART_ASK=null; closeModal(); if(k) artRun(k); toast('앞으로는 자동으로 그려요. 설정 → 그림 AI에서 바꿀 수 있어요'); break; }
   case 'bpgo': { const cats=bpRead(); if(!cats.length){ toast('하나 이상 골라 주세요'); P().bootPrep=0; break; } bootPrepRun(cats); break; }
@@ -5231,29 +5397,31 @@ document.addEventListener('click',async e=>{
   case 'setname': p.player=($('#nm_in').value.trim()||'').slice(0,12); mark('prog'); closeModal(); playStory('프롤로그',G.opening.prologue,afterPrologue); break;
   case 'go': tab=t.dataset.to; closeModal(); if(!$('#phone').hidden) closePhone(); render(); $('#view').scrollTop=0; break;
   case 'close': closeModal(); break;
-  case 'daily': if(p.daily!==today()){p.daily=today();giveReward({gems:1500,gold:5000,exp:10});render();sfx('확인');toast(`일일 보급: ${rewardText({gems:1500,gold:5000,exp:10})}`);} break;
+  case 'daily': if(p.daily!==today()){p.daily=today();giveReward({gems:120,gold:5000,exp:10,gift:2});render();sfx('확인');toast(`일일 보급: ${rewardText({gems:120,gold:5000,exp:10,gift:2})}`);} break;
   case 'lbhide': document.body.classList.add('lb-hidden'); toast('화면을 누르면 메뉴가 돌아와요'); break;
   case 'lbshow': document.body.classList.remove('lb-hidden'); break;
   case 'poke': { if(document.body.classList.contains('lb-hidden')){ document.body.classList.remove('lb-hidden'); break; } const c=charById(p.sec); if(!c||!own(c.id)) break;
       const r=t.getBoundingClientRect(), fy=e.clientY?(e.clientY-r.top)/r.height:0.2, zone=fy<0.3?'head':fy<0.72?'body':'base';
       let pool=zone==='head'?c.touch.head:zone==='body'?c.touch.body:affLinePool(c); if(!pool.length) pool=affLinePool(c);
       const face=zone==='head'?(c.faces.find(f=>['웃음','수줍음','미소'].includes(f.name)&&f.img)||{}).name:zone==='body'?(c.faces.find(f=>['부끄럼','당황','짜증','놀람'].includes(f.name)&&f.img)||{}).name:'';
-      addAff(c,zone==='body'?1:2); p.gems+=3; bump('touch'); mark('prog');
+      addAff(c,zone==='body'?1:2); bump('touch'); mark('prog');
       const b=$('#bubble'); let l=rand(pool)||'…'; if(pool.length>1) while(sub(l)===b.textContent) l=rand(pool);
-      b.textContent=sub(l); if(c.voiceId&&SND().voiceLobby) speak(c,l); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); $('#gems').textContent=nf(p.gems);
+      b.textContent=sub(l); if(c.voiceId&&SND().voiceLobby) speak(c,l); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
       const st=t.querySelector('.lb-stage')||t; const old=st.querySelector('.lobby-art'); if(old){ const tmp=document.createElement('div'); tmp.innerHTML=art(c,'lobby-art react',{face}); old.replaceWith(tmp.firstElementChild); clearTimeout(window._faceT); window._faceT=setTimeout(()=>{const cur=document.querySelector('.lobby-art'); if(cur&&tab==='lobby'){const t2=document.createElement('div');t2.innerHTML=art(c,'lobby-art');cur.replaceWith(t2.firstElementChild);}},3500); }
       { const x=e.clientX||innerWidth/2, y=e.clientY||innerHeight/2, lv=affLv(own(c.id)); ripple(x,y,lv>=7); if(lv>=5&&zone!=='body') hearts(x,y,Math.min(5,lv-3)); setTimeout(()=>charReact(document.querySelector('.lobby .lobby-art,.lobby .lobby-ill'),lv,zone),10); } break; }
   case 'phone': e.stopPropagation(); openPhone(); break;
   case 'openthread': { const n=$('#notif'); n.innerHTML=''; openPhone(id); break; }
   case 'phclose': closePhone(); break;
   case 'phback': phoneList(); break;
-  case 'phtab': PHT=t.dataset.v; phoneList(); break;
+  case 'phtab': phoneList(); break;
   case 'openfc': openFree(id); break;
   case 'fcsend': fcSend(); break;
-  case 'fcmenu': { const c=charById(id); if(!c) break; if(confirm(`${c.name}와(과)의 갠톡 기록을 모두 지울까요?\n(호감도는 그대로예요)`)){ delete FC()[id]; mark('prog'); openFree(id); } break; }
-  case 'phpick': { if(!PH) break; const th=threadById(PH.tid),c=threadChar(th),s=p.inbox[PH.tid],L=parseScript(th.script)[s.pos];
-      if(!L||L.type!=='choice') break; const n=+t.dataset.n; s.pick=n; s.pos++; const en={w:'me',t:sub(L.opts[n-1])}; s.log.push(en); s.at=Date.now();
-      $('#phIn').innerHTML='<span class="muted" style="text-align:center">…</span>'; $('#phChat').insertAdjacentHTML('beforeend',bubbleHTML(en,c)); phScroll(); mark('prog'); phPlay(th,c,s,PH.token); break; }
+  case 'fcmenu': { const c=charById(id); if(!c) break; if(confirm(`${c.name}와(과) 직접 나눈 대화를 모두 지울까요?\n(이야기로 받은 메시지와 호감도는 그대로예요)`)){ delete FC()[id]; mark('prog'); openRoom(id); } break; }
+  case 'phpick': { if(!PH||!PH.tid) break; const th=threadById(PH.tid),c=threadChar(th),s=p.inbox[PH.tid],L=parseScript(th.script)[s.pos];
+      if(!L||L.type!=='choice') break; const n=+t.dataset.n; s.pick=n; s.pos++; const en={w:'me',t:sub(L.opts[n-1]),at:Date.now()}; s.log.push(en); s.at=en.at;
+      $('#phIn').innerHTML=''; phMode('free'); $('#phChat').insertAdjacentHTML('beforeend',bubbleHTML(en,c)); phScroll(); mark('prog'); phPlay(th,c,s,PH.token); break; }
+  case 'phmode': phMode(t.dataset.v); break;
+  case 'phnew': phNewList(); break;
   case 'char': openChar(id); break;
   case 'cspoke': { const c=charById(id); if(!c) break; const o=own(c.id), lv=o?affLv(o):1, x=e.clientX||innerWidth/2, y=e.clientY||innerHeight/2, r=t.getBoundingClientRect(), zone=(y-r.top)/r.height<0.3?'head':'body';
       ripple(x,y,lv>=7); if(o&&lv>=5&&zone==='head') hearts(x,y,Math.min(5,lv-3)); charReact(t.querySelector('.art'),lv,zone);
@@ -5261,6 +5429,9 @@ document.addEventListener('click',async e=>{
       if(l&&sy){ sy.textContent=sub(l); sy.hidden=false; sy.classList.remove('pop'); void sy.offsetWidth; sy.classList.add('pop'); clearTimeout(window._csT); window._csT=setTimeout(()=>{if(sy.isConnected)sy.hidden=true;},3200); if(c.voiceId&&SND().voiceLobby) speak(c,l); }
       if(o){ addAff(c,1); mark('prog'); } break; }
   case 'cstab': { CS_TAB=t.dataset.k; document.querySelectorAll('.cs-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.k===CS_TAB)); document.querySelectorAll('[data-cs]').forEach(s=>s.hidden=s.dataset.cs!==CS_TAB); break; }
+  case 'upgen': { const c=charById(id); if(!c) break; if(!String(c.naiPrompt||'').trim()){toast('먼저 설정 편집에서 NAI 스탠딩 프롬프트를 채워 주세요');break;} if(!imgReady()){toast(imgNeed());break;} t.disabled=true; t.textContent='그리는 중…';
+      try{ const b=await naiDrawItem({k:'upper',o:c.upper,c}); await storeImage(c.upper,b,''); mark('c:'+c.id); toast('상반신을 그렸어요'); openChar(c.id); }catch(err){ toast(naiErr(err,'상반신 실패')); t.disabled=false; t.textContent='NAI로 상반신'; } break; }
+  case 'updel': { const c=charById(id); if(!c||!c.upper) break; c.upper.img=null; mark('c:'+c.id); openChar(c.id); break; }
   case 'ilgen': { const c=charById(id); if(!c) break; const k=t.dataset.k==='lbcg'?'lbcg':'illust'; const sc=$(k==='lbcg'?'#lb_scene':'#il_scene'); if(sc){ c[k].prompt=sc.value.trim(); mark('c:'+c.id); } if(!String(c.naiPrompt||'').trim()){toast('먼저 설정 편집에서 NAI 스탠딩 프롬프트를 채워 주세요');break;} openNaiPrep(k,c.id); break; }
   case 'ilai': { const c=charById(id); if(!c) break; const k=t.dataset.k==='lbcg'?'lbcg':'illust', inp=$(k==='lbcg'?'#lb_scene':'#il_scene');
       const want=k==='lbcg'?`${T('limit')}를 끝까지 해서 플레이어와 가장 가까워진 순간을 담은 특별 일러스트. 감정이 터지는 한 장면, 드라마틱한 빛과 배경`:'로비와 픽업 화면에 쓸 대표 일러스트. 캐릭터의 개성과 세계관이 드러나는 배경';
@@ -5275,14 +5446,18 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
   case 'cguse': { const o=own(id); if(!o) break; o.useCg=t.checked; mark('prog'); toast(o.useCg?'로비에 '+T('limit')+' CG를 써요':'로비에 기본 일러스트를 써요'); break; }
   case 'ildel': { const c=charById(id), k=t.dataset.k==='lbcg'?'lbcg':'illust'; if(!c||!confirm(k==='lbcg'?T('limit')+' CG를 지울까요?':'일러스트를 지울까요?')) break; const o=c[k]; o.img=null; try{ await idbDel(IMGNS+o.id); }catch(err){} if(imgCache[o.id]){ URL.revokeObjectURL(imgCache[o.id]); delete imgCache[o.id]; } mark('c:'+c.id); render(); openChar(id); break; }
   case 'setsec': p.sec=id; mark('prog'); closeModal(); tab='lobby'; render(); break;
-  case 'gift': { const c=charById(id); if(p.gems<300){toast(T('currency')+'이(가) 부족해요');break;} p.gems-=300; addAff(c,40); mark('prog'); render(); openChar(id); break; }
+  case 'gift': openGift(id); break;
+  case 'giftgive': { const c=charById(id), g=giftById(t.dataset.v), inv=GI(); if(!c||!g||!(inv[g[0]]>0)) break; inv[g[0]]--; const like=giftLikes(c).has(g[0]), val=g[3]*(like?2:1);
+      p.giftSeen=p.giftSeen||{}; (p.giftSeen[c.id]=p.giftSeen[c.id]||{})[g[0]]=like?2:1; addAff(c,val); mark('prog'); sfx(like?'SSR':'확인');
+      const line=like?rand((c.affLines&&Object.values(c.affLines).flat().length?Object.values(c.affLines).flat():c.lines)):rand(c.lines); if(line) linePop(c,line,like?'웃음':'');
+      if(like) hearts(innerWidth/2,innerHeight/2,4); toast(`${g[1]} → ${c.name} 호감도 +${val}${like?' (정말 좋아해요!)':''}`); openGift(id); break; }
   case 'upload': uploadFor={kind:t.dataset.k,id}; $('#file').click(); break;
   case 'copy': try{await navigator.clipboard.writeText(t.dataset.text||'');toast('복사했어요');}catch(err){toast('복사하지 못했어요. 길게 눌러 직접 복사해 주세요.');} break;
   case 'copyfield': { const f=$('#'+t.dataset.f); try{await navigator.clipboard.writeText(f.value);toast('복사했어요');}catch(err){f.select();toast('선택한 텍스트를 직접 복사해 주세요');} break; }
   case 'charedit': openCharEdit(id); break;
   case 'charnew': openCharEdit(null); break;
   case 'savechar': { if(id){const c=charById(id);if(!readCharForm(c))break;mark('c:'+id);closeModal();render();openChar(id);}
-      else{const c=cleanChar({});if(!readCharForm(c))break;G.chars.push(c);mark('c:'+c.id);closeModal();render();openChar(c.id);} break; }
+      else{const c=cleanChar({});if(!readCharForm(c))break;G.chars.push(c);mark('c:'+c.id);closeModal(); if(NEWPU){ const lim=NEWPU==='limited'; NEWPU=false; addPickupFor(c,lim); tab='contract'; render(); toast(`${c.name} 픽업이 열렸어요`); artAfterAI(x=>x.o===c||x.c===c,'신규 '+T('crew')+' '+c.name); } else { render(); openChar(c.id); } } break; }
   case 'delchar': if(confirm('이 '+T('crew')+'을(를) 삭제할까요? 에피소드와 성장 기록도 함께 사라져요.')){G.chars=G.chars.filter(c=>c.id!==id);delete p.owned[id];p.squad=p.squad.filter(x=>x!==id);if(p.sec===id)p.sec=null;mark('c:'+id,'prog');closeModal();render();} break;
   case 'ainai': { const r=await aiJSON(`${RULES}\n세계관: ${G.world.summary}\n캐릭터: ${$('#f_name').value}, ${$('#f_elem').value}속성 ${ROLE[$('#f_role').value]}. ${$('#f_prof').value}\n이 캐릭터의 스탠딩 일러스트용 프롬프트를 써라. ${NAI_CHAR}\nJSON만 출력: {"naiPrompt":"..."}`,t,'quick');
       if(r&&r.naiPrompt&&$('#f_nai')) $('#f_nai').value=String(r.naiPrompt); break; }
@@ -5330,7 +5505,7 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
   case 'vnskip': e.stopPropagation(); vnEnd(); break;
   case 'vnlog': e.stopPropagation(); openModal(`${head('대화 기록')}${S.log.map(L=>`<p style="margin:6px 0">${L.type==='say'?`<b>${esc(isMe(L.who)?playerName():L.who)}</b> ${esc(sub(L.text))}`:L.type==='place'?`<span class="muted">[${esc(L.text)}]</span>`:`<i class="muted">${esc(sub(L.text))}</i>`}</p>`).join('')}`); break;
   case 'bauto': B.auto=!B.auto; t.classList.toggle('on',B.auto); break;
-  case 'bspeed': B.speed=B.speed>=3?1:B.speed+1; t.textContent=B.speed+'x'; t.classList.toggle('on',B.speed>1); bRun(); break;
+  case 'bspeed': B.speed=B.speed>=3?1:B.speed+1; P().settings.bspeed=B.speed; mark('prog'); t.textContent=B.speed+'x'; t.classList.toggle('on',B.speed>1); bRun(); break;
   case 'burst': if(B&&B.burst>=100) doBurst(); else toast('BURST 게이지가 다 차야 해요'); break;
   case 'bquit': if(B&&(B.ctx.kind==='raid'||B.ctx.kind==='rogue')){ if(confirm(B.ctx.kind==='raid'?'여기서 끝낼까요? 지금까지 준 피해는 기록돼요.':'후퇴하면 이번 탐사가 끝나요. 지금까지의 보상은 받아요.')){ if(!B.over) bEnd(false); } break; }
       if(confirm('후퇴할까요? 보상은 받을 수 없어요.')){clearInterval(B.timer);B=null;closeOv();render();} break;
@@ -5380,7 +5555,12 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
       if(k==='enemy'){ const r=await aiJSON(`세계관: ${G.world.summary}\n${G.world.lore}\n적 "${nm}"${ds?' ('+ds+')':''}의 NovelAI 외형 프롬프트를 영어 태그로 써라. 괴물이나 기계면 "no humans"로, 사람형 적이면 "1other, faceless"나 성별 태그로 시작한다. 생김새, 재질, 색, 빛, 무기, 위압감을 넣고 자세·배경·화풍 태그는 쓰지 않는다.\nJSON만 출력: {"prompt":"..."}`,t,'quick'); if(r&&r.prompt&&$('#li_prompt')) $('#li_prompt').value=String(r.prompt); break; }
       const r=await aiJSON(`세계관: ${G.world.summary}\n${k==='bg'?'배경':'소품'} "${nm}"${ds?' ('+ds+')':''}의 NovelAI 이미지 프롬프트를 영어 태그로 써라. ${k==='bg'?'"no humans, scenery"로 시작하고 장소, 시간대, 날씨, 조명, 분위기 태그를 넣고 "anime background, highly detailed"로 끝낸다.':'"no humans, object focus"로 시작하고 물건의 모양, 재질, 디테일 태그를 넣고 "simple background, white background"로 끝낸다.'}\nJSON만 출력: {"prompt":"..."}`,t,'quick');
       if(r&&r.prompt&&$('#li_prompt')) $('#li_prompt').value=String(r.prompt); break; }
-  case 'aichar-open': openAiChar(); break;
+  case 'aichar-open': openNewPickup(); break;
+  case 'newpu': openNewPickup(); break;
+  case 'newpu-hand': { NEWPU=$('#pu_lim').value==='limited'?'limited':'pickup'; closeModal(); openCharEdit(null); break; }
+  case 'newpu-ai': { const con=$('#pu_c').value.trim(); if(!con){toast('어떤 '+T('crew')+'인지 적어 주세요');break;} const rr=$('#pu_r').value, lim=$('#pu_lim').value==='limited';
+      const r=await aiJSON(`${RULES}\n${ctx()}\n\n새 픽업 배너의 주인공이 될 신규 ${T('crew')} 1명을 만들어라. 요청: "${con}"${rr!=='ai'?` 희귀도는 ${rr}.`:''} 기존 ${T('crew')}과 이름·외모·역할이 겹치지 않게 하고, 메인 플롯이나 세력과 연결되는 비밀을 ${T('files')}에 넣는다. 첫 등장(intro) 대사는 픽업 연출에 어울리게 인상적으로.\nJSON 객체만 출력: ${charSchema()}\n희귀도가 높을수록 능력치 합이 높다. 지원형은 heal/shield/buff, 방어형은 체력과 방어가 높다. ${NAI_CHAR}`,t);
+      if(r){ const c=cleanChar(r); if(rr!=='ai') c.rarity=+rr; if(!c.name)c.name='이름 없음'; G.chars.push(c); mark('c:'+c.id); addPickupFor(c,lim); closeModal(); tab='contract'; render(); toast(`신규 ${RL[c.rarity]} ${c.name} 픽업이 열렸어요!`); artAfterAI(x=>x.o===c||x.c===c,'신규 '+T('crew')+' '+c.name); } break; }
   case 'aichar': { const con=$('#ai_c').value.trim(); if(!con){toast('어떤 '+T('crew')+'인지 적어 주세요');break;}
       const r=await aiJSON(`${RULES}\n${ctx()}\n\n새 ${T('crew')} 1명을 만들어라. 요청: "${con}"\n메인 플롯이나 세력과 연결되는 비밀을 ${T('files')}에 넣는다.\nJSON 객체만 출력: ${charSchema()}\n희귀도가 높을수록 능력치 합이 높다. 지원형은 heal/shield/buff, 방어형은 체력과 방어가 높다. ${NAI_CHAR}`,t);
       if(r){ const c=cleanChar(r); if(!c.name)c.name='이름 없음'; G.chars.push(c); mark('c:'+c.id); closeModal(); render(); openChar(c.id); artAfterAI(x=>x.o===c||x.c===c,'새 '+T('crew')+' '+c.name); toast(`${c.name}이(가) 추가됐어요`);} break; }
@@ -5438,7 +5618,11 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
   case 'facedel': { const c=charById(id); c.faces=c.faces.filter(x=>x.id!==t.dataset.f); mark('c:'+id); openChar(id); break; }
   case 'faces-open': FACESEL=new Set(); openFaces(id); break;
   case 'facesel': { const v=t.dataset.v; FACESEL.has(v)?FACESEL.delete(v):FACESEL.add(v); t.classList.toggle('on'); break; }
-  case 'facego': { const c=charById(id), list=[...FACESEL]; if(!list.length){toast('표정을 골라 주세요');break;} if(!naiCfg().key){toast('설정의 그림 AI에 NovelAI 토큰을 넣어 주세요');break;}
+  case 'faceup': uploadFor={kind:'face',id,name:t.dataset.v}; $('#file').click(); break;
+  case 'faceupnew': { const nm=($('#fc_new').value||'').trim().slice(0,12); if(!nm){toast('표정 이름을 적어 주세요');break;} uploadFor={kind:'face',id,name:nm}; $('#file').click(); break; }
+  case 'faceupmany': uploadFor={kind:'faces',id}; $('#filesm').click(); break;
+  case 'facedel': { const c=charById(id); if(!c) break; c.faces=c.faces.filter(f=>f.name!==t.dataset.v); mark('c:'+c.id); openFaces(id); break; }
+  case 'facego': { const c=charById(id), list=[...FACESEL]; if(!imgSrc(c)){toast('먼저 기본 스탠딩이 있어야 해요');break;} if(!list.length){toast('표정을 골라 주세요');break;} if(!naiCfg().key){toast('설정의 그림 AI에 NovelAI 토큰을 넣어 주세요');break;}
       const lv=+$('#fc_lv').value, x=$('#fc_x').value.trim(), src=imgSrc(c); t.disabled=true; let n=0;
       for(const ko of list){ const en=(FACE_PRESETS.find(p=>p[0]===ko)||[])[1]||'happy'; const st=$('#fc_stat'); if(st) st.textContent=`${n}/${list.length} · ${ko} 그리는 중…`;
         try{ const b=$('#fc_m')&&$('#fc_m').value==='ref'?await naiDraw('char',joinTags(c.naiPrompt,FACE_TAGS[en]||en,x),{pose:c.naiPose||undefined,frame:c.naiFrame,styleId:c.naiStyle,refs:[{image:await refImage(src),type:'character&style',strength:1,fidelity:1}]}):await naiEmotion(src,en,x,lv); let f=c.faces.find(q=>q.name===ko); if(!f){f={id:'f'+uid(),name:ko,img:null};c.faces.push(f);} await storeImage(f,b,''); mark('c:'+c.id); n++; }
@@ -5492,9 +5676,9 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
   case 'farmstart': { P().squad=[...squadSel]; mark('prog'); closeModal(); startStage(farmStage(t.dataset.k,+t.dataset.lv),{kind:'farm'}); break; }
   case 'sweep': { const r=farmReward(t.dataset.k,+t.dataset.lv); giveReward(r); bump('battle'); sfx('확인'); toast('소탕 완료: '+rewardText(r)); render(); break; }
   case 'dispset': DSEL={id,ids:[]}; openDispSel(id); break;
-  case 'dsel': { const a=DSEL.ids; a.includes(id)?a.splice(a.indexOf(id),1):a.push(id); openDispSel(DSEL.id); break; }
-  case 'dispgo': { const d=G.dispatches.find(x=>x.id===DSEL.id); P().disp[d.id]={chars:[...DSEL.ids],start:Date.now(),hours:d.hours}; bump('dispatch'); mark('prog'); closeModal(); render(); toast(`${d.name} 출발`); break; }
-  case 'dispget': { const d=G.dispatches.find(x=>x.id===id); giveReward(d.reward); (P().disp[id].chars||[]).forEach(cid=>{const c=charById(cid);if(c)addAff(c,10);}); delete P().disp[id]; mark('prog'); sfx('확인'); toast(`${d.name} 완료: ${rewardText(d.reward)}`); render(); break; }
+  case 'dsel': { const a=DSEL.ids, d0=G.dispatches.find(x=>x.id===DSEL.id); if(a.includes(id)) a.splice(a.indexOf(id),1); else { if(d0&&a.length>=d0.need){ toast(`${d0.need}명까지만 보낼 수 있어요`); break; } a.push(id); } openDispSel(DSEL.id); break; }
+  case 'dispgo': { const d=G.dispatches.find(x=>x.id===DSEL.id); if(!d||DSEL.ids.length!==d.need){ toast(`${d?d.need:''}명을 골라 주세요`); break; } P().disp[d.id]={chars:[...DSEL.ids],start:Date.now(),hours:d.hours}; bump('dispatch'); mark('prog'); closeModal(); render(); toast(`${d.name} 출발`); break; }
+  case 'dispget': { const d=G.dispatches.find(x=>x.id===id); const dr=Object.assign({},d.reward,{gift:d.hours>=4?2:1}); if(dr.gems){ dr.gold=(dr.gold||0)+dr.gems*100; delete dr.gems; } giveReward(dr); (P().disp[id].chars||[]).forEach(cid=>{const c=charById(cid);if(c)addAff(c,10);}); delete P().disp[id]; mark('prog'); sfx('확인'); toast(`${d.name} 완료: ${rewardText(dr)}`); render(); break; }
   case 'dispcancel': if(confirm('파견을 취소할까요? 보상은 받지 못해요.')){ delete P().disp[id]; mark('prog'); render(); } break;
   case 'mget': { const m=MISSIONS.find(x=>x.k===t.dataset.k), d=dm(); if(d.got[m.k]||(d.cnt[m.k]||0)<m.goal) break; d.got[m.k]=true; P().pass.xp+=m.xp; giveReward({gems:50}); sfx('확인'); render(); break; }
   case 'pget': { const l=+t.dataset.lv; if(l>passLv()||P().pass.got.includes(l)) break; P().pass.got.push(l); const r=passReward(l); giveReward(r); sfx('확인'); toast(`패스 ${l}단계: ${rewardText(r)}`); render(); break; }
@@ -5691,7 +5875,9 @@ setupAI(); render(); loadAudio().then(()=>sceneBgm());
   if(o.failed){ o.failed=false; if(o.build) o.badBuild=o.build; saveLV(o); setTimeout(()=>toast('새 버전이 실행되지 않아 설치 버전으로 돌아왔어요'),1500); }
   if(o.superseded){ delete o.superseded; saveLV(o); }
   if(IS_NATIVE&&o.auto!==false&&Date.now()-(o.checked||0)>3*3600e3) setTimeout(()=>checkUpdate(false),5000);
+  if(!IS_NATIVE) setTimeout(()=>{ try{ checkNoticeWeb(); }catch(e){} },5000);
   setTimeout(()=>{ try{ syCheckOnStart(); }catch(e){} },3500);
+  if(PCS()) setTimeout(()=>{ try{ pcStart(); }catch(e){} },2500);
   if(!IS_NATIVE){ try{ navigator.storage&&navigator.storage.persist&&navigator.storage.persist(); }catch(e){} if(IS_IOS&&!IS_STANDALONE&&!localStorage.getItem('ggm-a2hs')){ let n=0; const tryA=()=>{ if(localStorage.getItem('ggm-a2hs')) return; if($('#modal').hidden&&$('#ov').hidden) openA2HS(true); else if(n++<400) setTimeout(tryA,3000); }; setTimeout(tryA,2500); } }
 })();
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&!$('#ov').querySelector('.title')&&P().seenOpening) setTimeout(()=>liveTick(false),800); });

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.10.08.18'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.10.08.22'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   try{
@@ -944,6 +944,21 @@ kbd{display:inline-block;min-width:1.4em;padding:1px 6px;font:600 .75rem/1.4 var
 .ph-tabs button.on{color:var(--ink);border-bottom-color:var(--rose)}
 .fc-tag{font-size:.62rem;font-weight:700;padding:1px 5px;margin-left:4px;background:var(--rose);color:var(--rose-ink);vertical-align:middle}
 .ph-sw{flex:none;height:38px;padding:0 10px}
+.lobby .lb-far{position:absolute;inset:-14px;z-index:0;background-size:cover;background-position:center;transform:translate3d(calc(var(--px,0)*-10px),calc(var(--py,0)*-6px),0) scale(1.04);will-change:transform}
+.lobby.layer .lb-stage{background:transparent!important}
+.lobby.layer .lb-stage{transform:translate3d(calc(var(--px,0)*6px),calc(var(--py,0)*3px),0)}
+.lobby.layer .lobby-art{animation:breathe 4.5s ease-in-out infinite alternate}
+.lobby-pose{object-fit:contain;object-position:50% 100%}
+.lbl-pair{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:start}
+.lbl-prev{position:relative;aspect-ratio:3/4;overflow:hidden;border:1px solid var(--line);background:#111}
+.lbl-prev .lbl-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background-size:cover;background-position:center}
+.lbl-prev .lbl-ch{position:absolute;left:0;right:0;bottom:0;margin:auto;height:92%;width:100%;object-fit:contain;object-position:50% 100%}
+.lbl-side{display:flex;flex-direction:column;gap:4px}
+.lb-season{position:absolute;left:50%;transform:translateX(-50%);top:124px;white-space:nowrap;z-index:6;display:flex;align-items:center;gap:6px;padding:4px 10px 4px 6px;background:rgba(14,16,20,.82);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:.74rem}
+.lb-season i{font-style:normal}.lb-season b{font-family:var(--hd)}.lb-season span{color:var(--rose);font-weight:700}
+body.desk .lb-season{top:84px}
+.season-now{display:flex;gap:12px;align-items:center;padding:12px;background:var(--panel);border:1px solid var(--line)}
+.season-now em{font-style:normal;font-size:1.8rem}.season-now b{display:block;font-family:var(--hd)}.season-now span{color:var(--sub);font-size:.84rem}
 #bootsync{position:fixed;inset:0;z-index:2147482000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
 #bootsync .bs-box{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
 #bootsync b{font-family:var(--hd)}
@@ -1182,6 +1197,10 @@ kbd{display:inline-block;min-width:1.4em;padding:1px 6px;font:600 .75rem/1.4 var
 .r-shy{animation:shy .9s ease!important}
 @keyframes shy{20%{transform:translateX(-5px) rotate(-1.5deg) scale(.99)}45%{transform:translateX(4px) rotate(1deg)}70%{transform:translateX(-2px) rotate(-.4deg)}100%{transform:none}}
 .lobby-art,.lobby-ill,.cs-art .art,.fs-art{transform-origin:50% 100%}
+/* 일러스트는 배경까지 한 장이라 움직이면 배경이 같이 흔들려요 → 고정, 터치 반응은 빛으로 */
+.lobby-ill{animation:none!important;transform:none!important}
+.lobby-ill.r-hop,.lobby-ill.r-nod,.lobby-ill.r-flinch,.lobby-ill.r-shy{animation:illglow .7s ease-out!important}
+@keyframes illglow{0%{filter:brightness(1)}30%{filter:brightness(1.12) saturate(1.08)}100%{filter:brightness(1)}}
 /* lobby layout v2 */
 .lb-left,.lb-right{top:82px;gap:4px}
 .lb-ico{width:48px;gap:0}
@@ -1554,6 +1573,8 @@ function naiDraw(kind,base,opt){
 }
 function naiDrawItem(it){
   if(it.k==='upper'){ const c=it.c; return naiDraw('char',joinTags(c.naiPrompt,it.o.prompt),{frame:'upper body',pose:'looking at viewer, smile',styleId:c.naiStyle}); }
+  if(it.k==='lbbg'){ const c=it.c; return naiDraw('bg',it.o.prompt||(c.illust&&c.illust.prompt)||'cozy room interior, window, soft light',{}); }
+  if(it.k==='pose'){ const c=it.c; return naiDraw('char',joinTags(c.naiPrompt,it.o.prompt),{frame:'cowboy shot',pose:it.o.prompt?'':'dynamic pose, looking at viewer, smile, hand up, white background, simple background',styleId:c.naiStyle}); }
   if(it.k==='illust'||it.k==='lbcg'){ const c=it.c; return naiDraw(it.k,joinTags(c.naiPrompt,it.o.prompt),{pose:it.o.naiPose!=null?it.o.naiPose:undefined,styleId:c.naiStyle,frame:it.o.naiFrame}); }
   if(it.k==='cg') return naiDraw('cg',null,{item:it.o,styleId:it.o.naiStyle});
   if(it.k==='char') return naiDraw('char',it.o.naiPrompt,{pose:it.o.naiPose||undefined,styleId:it.o.naiStyle,frame:it.o.naiFrame});
@@ -2475,7 +2496,7 @@ const DEFAULT_OPENING = {
 
 const DEFAULT_PROG = {gems:3600,pity:0,total:0,owned:{},cleared:{},squad:[],sec:null,daily:'',
   settings:{ssr:4,sr:18,pity:70},firstTen:true,adult:true,show19:true,history:[],savedAt:0,
-  gold:20000,mat:{exp:40,wmat:20,core:10},pities:{},tokens:{},disp:{},dm:{date:'',cnt:{},got:{}},pass:{xp:0,got:[]},farmClear:{},shopBuy:{},curBanner:'',curEvent:'',live:{on:{talk:true,event:true,rerun:true,rotate:true,pass:true,chapter:false},last:{},notices:[],seen:0,recentPU:[]},
+  gold:20000,mat:{exp:40,wmat:20,core:10},pities:{},tokens:{},disp:{},dm:{date:'',cnt:{},got:{}},pass:{xp:0,got:[]},farmClear:{},shopBuy:{},curBanner:'',curEvent:'',live:{on:{talk:true,event:true,rerun:true,rotate:true,pass:true,chapter:false,season:true},last:{},notices:[],seen:0,recentPU:[],seasons:{story:true,event:true,char:true,rerun:true,train:true},season:null},
   player:'',gender:'',inbox:{},seenOpening:false,lobbyBg:'',titleBg:'',titleChar:'',gachaBg:''};
 
 /* =========================================================
@@ -2568,6 +2589,8 @@ function fix(g){
     c.episodes.forEach(e=>{e.dup=e.dup||0;e.after=e.after||'';});
     if(!c.illust||typeof c.illust!=='object') c.illust={id:'il_'+c.id,kind:'illust',name:c.name+' 일러스트',prompt:'',img:null}; c.illust.kind='illust'; c.illust.id=c.illust.id||'il_'+c.id; c.illust.name=c.name+' 일러스트';
     if(!c.upper||typeof c.upper!=='object') c.upper={id:'up_'+c.id,kind:'upper',name:c.name+' 상반신',prompt:'',img:null}; c.upper.id=c.upper.id||'up_'+c.id;
+    if(!c.pose||typeof c.pose!=='object') c.pose={id:'po_'+c.id,kind:'pose',name:c.name+' 로비 포즈',prompt:'',img:null}; c.pose.id=c.pose.id||'po_'+c.id;
+    if(!c.lbbg||typeof c.lbbg!=='object') c.lbbg={id:'lg_'+c.id,kind:'lbbg',name:c.name+' 로비 배경',prompt:'',img:null}; c.lbbg.id=c.lbbg.id||'lg_'+c.id;
     if(!c.lbcg||typeof c.lbcg!=='object') c.lbcg={id:'lb_'+c.id,kind:'lbcg',name:'',prompt:'',img:null}; c.lbcg.kind='lbcg'; c.lbcg.id=c.lbcg.id||'lb_'+c.id; c.lbcg.name=c.name+' '+((g.meta&&g.meta.terms&&g.meta.terms.limit)||'돌파')+' CG';
   });
   g.chapters.forEach(ch=>{ch.kind=ch.kind||'main';});
@@ -2580,7 +2603,7 @@ function fix(g){
   syncEnemies(g);
   [['gems','currency','blue crystal gem, faceted crystal, glowing, sparkle'],['gold','gold','gold coin, embossed star emblem, shiny metal'],['exp','expMat','glowing data chip, holographic record, blue light'],['wmat','wMat','mechanical parts, gears and bolts, metal'],['core','core','hexagonal energy core, pink glow, crystal inside']].forEach(([k,t,pr])=>{ if(!g.lib.some(l=>l.kind==='icon'&&l.key===k)) g.lib.push({id:'ic_'+k,kind:'icon',key:k,name:((g.meta.terms||{})[t]||t)+' 아이콘',prompt:pr,img:null}); });
   const pd=clone(DEFAULT_PROG); ['mat','dm','pass'].forEach(k=>{g.prog[k]=Object.assign(clone(pd[k]),g.prog[k]||{});});
-  { const dl=clone(DEFAULT_PROG.live), l0=g.prog.live||{}; g.prog.live=Object.assign(dl,l0); g.prog.live.on=Object.assign(clone(DEFAULT_PROG.live.on),l0.on||{}); g.prog.live.last=l0.last||{}; g.prog.live.notices=Array.isArray(l0.notices)?l0.notices:[]; g.prog.live.recentPU=Array.isArray(l0.recentPU)?l0.recentPU:[]; }
+  { const dl=clone(DEFAULT_PROG.live), l0=g.prog.live||{}; g.prog.live=Object.assign(dl,l0); g.prog.live.on=Object.assign(clone(DEFAULT_PROG.live.on),l0.on||{}); g.prog.live.seasons=Object.assign(clone(DEFAULT_PROG.live.seasons),l0.seasons||{}); g.prog.live.last=l0.last||{}; g.prog.live.notices=Array.isArray(l0.notices)?l0.notices:[]; g.prog.live.recentPU=Array.isArray(l0.recentPU)?l0.recentPU:[]; }
   ['pities','tokens','disp','farmClear','shopBuy'].forEach(k=>{if(!g.prog[k]||typeof g.prog[k]!=='object')g.prog[k]={};});
   g.prog.shop=Object.assign({day:'',buy:{}},g.prog.shop||{}); g.prog.cash=Object.assign({first:{},month:{until:0,last:''},total:0},g.prog.cash||{}); g.prog.cash.first=g.prog.cash.first||{}; g.prog.cash.month=Object.assign({until:0,last:''},g.prog.cash.month||{});
   g.meta.shop=Object.assign(clone(DEFAULT_META.shop),g.meta.shop||{});
@@ -2635,7 +2658,7 @@ async function idbKeys(){const d=await idbOpen();return new Promise((res,rej)=>{
 async function idbDel(k){const d=await idbOpen();return new Promise((res,rej)=>{const t=d.transaction('img','readwrite');t.objectStore('img').delete(k);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
 async function voiceStats(){let n=0,b=0;try{for(const k of await idbKeys()){if(String(k).startsWith('v_')){n++;const x=await idbGet(k);b+=x&&x.size||0;}}}catch(e){}return {n,mb:(b/1048576).toFixed(1)};}
 async function idbGet(k){const d=await idbOpen();return new Promise((res,rej)=>{const t=d.transaction('img');const q=t.objectStore('img').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}
-function imgObjsOf(g){const a=[...(g.chars||[]),...(g.lib||[])];(g.chars||[]).forEach(c=>{a.push(...(c.faces||[]),...(c.skins||[]));if(c.weapon)a.push(c.weapon);if(c.illust)a.push(c.illust);if(c.upper)a.push(c.upper);if(c.lbcg)a.push(c.lbcg);});return a.filter(o=>o&&o.id);}
+function imgObjsOf(g){const a=[...(g.chars||[]),...(g.lib||[])];(g.chars||[]).forEach(c=>{a.push(...(c.faces||[]),...(c.skins||[]));if(c.weapon)a.push(c.weapon);if(c.illust)a.push(c.illust);if(c.upper)a.push(c.upper);if(c.pose)a.push(c.pose);if(c.lbbg)a.push(c.lbbg);if(c.lbcg)a.push(c.lbcg);});return a.filter(o=>o&&o.id);}
 function allImgObjs(){return imgObjsOf(G);}
 async function loadIdbImages(){
   let ch=false;
@@ -2711,7 +2734,7 @@ document.getElementById('afile').addEventListener('change',async e=>{
 $('#file').addEventListener('change',async e=>{
   const f=e.target.files[0]; e.target.value=''; if(!f||!uploadFor) return;
   if(uploadFor.kind==='face'){ const c=charById(uploadFor.id); if(!c) return; try{ await addFaceFile(c,uploadFor.name,f); openFaces(c.id); toast(`표정 「${uploadFor.name}」을(를) 넣었어요`); }catch(err){ toast('이미지를 올리지 못했어요'); } return; }
-  if(ILK(uploadFor.kind)||uploadFor.kind==='upper'){ const c=charById(uploadFor.id); if(!c) return; toast('그림을 등록하는 중이에요'); try{ await storeImage(c[uploadFor.kind],await shrink(f,2200),''); mark('c:'+c.id); render(); openChar(c.id); toast(uploadFor.kind==='upper'?'상반신을 등록했어요':'일러스트를 등록했어요'); }catch(err){ toast('이미지를 올리지 못했어요'); } return; }
+  if(ILK(uploadFor.kind)||uploadFor.kind==='upper'||uploadFor.kind==='pose'||uploadFor.kind==='lbbg'){ const c=charById(uploadFor.id); if(!c) return; toast('그림을 등록하는 중이에요'); try{ let ub=await shrink(f,2200); if(uploadFor.kind==='pose'){ try{ const ai=await alphaInfo(ub); if(ai.border<0.5) ub=await cutoutWhite(ub); }catch(e){} } await storeImage(c[uploadFor.kind],ub,''); mark('c:'+c.id); render(); openChar(c.id); toast(uploadFor.kind==='upper'?'상반신을 등록했어요':'일러스트를 등록했어요'); }catch(err){ toast('이미지를 올리지 못했어요'); } return; }
   const o=uploadFor.kind==='char'?charById(uploadFor.id):libById(uploadFor.id); if(!o) return;
   toast('이미지를 등록하는 중이에요');
   const blob=await shrink(f,uploadFor.kind==='char'?1800:2000);
@@ -2980,15 +3003,28 @@ function bannerStep(d){ const bs=G.banners.filter(b=>b.active!==false); if(bs.le
   document.addEventListener('mousedown',e=>{ if(e.button===0) down(e.clientX,e.clientY,e.target); });
   document.addEventListener('mouseup',e=>{ up(e.clientX,e.clientY); });
 })();
+
+(()=>{ let tx=0,ty=0,cx=0,cy=0,raf=0; const step=()=>{ cx+=(tx-cx)*0.08; cy+=(ty-cy)*0.08; const l=document.querySelector('.lobby.layer'); if(l){ l.style.setProperty('--px',cx.toFixed(3)); l.style.setProperty('--py',cy.toFixed(3)); } raf=(Math.abs(tx-cx)+Math.abs(ty-cy)>0.002)?requestAnimationFrame(step):0; };
+  const set=(x,y)=>{ tx=Math.max(-1,Math.min(1,x)); ty=Math.max(-1,Math.min(1,y)); if(!raf) raf=requestAnimationFrame(step); };
+  document.addEventListener('pointermove',e=>{ if(e.pointerType==='mouse'&&document.querySelector('.lobby.layer')) set(e.clientX/innerWidth*2-1,e.clientY/innerHeight*2-1); },{passive:true});
+  addEventListener('deviceorientation',e=>{ if(e.gamma==null||!document.querySelector('.lobby.layer')) return; set(e.gamma/30,(e.beta-45)/30); },{passive:true});
+})();
 /* ===== 신규 픽업 만들기 ===== */
 let NEWPU=false;
 function openNewPickup(){
   openModal(`${head('신규 픽업 만들기',`<span class="muted">새 ${esc(T('crew'))}을(를) 구상하면 픽업 배너로 올라와요. ${esc(T('gacha'))}으로 데려와요.</span>`)}
     <label class="f" for="pu_c">어떤 ${esc(T('crew'))}인가요? (설정, 성격, 외모, 무기 등 자유롭게)</label><textarea class="in" id="pu_c" style="min-height:110px" placeholder="예: 몰락한 기사단의 마지막 단장. 말수가 적고 단 것을 좋아한다. 은발, 검은 갑옷, 대검."></textarea>
     <div class="g2"><div><label class="f" for="pu_r">희귀도</label><select class="in" id="pu_r">${opt([['3','SSR'],['2','SR'],['ai','AI가 정하기']],'3')}</select></div><div><label class="f" for="pu_lim">배너</label><select class="in" id="pu_lim">${opt([['pickup','픽업 (상시 풀에도 들어감)'],['limited','한정 (이 배너에서만)']],'pickup')}</select></div></div>
+    ${SAMPLE?`<label style="display:flex;gap:8px;margin-top:10px"><input type="checkbox" id="pu_story" checked><span>픽업 스토리도 같이 만들기 <span class="muted" style="font-size:.8rem">(이 ${esc(T('crew'))}이(가) 주인공인 짧은 이벤트 3화 · 몇 분 걸려요)</span></span></label>`:''}
     <div class="row" style="margin-top:12px"><button class="btn" data-act="newpu-ai" ${SAMPLE?'':'disabled'}>AI로 구상해서 올리기</button><button class="btn ghost" data-act="newpu-hand">직접 설정 입력</button></div>
     ${SAMPLE?'':'<p class="muted">AI로 구상하려면 설정 → 글 AI를 먼저 등록해 주세요.</p>'}`);
 }
+async function puStoryBg(c,lim){ // 배너는 이미 열렸고, 스토리는 뒤에서 써요
+  const b=G.banners.find(x=>x.type==='pickup'&&(x.pickup||[])[0]===c.id&&!x.eventId); liveBar(`${c.name}의 픽업 스토리를 쓰는 중… 몇 분 걸려요. 그동안 플레이해도 돼요.`);
+  try{ const res=await aiEventGen(`신규 ${T('crew')} 「${c.name}」의 픽업 기념 이벤트 스토리. ${c.name}이(가) 주인공으로 처음 등장해 성격·매력·사연을 보여 주고 ${playerName()}와(과) 인연을 맺는다. 프로필: ${String(c.profile||'').slice(0,300)}. 기존 ${T('crew')} 1~2명이 조연으로 나온다. 마지막 장면은 ${c.name}이(가) 동료가 되고 싶어 하는 여운으로 끝낸다.`,3,false,[c.name],null);
+    if(res&&b){ const ev=res.ev, eb=G.banners.find(x=>x.id===ev.bannerId); if(eb&&eb!==b) G.banners=G.banners.filter(x=>x!==eb); ev.bannerId=b.id; ev.pickupFor=c.id; ev.keepBanner=true; b.eventId=ev.id; b.desc=`신규 ${RL[c.rarity]} ${c.name} 등장! 픽업 스토리 「${ev.title}」`; P().curBanner=b.id; mark('prog'); render(); toast(`${c.name} 픽업 스토리 「${ev.title}」가 이벤트에 열렸어요`); }
+    else if(!res) toast('픽업 스토리를 만들지 못했어요. 배너는 그대로 열려 있어요'); }
+  finally{ liveBar(null); } }
 function addPickupFor(c,lim){
   if(lim){ c.limited=true; mark('c:'+c.id); }
   const b={id:'b'+uid(),name:`${c.name} 픽업`,type:'pickup',desc:`신규 ${RL[c.rarity]} ${c.name} 등장!`,pool:{mode:'all',factions:[],ids:[]},pickup:[c.id],rate:lim?70:50,active:true,bg:'',newAt:Date.now()};
@@ -3117,17 +3153,17 @@ const ICO={
 function charIllust(c){return c&&c.illust?imgSrc(c.illust):null;}
 function lobbyHTML(){
   const p=P(), c=charById(p.sec), has=c&&own(c.id), nx=nextStage(), evs=G.events.filter(e=>e.active!==false);
-  const oo=has?own(c.id):null, ill=has&&p.lobbyMode!=='stand'&&((oo.useCg&&oo.dup>=5&&imgSrc(c.lbcg))||charIllust(c));
+  const oo=has?own(c.id):null, layer=p.lobbyMode==='layer', ill=has&&p.lobbyMode!=='stand'&&!layer&&((oo.useCg&&oo.dup>=5&&imgSrc(c.lbcg))||charIllust(c)), pose=has&&layer&&c.pose&&imgSrc(c.pose);
   const bn=curBanner(), bup=bn&&((bn.pickup||[]).map(charById).filter(Boolean)[0]||bannerPool(bn).filter(x=>x.rarity===3)[0]);
   const TYPE={std:'STANDARD',pickup:'PICK UP',pool:'FACTION',event:'EVENT LIMITED'};
   const ico=(act,to,ic,label,badge,hot)=>`<button class="lb-ico ${hot?'hot':''}" data-act="${act}" ${to?`data-to="${to}"`:''}><span class="ic">${ICO[ic]}</span><b>${esc(label)}</b>${badge?`<em>${badge}</em>`:''}</button>`;
   const newN=p.live.notices.filter(n=>n.at>p.live.seen).length;
-  return `<div class="lobby ${ill?'ill':''} lbsz-${esc(p.lbSize||'fit')}">
-    <div class="lb-stage" ${has?'data-act="poke" role="button" tabindex="0"':'data-act="lbshow"'} style="${ill?'background:#000':bgStyle(p.lobbyBg||'새벽등대 사무소')}">
-      ${ill?`<img class="lobby-ill" src="${esc(ill)}" alt="${esc(c.name)}" draggable="false">`:has?art(c,'lobby-art'):''}<div class="lb-shade"></div>
+  return `<div class="lobby ${ill?'ill':''} ${layer?'layer':''} lbsz-${esc(p.lbSize||'fit')}">${layer?`<div class="lb-far" style="${has&&c.lbbg&&imgSrc(c.lbbg)?`background-image:url('${esc(imgSrc(c.lbbg))}')`:bgStyle(p.lobbyBg||'새벽등대 사무소')}"></div>`:''}
+    <div class="lb-stage" ${has?'data-act="poke" role="button" tabindex="0"':'data-act="lbshow"'} style="${ill?'background:#000':layer?'background:transparent':bgStyle(p.lobbyBg||'새벽등대 사무소')}">
+      ${ill?`<img class="lobby-ill" src="${esc(ill)}" alt="${esc(c.name)}" draggable="false">`:pose?`<img class="art lobby-art lobby-pose" src="${esc(pose)}" alt="${esc(c.name)}" draggable="false">`:has?art(c,'lobby-art'):''}<div class="lb-shade"></div>
     </div>
     <div class="lb-ui">
-      ${bn?`<button class="lb-banner" data-act="go" data-to="contract" data-swipe="banner"><span class="bgl" style="${bn.bg?bgStyle(bn.bg):bgStyle(p.gachaBg||'낙성 분화구')}"></span><span class="bt"><i>${TYPE[bn.type]||'RECRUIT'}</i><b>${esc(bn.name)}</b><span>${bup?esc(bup.name)+' 확률 업':esc(T('gacha'))}</span></span><span class="bf">${bup?art(bup):''}</span></button>`:''}
+      ${seasonChip()}${bn?`<button class="lb-banner" data-act="go" data-to="contract" data-swipe="banner"><span class="bgl" style="${bn.bg?bgStyle(bn.bg):bgStyle(p.gachaBg||'낙성 분화구')}"></span><span class="bt"><i>${TYPE[bn.type]||'RECRUIT'}</i><b>${esc(bn.name)}</b><span>${bup?esc(bup.name)+' 확률 업':esc(T('gacha'))}</span></span><span class="bf">${bup?art(bup):''}</span></button>`:''}
       <button class="lb-pass" data-act="go" data-to="pass"><i>SEASON PASS</i><b>Lv.${passLv()}</b>${passClaimable()?'<em></em>':''}</button>
       <div class="lb-left">
         ${ico('phone','','talk',T('talk'),unread()||'')}
@@ -3560,16 +3596,18 @@ function studioHTML(){
     <label class="f" for="desk_mode">PC 화면 (넓은 화면에서)</label><select class="in" id="desk_mode" data-act="deskmode">${opt([['auto','게임 화면을 가운데 세로로 + 옆 안내 (추천)'],['off','끄기 (창 전체를 씀)']],deskMode())}</select>
     <div class="row" style="margin-top:10px"><button class="btn sm" data-act="pxopen">중계 서버 설정</button>${IS_IOS&&!IS_STANDALONE?'<button class="btn sm ghost" data-act="a2hs">홈 화면에 추가하는 법</button>':''}</div></div>`}
   ${IS_NATIVE?`<div class="panel"><h3>앱 업데이트</h3><p class="muted" style="margin:0 0 10px">지금 버전: ${esc(window.__LIVE__?'온라인 업데이트 '+window.__LIVE__:'설치 버전 '+APP_BUILD)}. 새 버전이 나오면 앱이 GitHub에서 받아 와요. API 키는 이 기기에만 저장되고 어디로도 보내지 않아요(각 AI 회사 서버로 직접 요청할 때만 써요).</p>
-    <div class="row"><button class="btn sm" data-act="upd-open">업데이트 설정</button><button class="btn sm ghost" data-act="updcheck">지금 확인</button></div></div>`:''}
+    <div class="row"><button class="btn sm" data-act="upd-open">업데이트 설정</button><button class="btn sm ghost" data-act="updcheck">지금 확인</button></div></div>`:`<div class="panel"><h3>업데이트</h3><p class="muted" style="margin:0 0 10px">지금 버전: ${esc(APP_BUILD)}${onPcServer()?' · PC 서버로 실행 중':''}. 새 버전이 나오면 켤 때와 30분마다 확인해서 알려 드려요. 받기를 누르면 바로 새 버전으로 다시 열려요.</p>
+    <div class="row"><button class="btn sm ghost" data-act="webupdcheck">지금 확인</button></div></div>`}
   <div class="panel"><h3>라이브 운영</h3><p class="muted" style="margin:0 0 10px">앱을 켤 때 날짜를 보고 새 콘텐츠를 자동으로 만들어요. 켠 항목만큼 글 AI 요금이 들어요.</p>
-    <div class="chips">${[['talk','매일 새 '+T('talk')],['event','매주 새 이벤트'],['rerun','이벤트 복각'],['rotate','2주마다 확률 업 교체'],['pass','매달 '+T('pass')+' 초기화'],['chapter','매달 메인 다음 장']].map(([k,l])=>`<button class="chip ${P().live.on[k]?'on':''}" data-act="livetog" data-k="${k}">${esc(l)}</button>`).join('')}</div>
+    <div class="chips">${(P().live.on.season?[['season','2주 시즌 로테이션'],['talk','매일 새 '+T('talk')],['pass','매달 '+T('pass')+' 초기화']]:[['season','2주 시즌 로테이션'],['talk','매일 새 '+T('talk')],['event','매주 새 이벤트'],['rerun','이벤트 복각'],['rotate','2주마다 확률 업 교체'],['pass','매달 '+T('pass')+' 초기화'],['chapter','매달 메인 다음 장']]).map(([k,l])=>`<button class="chip ${P().live.on[k]?'on':''}" data-act="livetog" data-k="${k}">${esc(l)}</button>`).join('')}</div>
+    ${P().live.on.season?`<p class="muted" style="margin:8px 0 0;font-size:.82rem">스토리 → 이벤트 → 캐릭터 → 복각 → 육성 시즌이 2주마다 돌아가요. ${seasonNow()?'지금: '+esc(seasonMeta(seasonNow().type)[1])+' · ':''}<button class="linkb" data-act="seasoninfo">시즌 설정</button></p>`:''}
     <div class="row" style="margin-top:10px"><button class="btn sm" data-act="liverun">지금 업데이트 실행</button><button class="btn sm ghost" data-act="go" data-to="notice">공지 보기</button></div></div>
   <div class="panel"><h3>${esc(T('player'))}</h3><label class="f" for="pname">이름 (대사 속 {관리관} 자리에 들어가요)</label><input class="in" id="pname" data-pset="player" value="${esc(P().player)}" placeholder="${esc(T('player'))}" maxlength="12">
     <label class="f">성별 (AI가 쓰는 대사·호칭에 반영돼요)</label><select class="in" data-pset="gender">${opt([['','정하지 않음'],['m','남성'],['f','여성']],P().gender||'')}</select></div>
   <div class="panel"><h3>연출</h3>
     <div class="g2"><div><label class="f">타이틀 ${T('crew')}</label><select class="in" data-pset="titleChar"><option value="">자동</option>${G.chars.map(c=>`<option value="${c.id}" ${P().titleChar===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
     <div><label class="f">타이틀 배경</label><select class="in" data-pset="titleBg">${bgOptions(P().titleBg)}</select></div></div>
-    <div class="g2"><div><label class="f">로비·타이틀 표시</label><select class="in" data-pset="lobbyMode">${opt([['auto','일러스트가 있으면 일러스트'],['stand','항상 스탠딩 + 배경']],P().lobbyMode||'auto')}</select></div><div><label class="f">로비 캐릭터 크기</label><select class="in" data-pset="lbSize">${opt([['fit','위 배너에 안 가리게 (기본)'],['big','크게 (머리가 가려질 수 있어요)'],['small','작게']],P().lbSize||'fit')}</select></div></div>
+    <div class="g2"><div><label class="f">로비·타이틀 표시</label><select class="in" data-pset="lobbyMode">${opt([['auto','일러스트가 있으면 일러스트'],['layer','배경 + 캐릭터 따로 (캐릭터만 움직임)'],['stand','항상 스탠딩 + 배경']],P().lobbyMode||'auto')}</select></div><div><label class="f">로비 캐릭터 크기</label><select class="in" data-pset="lbSize">${opt([['fit','위 배너에 안 가리게 (기본)'],['big','크게 (머리가 가려질 수 있어요)'],['small','작게']],P().lbSize||'fit')}</select></div></div>
     <div class="g2"><div><label class="f">로비 배경</label><select class="in" data-pset="lobbyBg">${bgOptions(P().lobbyBg)}</select></div>
     <div><label class="f">기본 ${T('gacha')} 배경</label><select class="in" data-pset="gachaBg">${bgOptions(P().gachaBg,'기본')}</select></div></div>
     <div class="row" style="margin-top:12px"><button class="btn sm ghost" data-act="title">타이틀 보기</button><button class="btn sm ghost" data-act="opening-edit">오프닝 편집</button><button class="btn sm ghost" data-act="opening-play">오프닝 다시 보기</button></div></div>
@@ -3867,6 +3905,13 @@ function openChar(id){
     <p class="muted" style="margin:0 0 6px">배경 없는 상반신 그림이에요. 있으면 스토리와 ${T('crew')} 프로필에서 전신을 잘라 쓰는 대신 이 그림을 써요. 표정 그림이 있는 장면에서는 표정이 먼저예요.</p>
     <div class="ill-box up-box">${c.upper&&imgSrc(c.upper)?`<img src="${esc(imgSrc(c.upper))}" alt="">`:'<span>아직 없어요 · 없으면 전신 위쪽을 잘라서 보여 줘요</span>'}</div>
     <div class="row" style="margin-top:8px"><button class="btn sm" data-act="upgen" data-id="${c.id}">NAI로 상반신</button><button class="btn sm ghost" data-act="upload" data-k="upper" data-id="${c.id}">올리기</button>${c.upper&&imgSrc(c.upper)?`<button class="btn sm ghost" data-act="updel" data-id="${c.id}">지우기</button>`:''}</div>
+    <h3 class="sec">로비 레이어 (배경 + 캐릭터 따로)</h3>
+    <p class="muted" style="margin:0 0 6px;font-size:.8rem">배경과 투명 캐릭터를 따로 그려 겹쳐요. 로비에서 배경은 그대로, 캐릭터만 숨 쉬듯 움직여요. 배경이 없으면 로비 배경을, 포즈가 없으면 스탠딩을 써요.</p>
+    <div class="lbl-pair"><div class="lbl-prev">${c.lbbg&&imgSrc(c.lbbg)?`<img class="lbl-bg" src="${esc(imgSrc(c.lbbg))}" alt="">`:`<div class="lbl-bg" style="${bgStyle(P().lobbyBg||'새벽등대 사무소')}"></div>`}${c.pose&&imgSrc(c.pose)?`<img class="lbl-ch" src="${esc(imgSrc(c.pose))}" alt="">`:imgSrc(c)?`<img class="lbl-ch" src="${esc(imgSrc(c))}" alt="">`:''}</div>
+      <div class="lbl-side"><span class="muted">배경 ${c.lbbg&&imgSrc(c.lbbg)?'✓':'—'} · 포즈 ${c.pose&&imgSrc(c.pose)?'✓':'—'}</span>
+      <label class="f" for="lbbg_scene">배경 장면 태그</label><input class="in" id="lbbg_scene" value="${esc((c.lbbg&&c.lbbg.prompt)||'')}" placeholder="${esc((c.illust&&c.illust.prompt)||'cozy room, window, soft light')}"></div></div>
+    <div class="row" style="margin-top:8px"><button class="btn sm" data-act="posegen" data-id="${c.id}" data-w="both">NAI로 배경 + 포즈</button><button class="btn sm ghost" data-act="posegen" data-id="${c.id}" data-w="bg">배경만</button><button class="btn sm ghost" data-act="posegen" data-id="${c.id}" data-w="pose">포즈만</button></div>
+    <div class="row" style="margin-top:6px"><button class="btn sm ghost" data-act="upload" data-k="lbbg" data-id="${c.id}">배경 올리기</button><button class="btn sm ghost" data-act="upload" data-k="pose" data-id="${c.id}">포즈 올리기</button>${(c.pose&&imgSrc(c.pose))||(c.lbbg&&imgSrc(c.lbbg))?`<button class="btn sm ghost" data-act="posedel" data-id="${c.id}">지우기</button>`:''}</div>
     <h3 class="sec">일러스트 (로비·타이틀·픽업)</h3>
     <p class="muted" style="margin:0 0 6px">배경까지 그려진 세로 한 장 그림이에요. 있으면 로비, 타이틀, ${T('gacha')} 픽업 화면에 크게 쓰여요.</p>
     <div class="ill-box">${ill?`<img src="${esc(ill)}" alt="">`:'<span>아직 없어요</span>'}</div>
@@ -4410,6 +4455,56 @@ async function dailyTalks(){
   const old=G.threads.filter(t=>t.daily&&P().inbox[t.id]&&P().inbox[t.id].done); if(old.length>40){ old.slice(0,old.length-40).forEach(t=>{G.threads=G.threads.filter(x=>x!==t);mark('t:'+t.id);}); }
   return n;
 }
+/* ===== 시즌 로테이션 (2주마다 운영 테마가 바뀌어요) ===== */
+const SEASONS=[['story','스토리 시즌','메인 스토리 새 장이 열려요','📖'],['event','이벤트 시즌','기간 한정 이벤트와 한정 '+'캐릭터','🎪'],['char','캐릭터 시즌','신규 픽업 캐릭터와 그 캐릭터가 주인공인 픽업 스토리','✨'],['rerun','복각 시즌','지난 이벤트와 픽업이 돌아와요','🔁'],['train','육성 시즌','훈련 보상 2배 · 파견 보상 1.5배','💪']];
+const SEASON_DAYS=14;
+function seasonKey(){ return String(Math.floor(Date.now()/(SEASON_DAYS*864e5))); }
+function seasonNow(){ const L=P().live, s=L.season; return L.on.season&&s&&Date.now()<(s.until||0)?s:null; }
+function seasonIs(t){ const s=seasonNow(); return !!s&&s.type===t; }
+function seasonMeta(t){ return SEASONS.find(x=>x[0]===t)||SEASONS[0]; }
+function seasonNext(){ const L=P().live, en=SEASONS.filter(x=>L.seasons[x[0]]!==false).map(x=>x[0]); if(!en.length) return null; const cur=L.season&&L.season.type, i=en.indexOf(cur); return en[(i+1)%en.length]; }
+async function aiNewPickupChar(con,rr,btn){
+  const r=await aiJSON(`${RULES}\n${ctx()}\n\n새 픽업 배너의 주인공이 될 신규 ${T('crew')} 1명을 만들어라. 요청: "${con||'지금 세계관과 이야기 흐름에 어울리는 새 얼굴. 기존 인물과 다른 매력'}"${rr&&rr!=='ai'?` 희귀도는 ${rr}.`:''} 기존 ${T('crew')}과 이름·외모·역할이 겹치지 않게 하고, 메인 플롯이나 세력과 연결되는 비밀을 ${T('files')}에 넣는다. 첫 등장(intro) 대사는 픽업 연출에 어울리게 인상적으로.\nJSON 객체만 출력: ${charSchema()}\n희귀도가 높을수록 능력치 합이 높다. 지원형은 heal/shield/buff, 방어형은 체력과 방어가 높다. ${NAI_CHAR}`,btn);
+  if(!r) return null; const c=cleanChar(r); if(rr&&rr!=='ai') c.rarity=+rr; if(!c.name) c.name='이름 없음'; G.chars.push(c); mark('c:'+c.id); return c; }
+async function aiPickupStory(c,lim,link){
+  const b=addPickupFor(c,lim); if(!SAMPLE) return null;
+  const res=await aiEventGen(`신규 ${T('crew')} 「${c.name}」의 픽업 기념 이벤트 스토리. ${c.name}이(가) 주인공으로 처음 등장해 성격·매력·사연을 보여 주고 ${playerName()}와(과) 인연을 맺는다. 프로필: ${String(c.profile||'').slice(0,300)}. 기존 ${T('crew')} 1~2명이 조연으로 나온다. 픽업 배너와 이어지는 이야기라서 마지막 장면은 ${c.name}이(가) 동료가 되고 싶어 하는 여운으로 끝낸다.`,3,false,[c.name],null);
+  if(!res) return null; const ev=res.ev, eb=G.banners.find(x=>x.id===ev.bannerId);
+  if(eb&&eb!==b){ G.banners=G.banners.filter(x=>x!==eb); if(P().curBanner===eb.id) P().curBanner=b.id; }
+  ev.bannerId=b.id; ev.pickupFor=c.id; if(!link) ev.keepBanner=true; b.eventId=ev.id; b.desc=`신규 ${RL[c.rarity]} ${c.name} 등장! 픽업 스토리 「${ev.title}」`; if(ev.bg&&!b.bg) b.bg=ev.bg;
+  mark('prog'); return res; }
+async function seasonStart(type,notes){
+  const L=P().live, meta=seasonMeta(type), now=Date.now(), d0=new Date(); d0.setHours(5,0,0,0); if(d0.getTime()>now) d0.setDate(d0.getDate()-1); const until=d0.getTime()+SEASON_DAYS*864e5;
+  const act=G.events.filter(e=>e.active!==false), past=G.events.filter(e=>e.active===false);
+  const closeEv=()=>{ act.forEach(e=>{ e.active=false; const b=G.banners.find(x=>x.id===e.bannerId); if(b&&!e.keepBanner) b.active=false; }); if(act.length) notes.push(`이벤트 종료: ${act.map(e=>e.title).join(', ')}`); };
+  L.season={type,key:seasonKey(),start:now,until}; notes.push(`${meta[3]} ${meta[1]} 시작! ${meta[2]} (${new Date(until-1).toLocaleDateString('ko-KR')}까지)`);
+  if(type==='story'){ closeEv();
+    if(!SAMPLE) notes.push('글 AI가 없어서 새 장은 쓰지 못했어요');
+    else if(!nextStage()){ liveBar('스토리 시즌: 메인 스토리 다음 장을 쓰는 중…'); const res=await aiChapterGen('메인 플롯을 따라 자연스럽게 이어서. 시즌의 핵심 스토리답게 큰 전개를 넣는다',5,[],null); if(res) notes.push(`메인 스토리 「${res.ch.title}」 공개`); }
+    else notes.push('아직 진행 중인 메인 장이 있어요. 이번 시즌에 마저 즐겨 보세요'); }
+  else if(type==='event'){
+    if(SAMPLE){ liveBar('이벤트 시즌: 새 이벤트를 만드는 중… 몇 분 걸려요. 그동안 플레이해도 돼요.'); const res=await aiEventGen('',4,true,[],null);
+      if(res){ act.forEach(e=>{ if(e!==res.ev){ e.active=false; const b=G.banners.find(x=>x.id===e.bannerId); if(b&&!e.keepBanner) b.active=false; } }); if(act.length) notes.push(`이벤트 종료: ${act.map(e=>e.title).join(', ')}`); notes.push(`새 이벤트 「${res.ev.title}」 개최${res.nc?`, 한정 ${T('crew')} ${res.nc.name} 등장`:''}`); } }
+    else if(past.length){ closeEv(); const ev=rand(past); ev.active=true; P().shopBuy[ev.id]={}; const b=G.banners.find(x=>x.id===ev.bannerId); if(b) b.active=true; notes.push(`글 AI가 없어서 복각 이벤트 「${ev.title}」로 열었어요`); } }
+  else if(type==='char'){ closeEv();
+    if(SAMPLE){ liveBar('캐릭터 시즌: 신규 캐릭터를 구상하는 중…'); const c=await aiNewPickupChar('','ai',null);
+      if(c){ liveBar(`캐릭터 시즌: ${c.name}의 픽업 스토리를 쓰는 중… 몇 분 걸려요.`); const res=await aiPickupStory(c,false,true); notes.push(`신규 ${RL[c.rarity]} ${c.name} 픽업 개시`); if(res) notes.push(`${c.name} 픽업 스토리 「${res.ev.title}」 공개`); setTimeout(()=>artAfterAI(x=>x.o===c||x.c===c,'신규 '+T('crew')+' '+c.name),2500); }
+      if(L.on.talk){ liveBar('캐릭터 시즌: 톡을 쓰는 중…'); const n=await dailyTalks(); if(n) notes.push(`${T('talk')} 새 대화 ${n}개`); } }
+    else { const r=rotatePickups(); if(r) notes.push(r); } }
+  else if(type==='rerun'){
+    if(past.length){ closeEv(); const ev=rand(past); ev.active=true; P().shopBuy[ev.id]={}; const b=G.banners.find(x=>x.id===ev.bannerId); if(b) b.active=true; notes.push(`복각 이벤트 「${ev.title}」가 다시 열렸어요`); }
+    const lim=G.banners.filter(b=>b.active===false&&(b.pickup||[]).length&&b.type!=='event'); if(lim.length){ const b=rand(lim); b.active=true; notes.push(`복각 픽업: ${b.name}`); }
+    const r=rotatePickups(); if(r) notes.push(r); }
+  else if(type==='train'){ closeEv(); notes.push('훈련(경험·크레딧·재료) 보상 2배, 파견 보상 1.5배'); }
+  mark('prog'); }
+function seasonChip(){ const s=seasonNow(); if(!s) return ''; const m=seasonMeta(s.type), d=Math.max(0,Math.ceil((s.until-Date.now())/864e5)); return `<button class="lb-season s-${esc(s.type)}" data-act="seasoninfo"><i>${m[3]}</i><b>${esc(m[1])}</b><span>D-${d}</span></button>`; }
+function openSeasonInfo(){ const L=P().live, s=seasonNow(), nx=seasonNext();
+  openModal(`${head('시즌',`<span class="muted">${SEASON_DAYS}일마다 운영 테마가 바뀌어요</span>`)}
+    ${s?`<div class="season-now s-${esc(s.type)}"><em>${seasonMeta(s.type)[3]}</em><div><b>지금: ${esc(seasonMeta(s.type)[1])}</b><span>${esc(seasonMeta(s.type)[2])} · ${new Date(s.until-1).toLocaleDateString('ko-KR')}까지</span></div></div>`:'<p class="muted">아직 시즌이 시작되지 않았어요.</p>'}
+    ${nx?`<p class="muted" style="margin:10px 0 4px">다음 시즌: <b>${esc(seasonMeta(nx)[1])}</b></p>`:''}
+    <h3 class="sec">로테이션에 넣을 시즌</h3><div class="chips">${SEASONS.map(x=>`<button class="chip ${L.seasons[x[0]]!==false?'on':''}" data-act="seasontog" data-k="${x[0]}">${x[3]} ${esc(x[1])}</button>`).join('')}</div>
+    <p class="muted" style="font-size:.8rem;margin-top:8px">스토리·이벤트·캐릭터 시즌은 글 AI로 새 콘텐츠를 만들어요. 육성·복각 시즌은 AI 없이도 돌아가요.</p>
+    <div class="row" style="margin-top:12px"><button class="btn sm ghost" data-act="seasonskip">지금 다음 시즌으로 넘기기</button><button class="btn sm" data-act="close">닫기</button></div>`); }
 let LIVE_RUN=false;
 async function liveTick(force){
   if(LIVE_RUN||!P().seenOpening) return;
@@ -4419,19 +4514,20 @@ async function liveTick(force){
   const due=k=>force||L.last[k]!==keys[k], notes=[];
   LIVE_RUN=true; liveBar('업데이트 확인 중…');
   try{
-    if(on.rotate&&due('rot')){ const r=rotatePickups(); if(r) notes.push(r); L.last.rot=keys.rot; }
+    if(on.season&&(force==='season'||!L.season||Date.now()>=(L.season.until||0))){ const nx=seasonNext(); if(nx){ await seasonStart(nx,notes); L.last.rot=keys.rot; L.last.week=keys.week; } }
+    if(on.rotate&&due('rot')&&!on.season){ const r=rotatePickups(); if(r) notes.push(r); L.last.rot=keys.rot; }
     if(due('month')&&on.pass&&!force){ P().pass={xp:0,got:[]}; notes.push(`${T('pass')} 새 시즌이 시작됐어요`); }
-    if(due('week')&&(on.event||on.rerun)){
+    if(!on.season&&due('week')&&(on.event||on.rerun)){
       const act=G.events.filter(e=>e.active!==false), past=G.events.filter(e=>e.active===false);
-      const close=()=>act.forEach(e=>{e.active=false;const b=G.banners.find(x=>x.id===e.bannerId);if(b)b.active=false;});
+      const close=()=>act.forEach(e=>{e.active=false;const b=G.banners.find(x=>x.id===e.bannerId); if(b&&!e.keepBanner) b.active=false;});
       let opened=null;
       if(on.rerun&&past.length&&(!on.event||!SAMPLE||Math.random()<0.25)){ const ev=rand(past); close(); ev.active=true; P().shopBuy[ev.id]={}; const b=G.banners.find(x=>x.id===ev.bannerId); if(b)b.active=true; opened=`복각 이벤트 「${ev.title}」가 다시 열렸어요`; }
       else if(on.event&&SAMPLE){ liveBar('새 이벤트를 만드는 중… 몇 분 걸려요. 그동안 플레이해도 돼요.'); const res=await aiEventGen('',3,true,[],null);
-        if(res){ act.forEach(e=>{if(e!==res.ev){e.active=false;const b=G.banners.find(x=>x.id===e.bannerId);if(b)b.active=false;}}); opened=`새 이벤트 「${res.ev.title}」 개최${res.nc?`, 한정 ${T('crew')} ${res.nc.name} 등장`:''}`; } }
+        if(res){ act.forEach(e=>{if(e!==res.ev){e.active=false;const b=G.banners.find(x=>x.id===e.bannerId); if(b&&!e.keepBanner) b.active=false;}}); opened=`새 이벤트 「${res.ev.title}」 개최${res.nc?`, 한정 ${T('crew')} ${res.nc.name} 등장`:''}`; } }
       if(opened){ if(act.length) notes.push(`이벤트 종료: ${act.map(e=>e.title).join(', ')}`); notes.push(opened); }
       L.last.week=keys.week;
     }
-    if(due('month')&&on.chapter&&SAMPLE){
+    if(!on.season&&due('month')&&on.chapter&&SAMPLE){
       if(!nextStage()){ liveBar('메인 스토리 다음 장을 쓰는 중…'); const res=await aiChapterGen('메인 플롯을 따라 자연스럽게 이어서',4,[],null); if(res) notes.push(`메인 스토리 「${res.ch.title}」 공개`); }
       else notes.push('아직 진행 중인 메인 장이 있어서 새 장은 다음 달로 미뤘어요');
     }
@@ -4443,7 +4539,7 @@ async function liveTick(force){
   const todo=drawTodo().length;
   if(notes.length){ if(todo) notes.push(`NAI로 그릴 이미지가 ${todo}개 쌓였어요. 공지 화면에서 한 번에 그릴 수 있어요`);
     L.notices.unshift({at:Date.now(),title:`${dayKey()} 업데이트`,lines:notes}); sendMail({from:'운영팀',title:`${dayKey()} 업데이트 기념 보급`,body:'새 소식\n· '+notes.join('\n· '),reward:{gems:200,gold:5000},days:14}); L.notices=L.notices.slice(0,30); render(); openNotice(0); checkTriggers(); }
-  else if(force) toast('새로 생긴 업데이트가 없어요');
+  else if(force) toast('새로 생긴 업데이트가 없어요'); if(tab==='lobby') render();
 }
 function openNotice(i){
   const n=P().live.notices[i]; if(!n) return;
@@ -4459,13 +4555,15 @@ function drawTodo(cats){
   G.chars.forEach(c=>{ if(!c.naiPrompt) return;
     if(on('char')&&!c.img) a.push({k:'char',cat:'char',o:c,c,label:c.name+' 스탠딩'});
     if(on('upper')&&c.upper&&!c.upper.img) a.push({k:'upper',cat:'upper',o:c.upper,c,label:c.name+' 상반신'});
+    if(cats&&on('pose')&&c.pose&&!c.pose.img) a.push({k:'pose',cat:'pose',o:c.pose,c,label:c.name+' 로비 포즈'});
+    if(cats&&on('pose')&&c.lbbg&&!c.lbbg.img) a.push({k:'lbbg',cat:'pose',o:c.lbbg,c,label:c.name+' 로비 배경'});
     if(on('illust')&&c.illust&&!c.illust.img) a.push({k:'illust',cat:'illust',o:c.illust,c,label:c.name+' 일러스트'});
     if(on('weapon')&&c.weapon&&!c.weapon.img&&c.weapon.prompt) a.push({k:'weapon',cat:'weapon',o:c.weapon,c,label:c.name+' '+T('weapon')}); });
   if(on('map')) G.chapters.filter(ch=>ch.kind==='main').forEach(ch=>{ if(!chMapLib(ch)) ensureChMap(ch); });
   G.lib.forEach(l=>{ if(['bg','prop','cg','enemy','icon','map'].includes(l.kind)&&on(l.kind)&&!l.img&&(l.prompt||(l.kind==='cg'&&cgCast(l).length))) a.push({k:l.kind,cat:l.kind,o:l,label:({bg:'배경 ',prop:'소품 ',cg:'CG ',enemy:'적 ',icon:'',map:''})[l.kind]+l.name}); });
   return a;
 }
-const PREP_CATS=()=>[['char','스탠딩',true],['upper','상반신',true],['illust','일러스트 (로비·픽업)',true],['enemy','적',true],['bg','배경',true],['icon','재화 아이콘',true],['map','작전 지도',true],['prop','소품',true],['weapon',T('weapon'),true],['cg','이벤트 CG',false]];
+const PREP_CATS=()=>[['char','스탠딩',true],['upper','상반신',true],['pose','로비 레이어 (캐릭터별 배경 + 투명 포즈)',false],['illust','일러스트 (로비·픽업)',true],['enemy','적',true],['bg','배경',true],['icon','재화 아이콘',true],['map','작전 지도',true],['prop','소품',true],['weapon',T('weapon'),true],['cg','이벤트 CG',false]];
 let PREPJOB=null;
 function prepAsk(){ const p=P(); if(p.prepNever||p.prepAsked===today()||PREPJOB||!imgReady()||!$('#modal').hidden||!$('#ov').hidden) return; if(!drawTodo().length) return; p.prepAsked=today(); mark('prog'); openPrep(true); }
 function openPrep(ask){
@@ -4493,7 +4591,7 @@ async function runPrep(cats,filter,opt){
   for(const it of list){
     if(j.stop) break; j.label=it.label; prepChip(); if(opt.step) opt.step(it,j,'start');
     try{ const b=await naiDrawItem(it);
-      if(it.k==='char') await storeImage(it.o,b,'c:'); else if(it.k==='illust'||it.k==='weapon'||it.k==='upper'){ await storeImage(it.o,b,''); mark('c:'+it.c.id); } else await storeImage(it.o,b,'l:');
+      if(it.k==='char') await storeImage(it.o,b,'c:'); else if(it.k==='illust'||it.k==='weapon'||it.k==='upper'||it.k==='pose'||it.k==='lbbg'){ await storeImage(it.o,b,''); mark('c:'+it.c.id); } else await storeImage(it.o,b,'l:');
       j.done++; prepChip(); if(opt.step) opt.step(it,j,'done'); if(!$('#modal').hidden||tab==='crew'||tab==='lobby'||tab==='ops'||tab==='shop') { if($('#modal').hidden) render(); }
       await wait(700);
     }catch(e){ toast(naiErr(e,it.label+' 실패')); if(e&&['nai_nokey','bad_key','low_credit','network','nai_locked','comfy_nourl','comfy_nowf'].includes(e.code)){ toast('그림 준비를 멈췄어요. 연결을 확인한 뒤 그림 준비실에서 이어서 그려 주세요'); break; } await wait(1500); }
@@ -4506,7 +4604,7 @@ async function naiAll(btn){
   if(!confirm(`${list.length}장을 차례로 그려요. Opus 구독이 아니면 Anlas가 들어요. 진행할까요?`)) return;
   btn.disabled=true; let n=0;
   for(const it of list){ if(btn.isConnected) btn.textContent=`그리는 중 ${n}/${list.length} · ${it.label}`;
-    try{ const b=await naiDrawItem(it); await wait(600); await storeImage(it.o,b,it.k==='char'?'c:':(it.k==='weapon'||it.k==='upper')?'':'l:'); if(it.k==='weapon'||it.k==='upper') mark('c:'+it.c.id); n++; }
+    try{ const b=await naiDrawItem(it); await wait(600); await storeImage(it.o,b,it.k==='char'?'c:':(it.k==='weapon'||it.k==='upper'||it.k==='pose'||it.k==='lbbg')?'':'l:'); if(it.k==='weapon'||it.k==='upper'||it.k==='pose'||it.k==='lbbg') mark('c:'+it.c.id); n++; }
     catch(e){ toast(naiErr(e)); break; } }
   toast(`${n}장을 그렸어요`); render();
 }
@@ -4621,7 +4719,7 @@ function cxFromChapter(r,ch){ if(!r||!Array.isArray(r.codex)) return; const last
   r.codex.slice(0,3).forEach(x=>{ if(!x||!x.title||!x.body) return; cxStore().push({id:'cx'+uid(),cat:CX_LABEL[x.cat]&&x.cat!=='all'?x.cat:'term',title:String(x.title).slice(0,40),body:String(x.body),unlock:last?{type:'clear',value:last.id}:{type:'start'},src:'ai',at:Date.now()}); }); mark('world'); }
 /* ===== AI가 새로 만든 것 그림 ===== */
 let ART_ASK=null;
-const ART_ORDER=['char','upper','illust','bg','enemy','icon','map','cg','prop','weapon'];
+const ART_ORDER=['char','upper','pose','lbbg','illust','bg','enemy','icon','map','cg','prop','weapon'];
 function artKey(it){return it.k+':'+((it.o&&it.o.id)||'')+':'+((it.c&&it.c.id)||'');}
 function artSnap(){try{return new Set(drawTodo().map(artKey));}catch(e){return new Set();}}
 function artRun(keys){ const go=()=>{ if(PREPJOB) return setTimeout(go,5000); runPrep(null,x=>keys.has(artKey(x)),{order:ART_ORDER}); }; go(); }
@@ -5001,6 +5099,28 @@ async function checkUpdate(manual){
   openModal(`${head('업데이트가 있어요',`<span class="muted">${esc(APP_BUILD)} → <b>${esc(man.build)}</b></span>`)}${notesHTML(man)}
     <div class="row" style="margin-top:12px"><button class="btn" data-act="updget">받기</button><button class="btn ghost" data-act="updskip">이번 버전 건너뛰기</button><button class="btn ghost" data-act="close">나중에</button></div>`);
 }
+function onPcServer(){ const pc=PCS(); return !!(pc&&location.origin===pc.base); }
+let WEBUPD=null;
+async function checkWebUpdate(manual){ if(IS_NATIVE) return; const o=LV(); let man=null;
+  try{ const r=await fetch(`https://raw.githubusercontent.com/${updRepo(o)}/main/version.json?t=${Date.now()}`,{cache:'no-store'}); if(r.ok) man=await r.json(); }catch(e){}
+  if(!man||!man.build){ if(manual) toast('업데이트 정보를 받지 못했어요. 인터넷 연결을 확인해 주세요'); return; }
+  let srvOld=false; if(onPcServer()){ try{ const h=await pcApi('/api/hello'); srvOld=!h.ver||verCmp(String(h.ver),'2026.10.08.19')<0; }catch(e){} }
+  if(verCmp(man.build,APP_BUILD)<=0){ if(manual) toast('이미 최신 버전이에요 ('+APP_BUILD+')'+(srvOld?' · PC 서버 프로그램은 새로 받아 주세요':'')); return; }
+  if(!manual&&o.webSkip===man.build) return; WEBUPD=man;
+  const show=()=>{ if(!manual&&(!$('#modal').hidden||($('#ov')&&!$('#ov').hidden&&!$('#ov').querySelector('.title'))||(typeof B!=='undefined'&&B&&!B.over))) return setTimeout(show,4000);
+    openModal(`${head('업데이트가 있어요',`<span class="muted">${esc(APP_BUILD)} → <b>${esc(man.build)}</b></span>`)}${notesHTML(man)}
+      ${srvOld?'<p class="muted" style="font-size:.82rem">PC 서버 프로그램(ggm-server.py)도 바뀌었어요. Releases의 gacha-game-maker-pc.zip을 새로 받아 덮어쓰면 좋아요.</p>':''}
+      <div class="row" style="margin-top:12px"><button class="btn" data-act="webupdgo">지금 업데이트</button><button class="btn ghost" data-act="webupdskip">이번 버전 건너뛰기</button><button class="btn ghost" data-act="close">나중에</button></div>`); };
+  show(); }
+async function applyWebUpdate(btn){ if(btn){ btn.disabled=true; btn.textContent='받는 중…'; }
+  try{ await flush(); }catch(e){}
+  try{ if(LKMODE()&&LK.claimed&&!LK.locked) await lkSave(true); }catch(e){}
+  try{ if(onPcServer()) await pcApi('/api/update',{method:'POST',body:{},timeout:90000}); }catch(e){}
+  try{ if(window.caches){ const ks=await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); } }catch(e){}
+  try{ await fetch('./index.html',{cache:'reload'}); await fetch('./',{cache:'reload'}); await fetch('./sw.js',{cache:'reload'}); }catch(e){}
+  try{ const rg=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration(); if(rg) await rg.update(); }catch(e){}
+  location.reload(); }
+if(!IS_NATIVE){ setInterval(()=>{ if(document.visibilityState==='visible') checkWebUpdate(false); },30*60000); }
 async function checkNoticeWeb(){
   const o=LV(); let man=null; try{ const r=await fetch(`https://raw.githubusercontent.com/${updRepo(o)}/main/version.json?t=${Date.now()}`); if(r.ok) man=await r.json(); }catch(e){} if(!man) return;
   if(man.feedback){ o.feedback=String(man.feedback); saveLV(o); }
@@ -5107,7 +5227,7 @@ function cleanChar(o){
     touch:{head:strs(tc.head).slice(0,4),body:strs(tc.body).slice(0,4)},
     files:(Array.isArray(o.files)?o.files:[]).map(f=>({dup:num(parseInt(f.dup,10),1,5,1),text:String(f.text||'')})).filter(f=>f.text).slice(0,5),
     weapon:{id:'w_'+id,name:String(w.name||''),desc:String(w.desc||''),prompt:String(w.prompt||''),img:null},
-    naiPrompt:String(o.naiPrompt||''),img:null,episodes:[],faces:[],skins:[],illust:{id:'il_'+id,kind:'illust',name:String(o.name||'')+' 일러스트',prompt:'',img:null},upper:{id:'up_'+id,kind:'upper',name:String(o.name||'')+' 상반신',prompt:'',img:null},lbcg:{id:'lb_'+id,kind:'lbcg',name:String(o.name||'')+' 돌파 CG',prompt:'',img:null}};
+    naiPrompt:String(o.naiPrompt||''),img:null,episodes:[],faces:[],skins:[],illust:{id:'il_'+id,kind:'illust',name:String(o.name||'')+' 일러스트',prompt:'',img:null},upper:{id:'up_'+id,kind:'upper',name:String(o.name||'')+' 상반신',prompt:'',img:null},pose:{id:'po_'+id,kind:'pose',name:String(o.name||'')+' 로비 포즈',prompt:'',img:null},lbbg:{id:'lg_'+id,kind:'lbbg',name:String(o.name||'')+' 로비 배경',prompt:'',img:null},lbcg:{id:'lb_'+id,kind:'lbcg',name:String(o.name||'')+' 돌파 CG',prompt:'',img:null}};
 }
 /* =========================================================
    대본 엔진
@@ -5350,7 +5470,7 @@ function bEnd(win){
   } else { sfx('패배'); html=`<h2 class="disp" style="color:#ff5277">작전 실패</h2><p>${T('enhance')}로 레벨을 올리거나 편성과 속성을 바꿔 보세요.<br>${ELEMS.map((e,i)=>e+'은 '+ELEMS[(i+1)%3]+'에').join(', ')} 강해요.</p><div class="row"><button class="btn ghost" data-act="bdone">돌아가기</button><button class="btn" data-act="bretry">다시 도전</button></div>`; }
   const d=document.createElement('div');d.className='result';d.innerHTML=html;$('.bt').appendChild(d);
 }
-function farmReward(key,lv){return key==='exp'?{exp:10*lv}:key==='gold'?{gold:4000*lv}:key==='wmat'?{wmat:5*lv}:{core:1+Math.floor(lv/2)};}
+function farmReward(key,lv){const m=seasonIs('train')?2:1; return key==='exp'?{exp:10*lv*m}:key==='gold'?{gold:4000*lv*m}:key==='wmat'?{wmat:5*lv*m}:{core:(1+Math.floor(lv/2))*m};}
 function farmStage(key,lv){
   const f=G.meta.farms.find(x=>x.key===key)||{name:key}, m=1+0.7*(lv-1);
   const e=(n,i,boss)=>({name:n,elem:ELEMS[(lv+i)%3],hp:Math.round(700*m*(boss?3:1)),atk:Math.round(70*(1+.25*(lv-1))*(boss?1.2:1)),def:20+12*lv,spd:88+lv*3,boss:!!boss});
@@ -5545,6 +5665,9 @@ document.addEventListener('click',async e=>{
   case 'rgrelic': { const run=RG().run; if(!run) break; run.relics.push(t.dataset.v); run.pick=null; run.msg=RELICS[t.dataset.v][0]+'을(를) 얻었어요'; mark('prog'); render(); break; }
   case 'rgquit': { if(!confirm('탐사를 끝낼까요? 지금까지 간 층만큼 보상을 받아요.')) break; const html=rgFinish(false); openModal(`<div class="result" style="position:static">${html.replace('data-act="bdone"','data-act="close"')}</div>`); render(); break; }
   case 'pcopen': openPcSet(); break;
+  case 'webupdcheck': checkWebUpdate(true); break;
+  case 'webupdgo': applyWebUpdate(t); break;
+  case 'webupdskip': { const o=LV(); if(WEBUPD) o.webSkip=WEBUPD.build; saveLV(o); closeModal(); toast('다음 버전이 나오면 다시 알려 드릴게요'); break; }
   case 'bswipe': bannerStep(+t.dataset.d); break;
   case 'syoff': { if(!confirm('PC·폰 연동을 해제할까요?\n이 기기의 게임은 그대로 남고, GitHub 저장소의 데이터도 지워지지 않아요. 이 기기에 저장된 토큰만 지워요.')) break; try{ if(LKMODE()==='gh'&&LK.claimed) await lkSave(true), await lkOp('free'); }catch(e){} clearInterval(LK.t); LK.claimed=false; lkUnlock(); try{ localStorage.removeItem(SYKEY); }catch(e){} closeModal(); render(); toast('연동을 해제했어요'); break; }
   case 'lktake': lkTake(t); break;
@@ -5634,6 +5757,13 @@ document.addEventListener('click',async e=>{
   case 'cstab': { CS_TAB=t.dataset.k; document.querySelectorAll('.cs-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.k===CS_TAB)); document.querySelectorAll('[data-cs]').forEach(s=>s.hidden=s.dataset.cs!==CS_TAB); break; }
   case 'upgen': { const c=charById(id); if(!c) break; if(!String(c.naiPrompt||'').trim()){toast('먼저 설정 편집에서 NAI 스탠딩 프롬프트를 채워 주세요');break;} if(!imgReady()){toast(imgNeed());break;} t.disabled=true; t.textContent='그리는 중…';
       try{ const b=await naiDrawItem({k:'upper',o:c.upper,c}); await storeImage(c.upper,b,''); mark('c:'+c.id); toast('상반신을 그렸어요'); openChar(c.id); }catch(err){ toast(naiErr(err,'상반신 실패')); t.disabled=false; t.textContent='NAI로 상반신'; } break; }
+  case 'posegen': { const c=charById(id); if(!c||!c.pose||!c.lbbg) break; if(!imgReady()){ toast(imgNeed()); break; } const w=t.dataset.w||'both'; if(w!=='bg'&&!c.naiPrompt){ toast('먼저 NAI 프롬프트를 채워 주세요'); break; }
+      const sc=$('#lbbg_scene'); if(sc){ c.lbbg.prompt=sc.value.trim(); mark('c:'+c.id); } const label=t.textContent; t.disabled=true; t.textContent='그리는 중…';
+      try{ if(w!=='pose'){ toast('배경을 그리는 중이에요'); const b=await naiDrawItem({k:'lbbg',o:c.lbbg,c}); await storeImage(c.lbbg,b,''); }
+        if(w!=='bg'){ toast('투명 포즈를 그리는 중이에요'); const b=await naiDrawItem({k:'pose',o:c.pose,c}); await storeImage(c.pose,b,''); }
+        mark('c:'+c.id); if(P().lobbyMode!=='layer'){ P().lobbyMode='layer'; mark('prog'); toast('로비를 \'배경 + 캐릭터 따로\'로 바꿨어요'); } else toast('로비 레이어를 그렸어요'); openChar(c.id); render(); }
+      catch(err){ toast(naiErr(err,'그리기 실패')); t.disabled=false; t.textContent=label; } break; }
+  case 'posedel': { const c=charById(id); if(!c||!c.pose) break; if(!confirm('로비 레이어의 배경과 포즈를 지울까요?')) break; c.pose.img=null; if(c.lbbg) c.lbbg.img=null; mark('c:'+c.id); openChar(c.id); render(); break; }
   case 'updel': { const c=charById(id); if(!c||!c.upper) break; c.upper.img=null; mark('c:'+c.id); openChar(c.id); break; }
   case 'ilgen': { const c=charById(id); if(!c) break; const k=t.dataset.k==='lbcg'?'lbcg':'illust'; const sc=$(k==='lbcg'?'#lb_scene':'#il_scene'); if(sc){ c[k].prompt=sc.value.trim(); mark('c:'+c.id); } if(!String(c.naiPrompt||'').trim()){toast('먼저 설정 편집에서 NAI 스탠딩 프롬프트를 채워 주세요');break;} openNaiPrep(k,c.id); break; }
   case 'ilai': { const c=charById(id); if(!c) break; const k=t.dataset.k==='lbcg'?'lbcg':'illust', inp=$(k==='lbcg'?'#lb_scene':'#il_scene');
@@ -5660,7 +5790,7 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
   case 'charedit': openCharEdit(id); break;
   case 'charnew': openCharEdit(null); break;
   case 'savechar': { if(id){const c=charById(id);if(!readCharForm(c))break;mark('c:'+id);closeModal();render();openChar(id);}
-      else{const c=cleanChar({});if(!readCharForm(c))break;G.chars.push(c);mark('c:'+c.id);closeModal(); setTimeout(()=>artAfterAI(x=>x.o===c||x.c===c,'새 '+T('crew')+' '+c.name),300); if(NEWPU){ const lim=NEWPU==='limited'; NEWPU=false; addPickupFor(c,lim); tab='contract'; render(); toast(`${c.name} 픽업이 열렸어요`); artAfterAI(x=>x.o===c||x.c===c,'신규 '+T('crew')+' '+c.name); } else { render(); openChar(c.id); } } break; }
+      else{const c=cleanChar({});if(!readCharForm(c))break;G.chars.push(c);mark('c:'+c.id);closeModal(); setTimeout(()=>artAfterAI(x=>x.o===c||x.c===c,'새 '+T('crew')+' '+c.name),300); if(NEWPU){ const lim=NEWPU==='limited'; NEWPU=false; addPickupFor(c,lim); if(window.__PUSTORY&&SAMPLE){ window.__PUSTORY=false; puStoryBg(c,lim); } tab='contract'; render(); toast(`${c.name} 픽업이 열렸어요`); artAfterAI(x=>x.o===c||x.c===c,'신규 '+T('crew')+' '+c.name); } else { render(); openChar(c.id); } } break; }
   case 'delchar': if(confirm('이 '+T('crew')+'을(를) 삭제할까요? 에피소드와 성장 기록도 함께 사라져요.')){G.chars=G.chars.filter(c=>c.id!==id);delete p.owned[id];p.squad=p.squad.filter(x=>x!==id);if(p.sec===id)p.sec=null;mark('c:'+id,'prog');closeModal();render();} break;
   case 'ainai': { const r=await aiJSON(`${RULES}\n세계관: ${G.world.summary}\n캐릭터: ${$('#f_name').value}, ${$('#f_elem').value}속성 ${ROLE[$('#f_role').value]}. ${$('#f_prof').value}\n이 캐릭터의 스탠딩 일러스트용 프롬프트를 써라. ${NAI_CHAR}\nJSON만 출력: {"naiPrompt":"..."}`,t,'quick');
       if(r&&r.naiPrompt&&$('#f_nai')) $('#f_nai').value=String(r.naiPrompt); break; }
@@ -5760,10 +5890,10 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
       if(r&&r.prompt&&$('#li_prompt')) $('#li_prompt').value=String(r.prompt); break; }
   case 'aichar-open': openNewPickup(); break;
   case 'newpu': openNewPickup(); break;
-  case 'newpu-hand': { NEWPU=$('#pu_lim').value==='limited'?'limited':'pickup'; closeModal(); openCharEdit(null); break; }
+  case 'newpu-hand': { NEWPU=$('#pu_lim').value==='limited'?'limited':'pickup'; window.__PUSTORY=!!($('#pu_story')&&$('#pu_story').checked); closeModal(); openCharEdit(null); break; }
   case 'newpu-ai': { const con=$('#pu_c').value.trim(); if(!con){toast('어떤 '+T('crew')+'인지 적어 주세요');break;} const rr=$('#pu_r').value, lim=$('#pu_lim').value==='limited';
-      const r=await aiJSON(`${RULES}\n${ctx()}\n\n새 픽업 배너의 주인공이 될 신규 ${T('crew')} 1명을 만들어라. 요청: "${con}"${rr!=='ai'?` 희귀도는 ${rr}.`:''} 기존 ${T('crew')}과 이름·외모·역할이 겹치지 않게 하고, 메인 플롯이나 세력과 연결되는 비밀을 ${T('files')}에 넣는다. 첫 등장(intro) 대사는 픽업 연출에 어울리게 인상적으로.\nJSON 객체만 출력: ${charSchema()}\n희귀도가 높을수록 능력치 합이 높다. 지원형은 heal/shield/buff, 방어형은 체력과 방어가 높다. ${NAI_CHAR}`,t);
-      if(r){ const c=cleanChar(r); if(rr!=='ai') c.rarity=+rr; if(!c.name)c.name='이름 없음'; G.chars.push(c); mark('c:'+c.id); addPickupFor(c,lim); closeModal(); tab='contract'; render(); toast(`신규 ${RL[c.rarity]} ${c.name} 픽업이 열렸어요!`); artAfterAI(x=>x.o===c||x.c===c,'신규 '+T('crew')+' '+c.name); } break; }
+      const story=!!($('#pu_story')&&$('#pu_story').checked); const c=await aiNewPickupChar(con,rr,t);
+      if(c){ addPickupFor(c,lim); if(story) puStoryBg(c,lim); closeModal(); tab='contract'; render(); toast(`신규 ${RL[c.rarity]} ${c.name} 픽업이 열렸어요!`); artAfterAI(x=>x.o===c||x.c===c,'신규 '+T('crew')+' '+c.name); } break; }
   case 'aichar': { const con=$('#ai_c').value.trim(); if(!con){toast('어떤 '+T('crew')+'인지 적어 주세요');break;}
       const r=await aiJSON(`${RULES}\n${ctx()}\n\n새 ${T('crew')} 1명을 만들어라. 요청: "${con}"\n메인 플롯이나 세력과 연결되는 비밀을 ${T('files')}에 넣는다.\nJSON 객체만 출력: ${charSchema()}\n희귀도가 높을수록 능력치 합이 높다. 지원형은 heal/shield/buff, 방어형은 체력과 방어가 높다. ${NAI_CHAR}`,t);
       if(r){ const c=cleanChar(r); if(!c.name)c.name='이름 없음'; G.chars.push(c); mark('c:'+c.id); closeModal(); render(); openChar(c.id); artAfterAI(x=>x.o===c||x.c===c,'새 '+T('crew')+' '+c.name); toast(`${c.name}이(가) 추가됐어요`);} break; }
@@ -5795,6 +5925,9 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
       try{ const r=await http(naiBase(c)+'/user/subscription',{headers:NAI_HDR(c.key),timeout:20000}); const j=okJSON(r); const sl=j.trainingStepsLeft||{}; const an=(sl.fixedTrainingStepsLeft||0)+(sl.purchasedTrainingSteps||0);
         toast(`연결 성공. ${['Paper','Tablet','Scroll','Opus'][j.tier]||'구독'} · Anlas ${an}`); }catch(e){ toast(naiErr(e,'연결 확인 실패')); } finally{ t.disabled=false; } break; }
   case 'sndopen': openSound(); break;
+  case 'seasoninfo': openSeasonInfo(); break;
+  case 'seasontog': { const L=P().live; const k=t.dataset.k; const en=SEASONS.filter(x=>L.seasons[x[0]]!==false).length; if(L.seasons[k]!==false&&en<=1){ toast('하나는 남겨 두세요'); break; } L.seasons[k]=L.seasons[k]===false; mark('prog'); openSeasonInfo(); break; }
+  case 'seasonskip': { if(LIVE_RUN){ toast('이미 업데이트 중이에요'); break; } if(!confirm('지금 다음 시즌으로 넘길까요? 진행 중인 이벤트는 끝나요.')) break; closeModal(); liveTick('season'); break; }
   case 'livetog': { const L=P().live; L.on[t.dataset.k]=!L.on[t.dataset.k]; mark('prog'); render(); break; }
   case 'liverun': if(LIVE_RUN){toast('이미 업데이트 중이에요');break;} if(!SAMPLE&&(P().live.on.event||P().live.on.talk||P().live.on.chapter)) toast('글 AI가 없어서 AI가 필요한 항목은 건너뛰어요'); liveTick(true); break;
   case 'naiall': await naiAll(t); break;
@@ -5881,7 +6014,7 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
   case 'dispset': DSEL={id,ids:[]}; openDispSel(id); break;
   case 'dsel': { const a=DSEL.ids, d0=G.dispatches.find(x=>x.id===DSEL.id); if(a.includes(id)) a.splice(a.indexOf(id),1); else { if(d0&&a.length>=d0.need){ toast(`${d0.need}명까지만 보낼 수 있어요`); break; } a.push(id); } openDispSel(DSEL.id); break; }
   case 'dispgo': { const d=G.dispatches.find(x=>x.id===DSEL.id); if(!d||DSEL.ids.length!==d.need){ toast(`${d?d.need:''}명을 골라 주세요`); break; } P().disp[d.id]={chars:[...DSEL.ids],start:Date.now(),hours:d.hours}; bump('dispatch'); mark('prog'); closeModal(); render(); toast(`${d.name} 출발`); break; }
-  case 'dispget': { const d=G.dispatches.find(x=>x.id===id); const dr=Object.assign({},d.reward,{gift:d.hours>=4?2:1}); if(dr.gems){ dr.gold=(dr.gold||0)+dr.gems*100; delete dr.gems; } giveReward(dr); (P().disp[id].chars||[]).forEach(cid=>{const c=charById(cid);if(c)addAff(c,10);}); delete P().disp[id]; mark('prog'); sfx('확인'); toast(`${d.name} 완료: ${rewardText(dr)}`); render(); break; }
+  case 'dispget': { const d=G.dispatches.find(x=>x.id===id); const dr=Object.assign({},d.reward,{gift:d.hours>=4?2:1}); if(dr.gems){ dr.gold=(dr.gold||0)+dr.gems*100; delete dr.gems; } if(seasonIs('train')) Object.keys(dr).forEach(k=>{ if(typeof dr[k]==='number'&&k!=='gift') dr[k]=Math.round(dr[k]*1.5); }); giveReward(dr); (P().disp[id].chars||[]).forEach(cid=>{const c=charById(cid);if(c)addAff(c,10);}); delete P().disp[id]; mark('prog'); sfx('확인'); toast(`${d.name} 완료: ${rewardText(dr)}`); render(); break; }
   case 'dispcancel': if(confirm('파견을 취소할까요? 보상은 받지 못해요.')){ delete P().disp[id]; mark('prog'); render(); } break;
   case 'mget': { const m=MISSIONS.find(x=>x.k===t.dataset.k), d=dm(); if(d.got[m.k]||(d.cnt[m.k]||0)<m.goal) break; d.got[m.k]=true; P().pass.xp+=m.xp; giveReward({gems:50}); sfx('확인'); render(); break; }
   case 'pget': { const l=+t.dataset.lv; if(l>passLv()||P().pass.got.includes(l)) break; P().pass.got.push(l); const r=passReward(l); giveReward(r); sfx('확인'); toast(`패스 ${l}단계: ${rewardText(r)}`); render(); break; }
@@ -6079,7 +6212,7 @@ setupAI(); render(); loadAudio().then(()=>sceneBgm());
   if(o.failed){ o.failed=false; if(o.build) o.badBuild=o.build; saveLV(o); setTimeout(()=>toast('새 버전이 실행되지 않아 설치 버전으로 돌아왔어요'),1500); }
   if(o.superseded){ delete o.superseded; saveLV(o); }
   if(IS_NATIVE&&o.auto!==false&&Date.now()-(o.checked||0)>3*3600e3) setTimeout(()=>checkUpdate(false),5000);
-  if(!IS_NATIVE) setTimeout(()=>{ try{ checkNoticeWeb(); }catch(e){} },5000);
+  if(!IS_NATIVE) setTimeout(()=>{ try{ checkNoticeWeb(); }catch(e){} try{ checkWebUpdate(false); }catch(e){} },5000);
   setTimeout(()=>{ try{ syCheckOnStart(); }catch(e){} },3500);
   if(LKMODE()) setTimeout(()=>{ try{ lkActivate(); }catch(e){} },1500);
   if(PCS()) setTimeout(()=>{ try{ pcStart(); }catch(e){} },2500);

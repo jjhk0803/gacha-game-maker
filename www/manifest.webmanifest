@@ -1,6 +1,6 @@
 {
-  "name": "낙성계약",
-  "short_name": "낙성계약",
+  "name": "가챠 게임 메이커",
+  "short_name": "가챠 메이커",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
@@ -9,8 +9,21 @@
   "theme_color": "#15121f",
   "lang": "ko",
   "icons": [
-    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
-    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

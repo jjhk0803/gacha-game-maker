@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.10.07.21'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.10.08.2'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   try{
@@ -917,6 +917,71 @@ body{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
 .a2hs{margin:0 0 10px;padding-left:20px;line-height:1.8}.a2hs li{margin-bottom:4px}
 .kbd{display:inline-block;padding:0 6px;border:1px solid var(--line);background:var(--panel2);font-size:.85em}
 .ap-pre{margin:6px 0 2px}.ap-pre .chip{font-size:.75rem;padding:4px 10px}
+
+/* ===== PC 화면 ===== */
+body.desk{--colw:min(540px,calc(100dvh * .68));--colL:calc((100vw - var(--colw)) / 2);background:#05040a}
+body.desk::before{content:"";position:fixed;inset:-40px;background:var(--deskbg,none) center/cover,radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--rose) 18%,transparent),transparent 65%);filter:blur(26px) brightness(.32) saturate(1.2);z-index:-1;pointer-events:none}
+body.desk #app{max-width:var(--colw);background:var(--bg);box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 80px rgba(0,0,0,.7)}
+body.desk .tabs-in,body.desk .sheet{max-width:var(--colw)}
+body.desk .tabs,body.desk .modal,body.desk .ov,body.desk #phone,body.desk #notif,body.desk .gate,body.desk .buyfx,body.desk .lbrev{left:var(--colL);right:var(--colL)}
+body.desk .tabs{border-left:1px solid var(--line);border-right:1px solid var(--line)}
+body.desk ::-webkit-scrollbar{width:8px;height:8px}body.desk ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:8px}
+body.desk button:not(:disabled),body.desk [data-act]{cursor:pointer}
+body.desk .btn:hover{filter:brightness(1.12)}body.desk .tab:hover b{color:var(--rose)}
+#deskSide{position:fixed;top:50%;transform:translateY(-50%);left:max(24px,calc(var(--colL) - 280px));width:240px;color:#e9e5f2;z-index:1;display:none}
+@media (min-width:1180px){ body.desk #deskSide{display:block} }
+.ds-logo i{display:block;font-style:normal;font-size:.62rem;letter-spacing:.32em;color:var(--rose);font-weight:800}
+.ds-logo b{display:block;font-family:var(--hd);font-size:2rem;line-height:1.15;margin:4px 0}
+.ds-logo span{font-size:.75rem;letter-spacing:.2em;opacity:.6}
+.ds-keys{margin-top:26px;padding:14px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-left:3px solid var(--rose)}
+.ds-keys h4{margin:0 0 8px;font-size:.8rem;letter-spacing:.1em;opacity:.8}.ds-keys p{margin:6px 0;font-size:.85rem}
+kbd{display:inline-block;min-width:1.4em;padding:1px 6px;font:600 .75rem/1.4 var(--en,monospace);text-align:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-bottom-width:2px}
+.ds-foot{margin-top:14px;font-size:.72rem;opacity:.5}
+
+/* ===== 갠톡 ===== */
+.ph-tabs{display:flex;background:var(--panel);border-bottom:1px solid var(--line)}
+.ph-tabs button{flex:1;padding:10px 0;font-weight:700;color:var(--sub);border-bottom:2px solid transparent}
+.ph-tabs button.on{color:var(--ink);border-bottom-color:var(--rose)}
+.fc-tag{font-size:.62rem;font-weight:700;padding:1px 5px;margin-left:4px;background:var(--rose);color:var(--rose-ink);vertical-align:middle}
+.fc-go{font-size:.78rem;font-weight:700;color:var(--rose);padding:4px 10px;border:1px solid var(--rose)}
+.ph-in.fc{flex-direction:row;align-items:flex-end;gap:8px}
+.ph-in.fc textarea{flex:1;resize:none;min-height:38px;max-height:120px;padding:8px 12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;line-height:1.4;border-radius:18px}
+.ph-in.fc .btn{flex:none;height:38px}
+
+/* ===== 2026.10.08 ===== */
+.lobby.lbsz-fit .lb-stage .lobby-art{height:calc(94% - 78px)}
+.lobby.lbsz-small .lb-stage .lobby-art{height:72%;left:14%;width:72%}
+.lobby.lbsz-fit .lobby-ill{object-position:50% 0}
+.pk-list{display:grid;gap:8px;margin-top:6px}
+.pk-g{display:flex;flex-direction:column;align-items:flex-start;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff;text-align:left}
+.pk-g b{font-family:var(--hd);font-size:1.1rem}.pk-g span{font-size:.75rem;color:#9aa1ad}
+.pk-g.on{border-color:var(--rose);box-shadow:inset 3px 0 0 var(--rose)}
+
+/* ===== 도전 ===== */
+.ch-card{margin:12px 0;padding:14px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rose);position:relative;overflow:hidden}
+.ch-card.raid{border-left-color:#ff5a5a}.ch-card.rog{border-left-color:#9a86ff}
+.ch-h i{display:block;font-style:normal;font-size:.62rem;letter-spacing:.2em;font-weight:800;color:var(--rose)}
+.ch-card.raid .ch-h i{color:#ff7a7a}.ch-card.rog .ch-h i{color:#b4a6ff}
+.ch-h h3{margin:2px 0 4px;font-family:var(--hd);font-size:1.4rem}.ch-h>span{display:block;font-size:.82rem;color:var(--sub);line-height:1.5}
+.ch-boss{position:relative;height:170px;display:grid;place-items:center;margin:8px 0;background:radial-gradient(circle,color-mix(in srgb,var(--ec) 25%,transparent),transparent 70%)}
+.ch-boss .en-img{max-height:100%;max-width:70%;object-fit:contain}.ch-boss .shape{width:110px;height:110px}.ch-boss .el{position:absolute;top:6px;left:6px}
+.rd-bar{position:relative;height:18px;background:var(--panel2);border:1px solid var(--line);margin-top:6px}
+.rd-bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#ff5a5a,#ffb400)}
+.rd-bar span{position:relative;display:block;text-align:center;font-size:.72rem;font-weight:700;line-height:18px;color:#fff;text-shadow:0 1px 2px #000}
+.rd-ms{display:flex;gap:4px;margin-top:6px}.rd-ms span{flex:1;text-align:center;font-size:.68rem;padding:2px 0;border:1px solid var(--line);color:var(--sub)}.rd-ms span.on{background:#ffb400;color:#111;border-color:#ffb400;font-weight:700}
+.rd-big{font-family:var(--en);font-size:2.4rem;font-weight:800;color:#ffd35a;line-height:1.1;margin:6px 0}.rd-big small{display:block;font-size:.7rem;color:#ccc;letter-spacing:.1em}
+.ch-sub{margin:12px 0 6px;font-size:.9rem}
+.rg-nodes,.rg-picks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.rg-node,.rg-relic{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);text-align:center}
+.rg-node em{font-style:normal;font-size:1.5rem;line-height:1}.rg-node b,.rg-relic b{font-size:.88rem}.rg-node span,.rg-relic span{font-size:.68rem;color:var(--sub);line-height:1.35}
+.rg-node.n-elite{border-color:#ff7a7a}.rg-node.n-boss{border-color:#ffb400;grid-column:1/-1}.rg-node.n-rest{border-color:#4fd18b}.rg-node.n-treasure{border-color:#9a86ff}
+.rg-relic{border-color:#9a86ff}
+.rg-sq{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.rg-u{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72rem}.rg-u.down{filter:grayscale(1);opacity:.5}
+.rg-a{width:100%;aspect-ratio:1;overflow:hidden;background:var(--panel2)}.rg-a .art{width:100%;height:220%;object-fit:contain;object-position:50% 0}
+.rg-u .hpb{width:100%;height:5px;background:var(--panel2)}.rg-u .hpb i{display:block;height:100%;background:#4fd18b}
+.rg-rel{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.rg-rel span{font-size:.7rem;padding:2px 8px;background:rgba(154,134,255,.15);border:1px solid rgba(154,134,255,.5)}
+.rg-msg{color:#b4a6ff!important;font-weight:600}
 /* ===== 2026.10.07.2 ===== */
 .mlist{display:grid;gap:6px}
 .mrow{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rose);cursor:pointer}
@@ -1167,7 +1232,7 @@ function threadFmt(){return `메신저 형식(한 줄에 하나): "캐릭터이�
 Object.defineProperty(window,'RULES',{get:rulesText});
 Object.defineProperty(window,'SCRIPT_FMT',{get:scriptFmt});
 Object.defineProperty(window,'THREAD_FMT',{get:threadFmt});
-const NAI_CHAR = 'naiPrompt는 NovelAI용 영어 태그 문자열. "1girl, solo, mature female"로 시작하고 V4 이상 모델 기준의 자연스러운 태그로 머리, 눈, 체형, 의상, 장신구, 들고 있는 무기 같은 외모 태그만 쓴다. 자세, 구도, 배경, 화풍 태그는 쓰지 않는다(앱이 따로 붙인다).';
+const NAI_CHAR = 'naiPrompt는 NovelAI용 영어 태그 문자열. "1girl, solo"(남자는 "1boy, solo")로 시작하고, 나이를 직접 나타내는 태그(mature female, adult woman 등)는 기본으로 넣지 않는다. 캐릭터 설정상 꼭 필요할 때만 스스로 판단해서 넣는다. V4 이상 모델 기준의 자연스러운 태그로 머리, 눈, 체형, 의상, 장신구, 들고 있는 무기 같은 외모 태그만 쓴다. 자세, 구도, 배경, 화풍 태그는 쓰지 않는다(앱이 따로 붙인다).';
 const ROLE = {atk:'공격',def:'방어',sup:'지원'};
 const ROLE_EN={atk:'ASSAULT',def:'GUARD',sup:'SUPPORT'};
 const KIND = {dmg:'단일 공격',aoe:'전체 공격',heal:'전체 회복',shield:'전체 보호막',buff:'전체 공격력 강화'};
@@ -1235,7 +1300,7 @@ function b64url(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCha
 async function http(url,{method='GET',headers={},body,binary=false,form=false,timeout=180000}={}){
   const H=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.CapacitorHttp;
   if(H){
-    let r; try{ r=await H.request({url,method,headers,data:body,responseType:binary?'arraybuffer':'text',connectTimeout:30000,readTimeout:timeout}); }catch(e){ throw {code:'network',message:String(e&&e.message||'')}; }
+    const nh=Object.assign({'User-Agent':'GachaGameMaker/'+APP_BUILD+' (Android)'},headers); let r; try{ r=await H.request({url,method,headers:nh,data:body,responseType:binary?'arraybuffer':'text',connectTimeout:30000,readTimeout:timeout}); }catch(e){ throw {code:'network',message:String(e&&e.message||'')}; }
     let bytes=null,text=null;
     if(binary&&typeof r.data==='string'&&r.status<400){ try{bytes=b64ToBytes(r.data);}catch(e){text=r.data;} }
     else if(r.data instanceof ArrayBuffer) bytes=new Uint8Array(r.data);
@@ -1247,12 +1312,18 @@ async function http(url,{method='GET',headers={},body,binary=false,form=false,ti
   const h={...headers}; delete h.Origin; delete h.Referer;
   const init={method,headers:h,body:body==null?undefined:(form?new URLSearchParams(body).toString():JSON.stringify(body))};
   const PX=webProxy(); let host=''; try{ host=new URL(url).host; }catch(e){}
+  const strict=/(^|\.)ollama\.com$/i.test(host)||/:11434$/.test(host);
+  if(PX&&strict&&!/:11434$/.test(host)) PXHOSTS.add(host);
   const viaPx=()=>fetch(PX.replace(/\/+$/,'')+'/?u='+encodeURIComponent(url),init);
   let res;
   if(PX&&PXHOSTS.has(host)){ try{ res=await viaPx(); }catch(e){ throw {code:'network',message:'중계 서버에 연결하지 못했어요'}; } }
   else { try{ res=await fetch(url,init); }catch(e){
       if(PX&&host&&host!==location.host){ try{ res=await viaPx(); PXHOSTS.add(host); }catch(e2){ throw {code:'network',message:'중계 서버에 연결하지 못했어요'}; } }
       else throw {code:'network',message:IS_NATIVE?'':'웹 버전에서는 이 서비스가 직접 연결을 막았을 수 있어요(CORS). 설정 → 아이폰·웹 연결에서 중계 서버를 넣어 주세요.'}; } }
+  if(res.status===403&&host&&host!==location.host){
+    if(PX&&!PXHOSTS.has(host)&&!/:11434$/.test(host)){ try{ const r2=await viaPx(); if(r2.status!==403){ PXHOSTS.add(host); res=r2; } }catch(e){} }
+    if(res.status===403&&strict) throw {code:'origin_block',message:/:11434$/.test(host)?'내 PC Ollama를 OLLAMA_ORIGINS=* 환경 변수와 함께 다시 켜 주세요.':(PX?'중계 서버의 worker.js가 최신인지(ollama.com 허용) 확인해 주세요.':'설정 → 아이폰·웹 연결에서 중계 서버를 넣거나, 안드로이드 앱에서 써 주세요.')};
+  }
   const hd={}; try{res.headers.forEach((v,k)=>{hd[k.toLowerCase()]=v;});}catch(e){}
   if(binary&&res.ok) return {status:res.status,bytes:new Uint8Array(await res.arrayBuffer()),headers:hd};
   return {status:res.status,text:await res.text(),headers:hd};
@@ -1379,6 +1450,8 @@ function tagList(s){const t=String(s||''),out=[];let inW=false,st=0;for(let i=0;
 function tagKey(t){return String(t).replace(/^[-+]?\d+(?:\.\d+)?::\s*(.*?)\s*::$/,'$1').replace(/\s+/g,' ').trim().toLowerCase();}
 function joinTags(...parts){const seen=new Set(),out=[];parts.forEach(p=>tagList(p).forEach(t=>{const k=tagKey(t);if(k&&!seen.has(k)){seen.add(k);out.push(t);}}));return out.join(', ');}
 function naiStyle(c,id){const b=c.styles.find(x=>x.id===id)||c.styles.find(x=>x.id===c.styleId)||c.styles[0]||{id:'my_style',tags:'',neg:''};const m=(typeof G!=='undefined'&&G&&G.meta)?G.meta:null;if(m&&String(m.artTags||'').trim())return {id:b.id,name:'이 게임 그림체',tags:String(m.artTags),neg:String(m.artNeg||'')};return b;}
+const AGE_TAGS=/^(mature female|mature male|mature woman|mature man|milf|mature|adult woman|adult man|adult|older woman|old woman|aged up)$/i;
+function stripAge(s){ return tagList(s).filter(t=>!AGE_TAGS.test(tagKey(t))).join(', '); }
 function composeNai(kind,base,opt){
   opt=opt||{}; const c=naiCfg(), part=c.parts[kind]||c.parts.prop, st=naiStyle(c,opt.styleId);
   let body=tagList(base), suffix=part.suffix, frame='';
@@ -1386,7 +1459,8 @@ function composeNai(kind,base,opt){
   const pose=kind==='char'?(opt.pose!=null?opt.pose:NAI_FRONT):ILK(kind)?(opt.pose!=null?opt.pose:'looking at viewer'):kind==='enemy'?'straight-on':'';
   let fneg='';
   if(kind==='char'&&/^full body$/i.test(String(frame).trim())){ frame='1.3::full body::, standing, shoes'; fneg='feet out of frame, cowboy shot, upper body, portrait, close-up, cropped legs'; }
-  return {input:joinTags(st.tags,c.prefix,body.join(', '),pose,frame,suffix), neg:joinTags(c.neg,st.neg,part.neg,fneg)};
+  const human=kind==='char'||ILK(kind);
+  return {input:joinTags(st.tags,c.prefix,body.join(', '),pose,frame,suffix), neg:joinTags(c.neg,st.neg,part.neg,fneg,human?'child, loli':'')};
 }
 const CG_POS={left:{x:.3,y:.5},center:{x:.5,y:.5},right:{x:.7,y:.5}};
 const CG_POS_LABEL=[['auto','자동'],['left','왼쪽'],['center','가운데'],['right','오른쪽']];
@@ -1395,7 +1469,7 @@ function charCaption(c,act){return joinTags(tagList(c.naiPrompt).filter(t=>{cons
 function composeCG(l,opt){
   opt=opt||{}; const c=naiCfg(), st=naiStyle(c,opt.styleId||l.naiStyle), cast=cgCast(l), n=cast.length;
   const count=n?(n===1?'1girl, solo':n+'girls'):'no humans';
-  return {input:joinTags(st.tags,c.prefix,count,l.prompt,c.parts.cg.suffix),neg:joinTags(c.neg,st.neg,c.parts.cg.neg),
+  return {input:joinTags(st.tags,c.prefix,count,l.prompt,c.parts.cg.suffix),neg:joinTags(c.neg,st.neg,c.parts.cg.neg,n?'child, loli':''),
     chars:cast.map(x=>({name:x.c.name,id:x.c.id,prompt:charCaption(x.c,x.act),uc:'',pos:x.pos}))};
 }
 function naiDraw(kind,base,opt){
@@ -2032,7 +2106,7 @@ const DEFAULT_CHARS = [
   intro:'계약? 좋아. 대신 내 사선 앞엔 서지 마.',
   lines:['보고는 짧게. 커피는 진하게.','표적이 보이면 끝난 거야.','…오늘은 일찍 퇴근해. 명령이야.'],
   touch:{head:['…쓰다듬지 마. 애 취급하는 거야?','머리는 저격수의 생명이야. 망가지면 책임져.'],body:['……지금 어딜 만지는 거지. 조준경 너머로 다 보여.','관리관. 세 번째는 경고 없이 쏜다.']},
-  naiPrompt:'1girl, solo, mature female, adult woman, tall, long crimson hair, sharp amber eyes, black tactical bodysuit, long dark coat, holding sniper rifle, cool expression, full body, standing, simple background, white background',
+  naiPrompt:'1girl, solo, tall, long crimson hair, sharp amber eyes, black tactical bodysuit, long dark coat, holding sniper rifle, cool expression, full body, standing, simple background, white background',
   img:null,episodes:[{id:'e1',lv:2,r19:false,title:'새벽 세 시의 옥상',script:`[사무소 옥상]
 비가 그친 새벽. 난간에 기댄 세라의 담배 불빛이 깜빡인다.
 세라: 아직 안 잤어?
@@ -2049,7 +2123,7 @@ const DEFAULT_CHARS = [
   intro:'의무관 이브예요. 아픈 데 생기면… 아니, 안 생겨도 와요.',
   lines:['어머, 또 다쳐서 왔네? 이리 와 봐요.','진료비는… 오늘 저녁 한 잔이면 되려나.','무리하지 마요. 당신이 쓰러지면 다들 곤란하니까.'],
   touch:{head:['어머, 나 쓰다듬어 주는 거예요? 보답은 뭘로 할까~','머리 말고 다른 데가 아픈데. 농담이에요.'],body:['진찰은 제가 하는 쪽인데… 오늘은 역할 바꿔요?','후후, 손이 차갑네요. 따뜻하게 해 줄까요?']},
-  naiPrompt:'1girl, solo, mature female, adult woman, wavy long silver-blue hair, half-closed blue eyes, gentle smile, white coat over dark turtleneck, medical bag, full body, standing, simple background, white background',
+  naiPrompt:'1girl, solo, wavy long silver-blue hair, half-closed blue eyes, gentle smile, white coat over dark turtleneck, medical bag, full body, standing, simple background, white background',
   img:null,episodes:[{id:'e1',lv:2,r19:false,title:'진료 기록 외',script:`[의무실]
 관리관: 이브, 아까 그 상처는 괜찮아?
 이브: 내 걱정? 귀엽네요, {관리관}.
@@ -2065,7 +2139,7 @@ const DEFAULT_CHARS = [
   intro:'카야다! 앞은 맡겨! 고기는 네가 사고!',
   lines:['뒤에 있어! 앞은 내가 맡는다!','관리관, 오늘 고기 먹으러 가자. 내가 쏠게… 반만.','방패가 무겁냐고? 너보단 가벼워. 농담이야.'],
   touch:{head:['헤헤, 더 해도 돼!','머리 쓰다듬는 거 좋아. 엄마 생각나.'],body:['어, 어딜! 근육 만져보고 싶으면 말로 해!','…너 의외로 대담하다?']},
-  naiPrompt:'1girl, solo, mature female, adult woman, athletic, short messy green hair, confident grin, tank top, cargo pants, huge metal shield, full body, standing, simple background, white background',
+  naiPrompt:'1girl, solo, athletic, short messy green hair, confident grin, tank top, cargo pants, huge metal shield, full body, standing, simple background, white background',
   img:null,episodes:[{id:'e1',lv:2,r19:false,title:'옛 부두',script:`[옛 항구]
 카야: 여기가 내가 일하던 부두야. 낙성 전엔 배가 엄청 많았대.
 관리관: 지금은 조용하네.
@@ -2078,7 +2152,7 @@ const DEFAULT_CHARS = [
   intro:'루나 등장~ 관리관 폰 이미 해킹했어. 농담… 반쯤.',
   lines:['관리관~ 오늘 해킹한 거 보여줄까? 아, 불법이라 안 되나.','탕탕! 끝! 보너스는 계좌로~','심심해. 놀아줘. 명령이야. 아니, 부탁이야.'],
   touch:{head:['쓰다듬기 +1! 호감도 해킹 성공~','더더! 아 아니, 그만! …아니 계속.'],body:['꺄! 변태 관리관! 이거 녹화해서 이브 언니한테 보낸다!','흐응~ 이런 취향이었어? 메모해 둘게.']},
-  naiPrompt:'1girl, solo, mature female, adult woman, long blue hair, mischievous smile, cropped hoodie, shorts, thigh holsters, dual pistols, headset, full body, standing, simple background, white background',
+  naiPrompt:'1girl, solo, long blue hair, mischievous smile, cropped hoodie, shorts, thigh holsters, dual pistols, headset, full body, standing, simple background, white background',
   img:null,episodes:[{id:'e1',lv:2,r19:false,title:'새벽 두 시의 메시지',script:`[관리관 숙소]
 메시지 알림이 울린다. 발신자는 루나.
 루나: 자?
@@ -2093,7 +2167,7 @@ const DEFAULT_CHARS = [
   intro:'판돈이 큰 계약이네요. 좋아요, 걸어보죠.',
   lines:['한 판 걸어볼래요? 판돈은… 당신.','운 좋은 사람 곁에 있으면 나도 운이 좋아지거든요.','패는 숨기는 게 예의예요. 마음도요.'],
   touch:{head:['어머, 행운의 부적 대신이에요?','머리 만지면 운이 옮는대요. 제 운 다 가져가면 곤란한데.'],body:['손버릇이 나쁘네요. 칩으로 계산할게요.','후후, 그 패… 블러핑 아니죠?']},
-  naiPrompt:'1girl, solo, mature female, adult woman, long black hair with red streak, fox-like eyes, sly smile, red qipao-style dress, black gloves, playing cards, full body, standing, simple background, white background',
+  naiPrompt:'1girl, solo, long black hair with red streak, fox-like eyes, sly smile, red qipao-style dress, black gloves, playing cards, full body, standing, simple background, white background',
   img:null,episodes:[{id:'e1',lv:2,r19:false,title:'하트 에이스',script:`[카지노 뒷골목]
 미호: 여기서 처음 딜러를 했어요. 손님들이 다 거짓말쟁이였죠.
 관리관: 너는?
@@ -2108,7 +2182,7 @@ const DEFAULT_CHARS = [
   intro:'신입 한나, 오늘부터 잘 부탁드립니다!',
   lines:['신입 한나, 출격 준비 완료입니다!','관리관님, 보고서 세 번 검토했습니다!','언젠가 세라 선배처럼 될 거예요.'],
   touch:{head:['헤, 헤헤… 칭찬이에요?','선배들한테 자랑할래요!'],body:['과, 관리관님?! 이, 이것도 훈련인가요?!','저, 저는 괜찮은데… 아니 안 괜찮아요!']},
-  naiPrompt:'1girl, solo, mature female, adult woman, brown ponytail, earnest expression, green military jacket, combat boots, assault rifle, full body, standing, simple background, white background',
+  naiPrompt:'1girl, solo, brown ponytail, earnest expression, green military jacket, combat boots, assault rifle, full body, standing, simple background, white background',
   img:null,episodes:[{id:'e1',lv:2,r19:false,title:'첫 월급',script:`[포장마차]
 한나: 관리관님! 첫 월급 받았어요! 오늘은 제가 살게요!
 관리관: 괜찮아?
@@ -2121,7 +2195,7 @@ const DEFAULT_CHARS = [
   intro:'오델 크레인. 규정에 따라 계약에 응합니다.',
   lines:['규칙은 지키라고 있는 겁니다, 관리관.','퇴근 시간입니다. 연장 근무는 승인하지 않겠습니다.','…고양이 사진이요? 보고 싶으시다면야.'],
   touch:{head:['…근무 중입니다. 짧게 하세요.','고양이한테 하는 것처럼 하시는군요. 나쁘진 않습니다.'],body:['관리관. 그건 사내 규정 14조 위반입니다.','……보고서는 쓰지 않겠습니다. 이번만.']},
-  naiPrompt:'1girl, solo, mature female, adult woman, short navy hair, stern face, glasses, police-style uniform, long coat, riot shield, full body, standing, simple background, white background',
+  naiPrompt:'1girl, solo, short navy hair, stern face, glasses, police-style uniform, long coat, riot shield, full body, standing, simple background, white background',
   img:null,episodes:[{id:'e1',lv:2,r19:false,title:'규칙 제0조',script:`[오델의 집]
 오델: 서류를 놓고 가셨기에… 들어오시죠. 잠깐이면 됩니다.
 작은 고양이가 관리관의 발목에 몸을 비빈다.
@@ -2134,7 +2208,7 @@ const DEFAULT_CHARS = [
   intro:'…지아. 고장 난 거 있으면 가져와요.',
   lines:['…이 드론 이름은 뭉치예요.','고장 나면 가져와요. 사람도요.','관리관 총, 조준경이 1도 틀어졌어요. 고쳐 놨어요.'],
   touch:{head:['…따뜻해요. 계속해요.','기름 묻어요. 괜찮아요?'],body:['…거긴 정비 대상 아니에요.','뭉치, 녹화 끄고 저쪽 보고 있어.']},
-  naiPrompt:'1girl, solo, mature female, adult woman, messy short black hair, goggles on head, mechanic jumpsuit tied at waist, tank top, wrench, small drone, full body, standing, simple background, white background',
+  naiPrompt:'1girl, solo, messy short black hair, goggles on head, mechanic jumpsuit tied at waist, tank top, wrench, small drone, full body, standing, simple background, white background',
   img:null,episodes:[{id:'e1',lv:2,r19:false,title:'뭉치의 생일',script:`[정비실]
 지아: …관리관. 잠깐 와 봐요.
 작업대 위에 작은 케이크와 낡은 드론 한 대가 놓여 있다.
@@ -2437,6 +2511,7 @@ function fix(g){
   Object.values(g.prog.owned).forEach(o=>{o.wlv=o.wlv||0;o.skin=o.skin||'';if(o.dup==null)o.dup=0;});
   g.chars.forEach(c=>{ c.rarity=[1,2,3].includes(+c.rarity)?+c.rarity:1; if(!['atk','def','sup'].includes(c.role)) c.role='atk'; c.elem=String(c.elem||'').replace(/[<>"'&`]/g,''); });
   if(Array.isArray(g.world.codex)) g.world.codex=g.world.codex.filter(x=>x&&typeof x==='object').map(x=>Object.assign(x,{cat:['world','faction','person','place','item','term','history'].includes(x.cat)?x.cat:'term',title:String(x.title||''),body:String(x.body||'')}));
+  if(!(g.meta.ageTags>=1)){ g.chars.forEach(c=>{ if(c.naiPrompt) c.naiPrompt=stripAge(c.naiPrompt); }); g.meta.ageTags=1; g.__curveNew=true; }
   if(!(g.meta.curve>=2)){ g.chapters.filter(c=>c.kind==='main').forEach((ch,k)=>rebalanceChapter(ch,k)); g.meta.curve=2; g.__curveNew=true; }
   g.ver=VER;
   return g;
@@ -2475,7 +2550,7 @@ const imgCache={};
 const IMGNS=PJ().active==='main'?'':PJ().active+'::';
 async function idbGetNS(k){ let b=null; try{b=await idbGet(IMGNS+k);}catch(e){} if(!b&&IMGNS){ try{b=await idbGet(k);}catch(e){} } return b; }
 function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('starfall-img',1);r.onupgradeneeded=()=>r.result.createObjectStore('img');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
-async function idbPut(k,v){const d=await idbOpen();return new Promise((res,rej)=>{const t=d.transaction('img','readwrite');t.objectStore('img').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
+async function idbPut(k,v){try{const ix=JSON.parse(localStorage.getItem('ggm-sync-idx')||'{}');if(ix[k]){delete ix[k];localStorage.setItem('ggm-sync-idx',JSON.stringify(ix));}}catch(e){}const d=await idbOpen();return new Promise((res,rej)=>{const t=d.transaction('img','readwrite');t.objectStore('img').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
 async function idbKeys(){const d=await idbOpen();return new Promise((res,rej)=>{const q=d.transaction('img').objectStore('img').getAllKeys();q.onsuccess=()=>res(q.result||[]);q.onerror=()=>rej(q.error);});}
 async function idbDel(k){const d=await idbOpen();return new Promise((res,rej)=>{const t=d.transaction('img','readwrite');t.objectStore('img').delete(k);t.oncomplete=res;t.onerror=()=>rej(t.error);});}
 async function voiceStats(){let n=0,b=0;try{for(const k of await idbKeys()){if(String(k).startsWith('v_')){n++;const x=await idbGet(k);b+=x&&x.size||0;}}}catch(e){}return {n,mb:(b/1048576).toFixed(1)};}
@@ -2645,11 +2720,13 @@ function openPhone(tid){ $('#notif').innerHTML=''; $('#phone').hidden=false; if(
 function closePhone(){ PH=null; $('#phone').hidden=true; $('#phone').innerHTML=''; render(); }
 function phoneList(){
   PH=null;
-  const items=Object.entries(P().inbox).map(([id,s])=>({t:threadById(id),s})).filter(x=>threadChar(x.t)).sort((a,b)=>b.s.at-a.s.at);
-  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phclose" aria-label="닫기">✕</button><b>${esc(T('talk'))}</b><span style="width:30px"></span></div><div class="ph-list">${
-    items.length?items.map(({t,s})=>{const c=threadChar(t);const last=s.log.filter(l=>l.w!=='s').at(-1);
+  const items=Object.entries(P().inbox).map(([id,s])=>({t:threadById(id),s,at:s.at||0})).filter(x=>threadChar(x.t)).map(x=>Object.assign(x,{k:'t'}));
+  const fcs=Object.entries(FC()).map(([cid,f])=>({c:charById(cid),f,at:f.at||0,k:'f'})).filter(x=>x.c&&x.f.log.length);
+  const rows=[...items,...fcs].sort((a,b)=>b.at-a.at);
+  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phclose" aria-label="닫기">✕</button><b>${esc(T('talk'))}</b><span style="width:30px"></span></div>${phTabs()}<div class="ph-list">${
+    PHT==='friends'?friendsHTML():rows.length?rows.map(x=>{ if(x.k==='f') return fcRowHTML(x.c,x.f); const t=x.t,s=x.s,c=threadChar(t);const last=s.log.filter(l=>l.w!=='s').at(-1);
       return `<button class="ph-row" data-act="openthread" data-id="${t.id}"><div class="av">${art(c)}</div><div class="t"><b>${esc(c.name)}</b><span>${esc(last?(last.w==='p'?'사진을 보냈어요':last.t):t.title)}</span></div>${s.done?'':'<i class="dot"></i>'}</button>`;}).join('')
-    :`<p class="muted" style="text-align:center;padding:40px 16px">아직 온 메시지가 없어요. ${esc(T('crew'))}과(와) 친해지거나 ${esc(T('ops'))}을(를) 진행하면 연락이 와요.</p>`}</div></div>`;
+    :`<p class="muted" style="text-align:center;padding:40px 16px">아직 온 메시지가 없어요. ${esc(T('crew'))}과(와) 친해지거나 ${esc(T('ops'))}을(를) 진행하면 연락이 와요.<br><br><button class="btn sm" data-act="phtab" data-v="friends">친구에게 먼저 말 걸기</button></p>`}</div></div>`;
 }
 function bubbleHTML(l,c){
   if(l.w==='s') return `<div class="sys">${esc(l.t)}</div>`;
@@ -2663,6 +2740,146 @@ function openThread(tid){
   $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phback" aria-label="뒤로">‹</button><b>${esc(c.name)}</b><button data-act="char" data-id="${c.id}" aria-label="대원 정보">ⓘ</button></div><div class="ph-chat" id="phChat">${s.log.map(l=>bubbleHTML(l,c)).join('')}</div><div class="ph-in" id="phIn"><span class="muted" style="text-align:center">${s.done?'대화가 끝났어요':'…'}</span></div></div>`;
   phScroll(); phPlay(t,c,s,token);
 }
+
+
+/* ===== 도전: 레이드 · 심연 탐사 ===== */
+const RAID_TICKS=700, RG_FLOORS=12;
+const RAID_MS=[[0.05,{gems:100,gold:5000}],[0.15,{gems:150,wmat:10}],[0.3,{gems:200,core:3}],[0.5,{gems:300,exp:40}],[0.75,{gems:400,core:5}],[1,{gems:800,core:10,wmat:20}]];
+function weekKey(){ const d=new Date(Date.now()+9*3600e3), day=(d.getUTCDay()+6)%7; return new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()-day)).toISOString().slice(0,10); }
+function progK(){ const main=G.chapters.filter(c=>c.kind==='main'); let k=0; main.forEach((ch,i)=>{ if(ch.stages.some(s=>P().cleared[s.id])) k=i; }); return k; }
+function hashN(s){ let h=0; for(const ch of String(s)) h=(h*31+ch.charCodeAt(0))|0; return Math.abs(h); }
+function RAID(){ const p=P(), wk=weekKey(); let r=p.raid; if(!r||r.wk!==wk){ const lv=r?(r.lv||1)+(r.killed?1:0):1; r=p.raid={wk,lv,dmg:0,killed:false,got:[],tries:{},best:0}; mark('prog'); } return r; }
+function raidBoss(){ const r=RAID(), pool=[]; G.chapters.filter(c=>c.kind==='main').forEach(ch=>ch.stages.forEach(s=>(s.enemies||[]).forEach(e=>{ if(e.boss&&!pool.some(x=>x.name===e.name)) pool.push(e); })));
+  const src=pool.length?pool[hashN(r.wk)%pool.length]:{name:'거대 잔광',elem:ELEMS[0]}; const b={name:src.name,elem:ELEMS[hashN(r.wk+'e')%3],hp:3000,atk:110,def:50,spd:95,boss:true};
+  fitEnemy(b,enemyTarget(progK()+(r.lv-1)*0.6,6,true)*1.3); return Object.assign(b,{total:b.hp*30}); }
+function raidTriesLeft(){ const r=RAID(); return Math.max(0,3-(r.tries[today()]||0)); }
+function raidEnd(win){ const r=RAID(), b=B.enemies[0], dealt=Math.max(0,Math.round((B.ctx.hp0||0)-b.hp)); r.dmg=Math.min(B.ctx.total,r.dmg+dealt); r.best=Math.max(r.best||0,dealt);
+  const ratio=r.dmg/B.ctx.total; if(ratio>=1) r.killed=true; let got={}; RAID_MS.forEach(([t,rw],i)=>{ if(ratio>=t&&!r.got.includes(i)){ r.got.push(i); giveReward(rw); Object.entries(rw).forEach(([k,v])=>got[k]=(got[k]||0)+v); } });
+  B.allies.forEach(u=>{ const o=own(u.c.id); if(o) gainExp(o,80); }); mark('prog'); sfx(r.killed?'승리':'확인');
+  return `<h2 class="disp" style="color:var(--rose);margin:0">${r.killed?'토벌 완료!':'레이드 종료'}</h2><div class="rd-big">${nf(dealt)}<small>이번 피해</small></div>
+    <div class="rd-bar"><i style="width:${Math.min(100,ratio*100)}%"></i><span>${Math.min(100,Math.floor(ratio*1000)/10)}%</span></div>
+    <p style="margin:6px 0">${Object.keys(got).length?'달성 보상: '+rewardText(got):'다음 보상까지 '+(RAID_MS.find(([t],i)=>!r.got.includes(i))?Math.ceil((RAID_MS.find(([t],i)=>!r.got.includes(i))[0]-ratio)*100)+'%':'—')}<br>참가 ${T('crew')} 경험치 +80</p>
+    <button class="btn" data-act="bdone">계속</button>`; }
+function RG(){ const p=P(); if(!p.rogue||typeof p.rogue!=='object') p.rogue={run:null,best:0,day:'',n:0}; return p.rogue; }
+const RELICS={atk:['날카로운 칼날','공격 +15%'],def:['강화 장갑','방어 +25%'],hp:['생명의 결정','최대 체력 +20%'],spd:['가속 장치','속도 +10%'],burst:['오버드라이브','전투 시작 BURST +40%'],heal:['응급 키트','전투가 끝날 때마다 체력 15% 회복'],loot:['전리품 자석','탐사 보상 +30%'],res:['공명 코어','공격 +8% · 체력 +8%'],train:['실전 훈련','공격 +5% (겹쳐요)']};
+const RG_NODE={battle:['⚔','전투','일반 적'],elite:['☠','정예','강한 적 · 이기면 유물'],rest:['⛺','휴식','체력 35% 회복, 쓰러진 대원 부활'],treasure:['✦','보물','유물 1개 고르기'],event:['?','사건','무슨 일이 생길지 몰라요'],boss:['♛','보스','마지막 전투']};
+function rgCount(id){ const run=RG().run; return run?run.relics.filter(x=>x===id).length:0; }
+function rgOpts(run){ if(run.floor>=RG_FLOORS) return ['boss']; const w=[['battle',45],['elite',15],['rest',15],['treasure',10],['event',15]]; const out=[]; let guard=0;
+  while(out.length<3&&guard++<40){ let x=Math.random()*100; const k=w.find(([_,p])=>(x-=p)<0)[0]; if(!out.includes(k)) out.push(k); } if(!out.includes('battle')&&!out.includes('elite')) out[0]='battle'; return out; }
+function rgPick3(run){ const ids=Object.keys(RELICS).filter(k=>k!=='train'&&!run.relics.includes(k)); const out=[]; while(out.length<3&&ids.length) out.push(ids.splice(Math.floor(Math.random()*ids.length),1)[0]); return out; }
+function rgEnemies(run,kind){ const pool=[]; G.chapters.filter(c=>c.kind==='main').forEach(ch=>ch.stages.forEach(s=>(s.enemies||[]).forEach(e=>{ if(!pool.some(x=>x.name===e.name)) pool.push(e); })));
+  const pick=boss=>{ const c=pool.filter(e=>!!e.boss===boss); const src=(c.length?c:pool)[Math.floor(Math.random()*(c.length||pool.length||1))]||{name:'심연의 그림자',elem:ELEMS[0]}; return {name:src.name,elem:src.elem||ELEMS[0],hp:900,atk:85,def:35,spd:92,boss}; };
+  const k=run.k+run.floor*0.12, i=run.floor*0.5; let en;
+  if(kind==='boss'){ en=[pick(true),pick(false)]; fitEnemy(en[0],enemyTarget(k,i,true)*1.4); fitEnemy(en[1],enemyTarget(k,i,false)); }
+  else if(kind==='elite'){ en=[pick(true),pick(false)]; fitEnemy(en[0],enemyTarget(k,i,true)*0.9); fitEnemy(en[1],enemyTarget(k,i,false)*0.9); }
+  else { en=Array.from({length:2+(Math.random()<0.5?1:0)},()=>pick(false)); en.forEach(e=>fitEnemy(e,enemyTarget(k,i,false)*0.85)); }
+  return en; }
+function rgStart(ids){ const g=RG(); g.run={floor:1,squad:ids,hp:Object.fromEntries(ids.map(id=>[id,1])),relics:[],opts:null,pick:null,k:progK(),at:Date.now(),log:[]}; g.run.opts=rgOpts(g.run); mark('prog'); tab='challenge'; render(); }
+function rgBattle(kind){ const run=RG().run; const en=rgEnemies(run,kind); const s={id:'rg_'+run.floor,title:`심연 ${run.floor}층 · ${RG_NODE[kind][1]}`,enemies:en,pre:'',post:''};
+  const m=id=>rgCount(id);
+  startStage(s,{kind:'rogue',node:kind,squad:run.squad,burst0:m('burst')?40:0,prep:(al)=>{ al.forEach(u=>{ const fr=run.hp[u.c.id]; const hpM=1+0.2*m('hp')+0.08*m('res');
+      u.maxhp=Math.round(u.maxhp*hpM); u.atk=Math.round(u.atk*(1+0.15*m('atk')+0.08*m('res')+0.05*m('train'))); u.def=Math.round(u.def*(1+0.25*m('def'))); u.spd=Math.round(u.spd*(1+0.1*m('spd'))); u.hp=Math.round(u.maxhp*(fr==null?1:fr)); }); }}); }
+function rogueEnd(win){ const g=RG(), run=g.run; if(!run) return '<button class="btn" data-act="bdone">계속</button>';
+  const heal=0.15*rgCount('heal'); B.allies.forEach(u=>{ run.hp[u.c.id]=u.hp>0?Math.min(1,u.hp/u.maxhp+heal):0; const o=own(u.c.id); if(o&&win) gainExp(o,40); });
+  const node=B.ctx.node;
+  if(win&&node==='boss'){ const html=rgFinish(true); return html; }
+  if(!win){ return rgFinish(false); }
+  run.floor++; run.opts=rgOpts(run); if(node==='elite') run.pick=rgPick3(run); mark('prog'); sfx('승리');
+  return `<h2 class="disp" style="color:var(--rose);margin:0">${run.floor-1}층 돌파</h2><p>${node==='elite'?'정예를 쓰러뜨렸어요. 유물을 하나 고를 수 있어요.':'다음 층으로 가요.'}${heal?'<br>응급 키트로 체력을 회복했어요.':''}</p><button class="btn" data-act="bdone">계속</button>`; }
+function rgReward(f,done){ let r={gems:25*f+(done?300:0),gold:1200*f,exp:3*f,wmat:2*f,core:Math.floor(f/3)+(done?5:0)}; const m=(1+0.3*rgCount('loot'))*(RG().n>=2?0.25:1); Object.keys(r).forEach(k=>r[k]=Math.round(r[k]*m)); return r; }
+function rgFinish(done){ const g=RG(), run=g.run, f=done?RG_FLOORS:run.floor-1; if(g.day!==today()){ g.day=today(); g.n=0; } const r=rgReward(f,done); giveReward(r); g.n++; g.best=Math.max(g.best||0,f); g.run=null; mark('prog'); sfx(done?'SSR':'확인');
+  return `<h2 class="disp" style="color:${done?'var(--rose)':'#ff5277'};margin:0">${done?'심연 정복!':'탐사 종료'}</h2><p>${f}층까지 갔어요.${g.n>2?' (오늘 3번째부터는 보상 25%)':''}<br>${rewardText(r)}</p><button class="btn" data-act="bdone">계속</button>`; }
+function rgNode(kind){ const g=RG(), run=g.run; if(!run) return;
+  if(kind==='battle'||kind==='elite'||kind==='boss'){ rgBattle(kind); return; }
+  let msg='';
+  if(kind==='rest'){ run.squad.forEach(id=>{ run.hp[id]=Math.min(1,(run.hp[id]>0?run.hp[id]+0.35:0.25)); }); msg='모두 숨을 돌렸어요. 체력을 회복하고 쓰러진 대원이 일어났어요.'; }
+  if(kind==='treasure'){ run.pick=rgPick3(run); msg='유물 상자를 찾았어요!'; }
+  if(kind==='event'){ const x=Math.random();
+    if(x<0.34){ run.squad.forEach(id=>{ if(run.hp[id]>0) run.hp[id]=Math.min(1,run.hp[id]+0.5); }); msg='맑은 샘을 찾았어요. 체력이 크게 회복됐어요.'; }
+    else if(x<0.67){ if(Math.random()<0.5){ run.pick=rgPick3(run); msg='수상한 상자에서 유물이 나왔어요!'; } else { run.squad.forEach(id=>{ if(run.hp[id]>0) run.hp[id]=Math.max(0.05,run.hp[id]-0.2); }); msg='수상한 상자가 폭발했어요. 모두 체력 -20%.'; } }
+    else { run.relics.push('train'); msg='잠깐의 실전 훈련. 공격 +5%.'; } }
+  run.floor++; run.opts=rgOpts(run); run.msg=msg; mark('prog'); render(); }
+function challengeHTML(){
+  const r=RAID(), b=raidBoss(), ratio=r.dmg/b.total, left=raidTriesLeft(), g=RG(), run=g.run;
+  const raid=`<section class="ch-card raid"><div class="ch-h"><i>WEEKLY RAID · Lv.${r.lv}</i><h3>${esc(b.name)}</h3><span>이번 주 함께 깎는 보스예요. 한 번에 ${Math.ceil(RAID_TICKS/11)}초 동안 싸우고, 준 피해가 쌓여요.</span></div>
+    <div class="ch-boss" style="--ec:${ECOL[b.elem]}">${enemyArt(b)}<span class="el" style="--ec:${ECOL[b.elem]}">${esc(b.elem)}</span></div>
+    <div class="rd-bar"><i style="width:${Math.min(100,ratio*100)}%"></i><span>${nf(r.dmg)} / ${nf(b.total)} (${Math.min(100,Math.floor(ratio*1000)/10)}%)</span></div>
+    <div class="rd-ms">${RAID_MS.map(([t,rw],i)=>`<span class="${r.got.includes(i)?'on':''}" title="${esc(rewardText(rw))}">${Math.round(t*100)}%</span>`).join('')}</div>
+    <div class="row" style="margin-top:10px"><button class="btn" data-act="raidgo" ${left&&!r.killed?'':'disabled'}>${r.killed?'이번 주 토벌 완료':'도전 (오늘 '+left+'/3)'}</button></div>
+    <p class="muted" style="margin:6px 0 0;font-size:.78rem">최고 피해 ${nf(r.best||0)} · 토벌하면 다음 주에 더 강한 보스가 나와요.</p></section>`;
+  let rog;
+  if(!run){ rog=`<section class="ch-card rog"><div class="ch-h"><i>ROGUELIKE · ${RG_FLOORS}층</i><h3>심연 탐사</h3><span>한 번 고른 4명으로 끝까지 가요. 체력은 다음 전투로 이어지고, 갈림길마다 전투·휴식·보물·사건을 골라요. 유물을 모아 강해지세요.</span></div>
+      <p class="muted" style="margin:8px 0">최고 기록 ${g.best||0}층 · 오늘 ${g.day===today()?g.n:0}번 (3번째부터 보상 25%)</p><div class="row"><button class="btn" data-act="rgnew">탐사 시작</button></div></section>`; }
+  else { const nodes=run.pick?`<h4 class="ch-sub">유물을 하나 고르세요</h4><div class="rg-picks">${run.pick.map(k=>`<button class="rg-relic" data-act="rgrelic" data-v="${k}"><b>${esc(RELICS[k][0])}</b><span>${esc(RELICS[k][1])}</span></button>`).join('')}</div>`
+      :`<h4 class="ch-sub">${run.floor}층 · 어디로 갈까요?</h4><div class="rg-nodes">${(run.opts||[]).map(k=>`<button class="rg-node n-${k}" data-act="rgnode" data-v="${k}"><em>${RG_NODE[k][0]}</em><b>${RG_NODE[k][1]}</b><span>${RG_NODE[k][2]}</span></button>`).join('')}</div>`;
+    rog=`<section class="ch-card rog"><div class="ch-h"><i>EXPEDITION · ${run.floor}/${RG_FLOORS}층</i><h3>심연 탐사</h3>${run.msg?`<span class="rg-msg">${esc(run.msg)}</span>`:''}</div>
+      <div class="rg-sq">${run.squad.map(id=>{ const c=charById(id), h=run.hp[id]||0; return c?`<div class="rg-u ${h<=0?'down':''}"><div class="rg-a">${art(c)}</div><b>${esc(c.name)}</b><span class="hpb"><i style="width:${Math.round(h*100)}%"></i></span></div>`:''; }).join('')}</div>
+      ${run.relics.length?`<div class="rg-rel">${[...new Set(run.relics)].map(k=>`<span title="${esc(RELICS[k][1])}">${esc(RELICS[k][0])}${rgCount(k)>1?' ×'+rgCount(k):''}</span>`).join('')}</div>`:''}
+      ${nodes}<div class="row" style="margin-top:10px"><button class="btn sm ghost" data-act="rgquit">탐사 끝내기</button></div></section>`; }
+  return `${pageHead('도전','CHALLENGE','lobby')}${raid}${rog}`;
+}
+/* ===== 갠톡 (자유 채팅) ===== */
+let PHT='chat', FCBUSY=false;
+function FC(){ const p=P(); if(!p.fchat||typeof p.fchat!=='object') p.fchat={}; return p.fchat; }
+function fcOf(cid){ const f=FC(); return f[cid]||(f[cid]={log:[],sum:'',sumTo:0,at:0}); }
+function fcRowHTML(c,f){ const last=f.log.filter(l=>l.w!=='s').at(-1); return `<button class="ph-row" data-act="openfc" data-id="${esc(c.id)}"><div class="av">${art(c)}</div><div class="t"><b>${esc(c.name)} <small class="fc-tag">갠톡</small></b><span>${esc(last?(last.w==='me'?'나: ':'')+last.t:'대화를 시작해 보세요')}</span></div></button>`; }
+function phTabs(){ return `<div class="ph-tabs"><button class="${PHT==='chat'?'on':''}" data-act="phtab" data-v="chat">채팅</button><button class="${PHT==='friends'?'on':''}" data-act="phtab" data-v="friends">친구</button></div>`; }
+function friendsHTML(){ const list=G.chars.filter(c=>own(c.id));
+  if(!list.length) return `<p class="muted" style="text-align:center;padding:40px 16px">아직 ${esc(T('crew'))}이(가) 없어요.</p>`;
+  return `${SAMPLE?'':`<p class="muted" style="margin:10px 14px;font-size:.82rem">자유 채팅은 글 AI가 있어야 해요. 설정 → 글 AI에서 등록해 주세요.</p>`}${list.map(c=>{ const o=own(c.id); return `<button class="ph-row" data-act="openfc" data-id="${esc(c.id)}"><div class="av">${art(c)}</div><div class="t"><b>${esc(c.name)}</b><span>${esc(c.faction||'')} · 호감도 Lv.${affLv(o)}</span></div><span class="fc-go">대화</span></button>`; }).join('')}`; }
+function openFree(cid){
+  const c=charById(cid); if(!c) return; const f=fcOf(cid); const token={}; PH={fc:cid,token};
+  $('#phone').innerHTML=`<div class="phone"><div class="ph-top"><button data-act="phback" aria-label="뒤로">‹</button><b>${esc(c.name)}</b><button data-act="fcmenu" data-id="${esc(c.id)}" aria-label="메뉴">⋯</button></div>
+    <div class="ph-chat" id="phChat">${f.log.length?f.log.map(l=>bubbleHTML(l,c)).join(''):`<div class="sys">${esc(c.name)}와(과)의 1:1 대화예요. 무엇이든 말을 걸어 보세요.</div>`}</div>
+    <div class="ph-in fc"><textarea id="fcIn" rows="1" maxlength="400" placeholder="${SAMPLE?'메시지 보내기':'글 AI를 먼저 등록해 주세요'}" ${SAMPLE?'':'disabled'}></textarea><button class="btn sm" data-act="fcsend" ${SAMPLE?'':'disabled'}>전송</button></div></div>`;
+  phScroll(); f.unread=0; mark('prog'); setTimeout(()=>{ const i=$('#fcIn'); if(i&&!IS_NATIVE) i.focus(); },50);
+}
+function fcProgress(){ const st=(typeof mainStages==='function'?mainStages():[]).filter(s=>P().cleared[s.id]); return st.length?st.map(s=>s.code+' '+s.title).join(', '):'아직 이야기를 시작하지 않았다'; }
+async function fcSend(){
+  if(FCBUSY||!PH||!PH.fc) return; const cid=PH.fc, c=charById(cid), inp=$('#fcIn'); if(!c||!inp) return; const text=inp.value.trim(); if(!text) return;
+  if(!SAMPLE){ toast('설정의 글 AI에서 AI를 먼저 등록해 주세요'); return; }
+  const f=fcOf(cid), token=PH.token, alive=()=>PH&&PH.token===token&&$('#phChat'); inp.value=''; inp.style.height='';
+  const me={w:'me',t:text,at:Date.now()}; f.log.push(me); f.at=me.at; if(alive()){ const ch=$('#phChat'); if(ch.querySelector('.sys')&&f.log.length===1) ch.innerHTML=''; ch.insertAdjacentHTML('beforeend',bubbleHTML(me,c)); phScroll(); } mark('prog');
+  FCBUSY=true; const ty=document.createElement('div'); ty.className='msg'; ty.innerHTML=`<div class="av sm">${art(c)}</div><div class="bub typing"><i></i><i></i><i></i></div>`; if(alive()){ $('#phChat').appendChild(ty); phScroll(); }
+  try{
+    const o=own(c.id), lv=affLv(o), files=(c.files||[]).filter(x=>o&&o.dup>=(x.dup||0)).map(x=>x.text).filter(Boolean);
+    const pool=typeof affLinePool==='function'?affLinePool(c).slice(0,8):(c.lines||[]).slice(0,6);
+    const recent=f.log.slice(-24).map(l=>l.w==='me'?`${playerName()}: ${l.t}`:l.w==='c'?`${c.name}: ${l.t}`:`(${l.t})`).join('\n');
+    const r=await aiJSON(`${RULES}
+${ctx()}
+
+너는 지금 「${c.name}」이다. ${T('talk')} 메신저로 ${playerName()}(${T('player')})와(과) 1:1 개인 채팅을 하고 있다.
+${c.name}: 소속 ${c.faction||'무소속'}, ${ROLE[c.role]||''}. 프로필: ${c.profile||''}
+말투 예시: ${pool.map(x=>'"'+x+'"').join(' / ')}
+호감도 Lv.${lv} (1~10). 호감도에 맞는 거리감으로 대한다(낮으면 조금 서먹하게, 높으면 편하고 다정하게).
+${files.length?'이 캐릭터가 이미 털어놓은 비밀: '+files.join(' / '):''}
+플레이어가 지금까지 겪은 이야기: ${fcProgress()}
+${f.sum?'예전 대화 요약: '+f.sum:''}
+최근 대화:
+${recent}
+
+규칙: 실제 메신저처럼 짧은 말풍선 1~3개로 답한다. 지문, 괄호 속 행동 묘사, 이름표 없이 대사만 쓴다. ${c.name}의 말투와 성격을 지킨다. 플레이어가 아직 보지 못한 메인 플롯의 비밀이나 반전은 말하지 않고 모르는 척하거나 얼버무린다. 대화가 부적절한 방향으로 가면 캐릭터답게 화제를 돌린다. 가끔 먼저 질문을 던지거나 최근 사건을 언급해도 좋다.
+JSON만 출력: {"replies":["말풍선1","말풍선2"],"aff":0~2 정수(대화가 즐겁거나 의미 있었으면 1~2)}`,null,'default');
+    ty.remove(); const reps=(r&&Array.isArray(r.replies)?r.replies:r&&r.reply?[r.reply]:[]).map(x=>String(x||'').trim()).filter(Boolean).slice(0,4);
+    if(!reps.length){ if(r) toast('답장을 받지 못했어요. 다시 보내 주세요'); return; }
+    for(let i=0;i<reps.length;i++){
+      if(i){ const t2=document.createElement('div'); t2.className='msg'; t2.innerHTML=ty.innerHTML; if(alive()){ $('#phChat').appendChild(t2); phScroll(); } await wait(Math.min(1600,400+reps[i].length*30)); t2.remove(); }
+      const m={w:'c',t:reps[i],at:Date.now()}; f.log.push(m); f.at=m.at; if(alive()){ $('#phChat').insertAdjacentHTML('beforeend',bubbleHTML(m,c)); phScroll(); } else f.unread=(f.unread||0)+1;
+    }
+    if(f.log.length>400) { const cut=f.log.length-400; f.log.splice(0,cut); f.sumTo=Math.max(0,(f.sumTo||0)-cut); }
+    const p=P(), d=today(); if(!p.fcAff||p.fcAff.d!==d) p.fcAff={d,n:0}; const add=Math.max(0,Math.min(2,Math.round(+((r&&r.aff)||0)))); if(add&&o&&p.fcAff.n<20){ const a=Math.min(add,20-p.fcAff.n); p.fcAff.n+=a; addAff(c,a); }
+    mark('prog'); if(f.log.length-(f.sumTo||0)>70) fcSummarize(cid);
+  }finally{ FCBUSY=false; ty.remove(); }
+}
+async function fcSummarize(cid){
+  const c=charById(cid), f=fcOf(cid); const end=f.log.length-24, part=f.log.slice(f.sumTo||0,end); if(part.length<20) return;
+  try{ const r=await aiJSON(`${c.name}와(과) ${playerName()}의 메신저 대화를 다음 대화에서 참고할 수 있게 요약하라. 약속, 서로 알게 된 사실, 감정 변화, 별명, 농담을 중심으로 6문장 이내.
+${f.sum?'기존 요약: '+f.sum+'\n':''}새 대화:
+${part.map(l=>(l.w==='me'?playerName():l.w==='c'?c.name:'')+': '+l.t).join('\n')}
+JSON만 출력: {"summary":"요약"}`,null,'quick'); if(r&&r.summary){ f.sum=String(r.summary).slice(0,1200); f.sumTo=end; mark('prog'); } }catch(e){}
+}
+document.addEventListener('keydown',e=>{ if(e.target&&e.target.id==='fcIn'&&e.key==='Enter'&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); fcSend(); } });
+document.addEventListener('input',e=>{ if(e.target&&e.target.id==='fcIn'){ const t=e.target; t.style.height='auto'; t.style.height=Math.min(120,t.scrollHeight)+'px'; } });
 function phScroll(){const ch=$('#phChat'); if(ch) ch.scrollTop=ch.scrollHeight;}
 async function phPlay(t,c,s,token){
   const lines=parseScript(t.script);
@@ -2704,16 +2921,18 @@ function render(){
   if(tab==='lobby'&&typeof cashTick==='function') cashTick();
   $('#gems').textContent=nf(P().gems); try{ $('#ic_gold').innerHTML=rIco('gold'); $('#ic_gems').innerHTML=rIco('gems'); }catch(e){} $('#gold').textContent=nf(P().gold); dm();
   $('#tb_ops').textContent=T('ops'); $('#tb_gacha').textContent=T('gacha'); $('#tb_crew').textContent=T('crew');
-  const navTab={codex:'lobby',notice:'lobby',event:'lobby',evd:'lobby',farm:'lobby',disp:'lobby',pass:'lobby',shop:'lobby',cash:'lobby'}[tab]||tab;
+  const navTab={challenge:'lobby',codex:'lobby',notice:'lobby',event:'lobby',evd:'lobby',farm:'lobby',disp:'lobby',pass:'lobby',shop:'lobby',cash:'lobby'}[tab]||tab;
   if(tab!=='lobby') document.body.classList.remove('lb-hidden');
   document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===navTab?'true':'false'));
-  const F={codex:codexHTML,shop:shopHTML,cash:cashHTML,lobby:lobbyHTML,ops:opsHTML,contract:contractHTML,crew:crewHTML,studio:studioHTML,event:eventsHTML,evd:eventDetailHTML,notice:noticeHTML,farm:farmHTML,disp:dispHTML,pass:passHTML};
+  const F={challenge:challengeHTML,codex:codexHTML,shop:shopHTML,cash:cashHTML,lobby:lobbyHTML,ops:opsHTML,contract:contractHTML,crew:crewHTML,studio:studioHTML,event:eventsHTML,evd:eventDetailHTML,notice:noticeHTML,farm:farmHTML,disp:dispHTML,pass:passHTML};
   $('#view').innerHTML=(F[tab]||lobbyHTML)();
   document.body.classList.toggle('on-lobby',tab==='lobby');
+  if(typeof applyDesk==='function') applyDesk();
 }
 const pageHead=(ko,en,back)=>`<div class="phead">${back?`<button class="back" data-act="go" data-to="${back}" aria-label="뒤로">‹</button>`:''}<div><i>${en}</i><h2>${esc(ko)}</h2></div></div>`;
 function nextStage(){ const main=G.chapters.filter(c=>c.kind==='main'); for(const [ci,ch] of main.entries()) for(const [si,s] of ch.stages.entries()) if(!P().cleared[s.id]) return {ch,s,code:(ci+1)+'-'+(si+1)}; return null; }
 const ICO={
+  raid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14.5 3 21 9.5 11 19.5 4.5 13z"/><path d="M4.5 13 3 21l8-1.5M16 8l-6 6"/></svg>',
   book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-5a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h6z"/></svg>',
   talk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg>',
   event:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></svg>',
@@ -2733,7 +2952,7 @@ function lobbyHTML(){
   const TYPE={std:'STANDARD',pickup:'PICK UP',pool:'FACTION',event:'EVENT LIMITED'};
   const ico=(act,to,ic,label,badge,hot)=>`<button class="lb-ico ${hot?'hot':''}" data-act="${act}" ${to?`data-to="${to}"`:''}><span class="ic">${ICO[ic]}</span><b>${esc(label)}</b>${badge?`<em>${badge}</em>`:''}</button>`;
   const newN=p.live.notices.filter(n=>n.at>p.live.seen).length;
-  return `<div class="lobby ${ill?'ill':''}">
+  return `<div class="lobby ${ill?'ill':''} lbsz-${esc(p.lbSize||'fit')}">
     <div class="lb-stage" ${has?'data-act="poke" role="button" tabindex="0"':'data-act="lbshow"'} style="${ill?'background:#000':bgStyle(p.lobbyBg||'새벽등대 사무소')}">
       ${ill?`<img class="lobby-ill" src="${esc(ill)}" alt="${esc(c.name)}" draggable="false">`:has?art(c,'lobby-art'):''}<div class="lb-shade"></div>
     </div>
@@ -2751,6 +2970,7 @@ function lobbyHTML(){
         ${ico('mailopen','','mail','우편함',mailCount()||'',mailCount()>0)}
         ${ico('go','disp','disp',T('dispatch'),dispDone()||'')}
         ${ico('go','farm','farm',T('farm'),'')}
+        ${ico('go','challenge','raid','도전',RG().run?'!':(raidTriesLeft()&&!RAID().killed?raidTriesLeft():''))}
         ${ill||has?ico('lbhide','','eye','숨기기',''):''}
       </div>
       <div class="lb-foot">
@@ -3167,7 +3387,8 @@ function studioHTML(){
   <div class="panel"><h3>게임</h3><p class="muted" style="margin:0 0 10px">지금 게임: <b>${esc(G.meta.title)}</b>. 세계관, 용어, 속성, 화면 테마를 바꾸거나, AI로 완전히 다른 가챠 게임을 새로 만들 수 있어요. 게임은 여러 개 만들어 두고 오갈 수 있어요.</p>
     <div class="row"><button class="btn sm" data-act="meta-open">게임 정의 편집</button><button class="btn sm" data-act="newgame-open">AI로 새 게임 만들기</button><button class="btn sm ghost" data-act="pj-open">게임 목록 (${pj.list.length})</button></div></div>
   ${IS_NATIVE?'':`<div class="panel"><h3>아이폰·웹 연결</h3><p class="muted" style="margin:0 0 10px">웹 버전은 열 때마다 최신이에요. 일부 AI 서비스는 브라우저에서 직접 부르는 걸 막아서(CORS), 막히면 중계 서버를 거쳐요. ${webProxy()?'지금 중계 서버: <b>'+esc(webProxy())+'</b>':'중계 서버 없음'}</p>
-    <div class="row"><button class="btn sm" data-act="pxopen">중계 서버 설정</button>${IS_IOS&&!IS_STANDALONE?'<button class="btn sm ghost" data-act="a2hs">홈 화면에 추가하는 법</button>':''}</div></div>`}
+    <label class="f" for="desk_mode">PC 화면 (넓은 화면에서)</label><select class="in" id="desk_mode" data-act="deskmode">${opt([['auto','게임 화면을 가운데 세로로 + 옆 안내 (추천)'],['off','끄기 (창 전체를 씀)']],deskMode())}</select>
+    <div class="row" style="margin-top:10px"><button class="btn sm" data-act="pxopen">중계 서버 설정</button>${IS_IOS&&!IS_STANDALONE?'<button class="btn sm ghost" data-act="a2hs">홈 화면에 추가하는 법</button>':''}</div></div>`}
   ${IS_NATIVE?`<div class="panel"><h3>앱 업데이트</h3><p class="muted" style="margin:0 0 10px">지금 버전: ${esc(window.__LIVE__?'온라인 업데이트 '+window.__LIVE__:'설치 버전 '+APP_BUILD)}. 새 버전이 나오면 앱이 GitHub에서 받아 와요. API 키는 이 기기에만 저장되고 어디로도 보내지 않아요(각 AI 회사 서버로 직접 요청할 때만 써요).</p>
     <div class="row"><button class="btn sm" data-act="upd-open">업데이트 설정</button><button class="btn sm ghost" data-act="updcheck">지금 확인</button></div></div>`:''}
   <div class="panel"><h3>라이브 운영</h3><p class="muted" style="margin:0 0 10px">앱을 켤 때 날짜를 보고 새 콘텐츠를 자동으로 만들어요. 켠 항목만큼 글 AI 요금이 들어요.</p>
@@ -3177,7 +3398,7 @@ function studioHTML(){
   <div class="panel"><h3>연출</h3>
     <div class="g2"><div><label class="f">타이틀 ${T('crew')}</label><select class="in" data-pset="titleChar"><option value="">자동</option>${G.chars.map(c=>`<option value="${c.id}" ${P().titleChar===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
     <div><label class="f">타이틀 배경</label><select class="in" data-pset="titleBg">${bgOptions(P().titleBg)}</select></div></div>
-    <div class="g2"><div><label class="f">로비·타이틀 표시</label><select class="in" data-pset="lobbyMode">${opt([['auto','일러스트가 있으면 일러스트'],['stand','항상 스탠딩 + 배경']],P().lobbyMode||'auto')}</select></div><div></div></div>
+    <div class="g2"><div><label class="f">로비·타이틀 표시</label><select class="in" data-pset="lobbyMode">${opt([['auto','일러스트가 있으면 일러스트'],['stand','항상 스탠딩 + 배경']],P().lobbyMode||'auto')}</select></div><div><label class="f">로비 캐릭터 크기</label><select class="in" data-pset="lbSize">${opt([['fit','위 배너에 안 가리게 (기본)'],['big','크게 (머리가 가려질 수 있어요)'],['small','작게']],P().lbSize||'fit')}</select></div></div>
     <div class="g2"><div><label class="f">로비 배경</label><select class="in" data-pset="lobbyBg">${bgOptions(P().lobbyBg)}</select></div>
     <div><label class="f">기본 ${T('gacha')} 배경</label><select class="in" data-pset="gachaBg">${bgOptions(P().gachaBg,'기본')}</select></div></div>
     <div class="row" style="margin-top:12px"><button class="btn sm ghost" data-act="title">타이틀 보기</button><button class="btn sm ghost" data-act="opening-edit">오프닝 편집</button><button class="btn sm ghost" data-act="opening-play">오프닝 다시 보기</button></div></div>
@@ -3197,6 +3418,8 @@ function studioHTML(){
   <div class="panel"><h3>재화</h3><p class="muted" style="margin:0 0 10px">${T('currency')}와 재료는 로비의 상점과 캐시 상점에서 받을 수 있어요.</p><div class="row"><button class="btn sm" data-act="go" data-to="cash">캐시 상점</button><button class="btn sm ghost" data-act="go" data-to="shop">상점</button></div></div>
   <div class="panel"><h3>공유와 피드백</h3><p class="muted" style="margin:0 0 10px">친구에게 게임을 보내고 의견을 받아요. 공유 팩에는 API 키, 업데이트 토큰, 진행 상황, 음성이 들어가지 않아요.</p>
     <div class="row"><button class="btn sm" data-act="shareopen">공유 팩 만들기</button><button class="btn sm ghost" data-act="fbopen">피드백 보내기</button><button class="btn sm ghost" data-act="guidecopy">친구용 안내문</button></div></div>
+  <div class="panel"><h3>PC·폰 연동</h3><p class="muted" style="margin:0 0 10px">${syReady()?`저장소 <b>${esc(SY().repo)}</b> · 이 기기: ${esc(syDevice())}${SY().last?' · 마지막 '+(SY().lastDir==='down'?'받기':'올리기')+' '+esc(new Date(SY().last).toLocaleString()):''}`:'내 GitHub 비공개 저장소를 거쳐 폰과 PC(웹 버전)가 같은 게임을 이어서 할 수 있어요.'}</p>
+    <div class="row">${syReady()?'<button class="btn sm" data-act="sypush">올리기</button><button class="btn sm ghost" data-act="sypull">받기</button>':''}<button class="btn sm ${syReady()?'ghost':''}" data-act="syopen">${syReady()?'설정':'연동 설정'}</button></div></div>
   <div class="panel"><h3>데이터</h3>
     <div class="row" style="margin-bottom:8px"><button class="btn sm" data-act="exportfile">이미지 포함 백업 파일 저장</button><button class="btn sm ghost" data-act="importfile">백업 파일 불러오기</button></div><div class="row"><button class="btn sm ghost" data-act="backup">텍스트 백업</button><button class="btn sm ghost" data-act="reset" style="color:var(--rose)">이 게임 처음부터</button></div></div>`;
 }
@@ -3349,7 +3572,11 @@ function renderSetup(){
        <label class="f" for="ng_kw">장르와 키워드</label><textarea class="in" id="ng_kw" placeholder="예: 몰락한 왕국을 되찾는 용병단. 엘프 궁수, 드워프 기술자, 마녀. 마법석으로 소환 계약을 맺는다.">${esc(SW.kw||'')}</textarea>
        <label class="f" for="ng_tone">분위기 (선택)</label><input class="in" id="ng_tone" value="${esc(SW.tone||'')}" placeholder="예: 진지하지만 동료들끼리는 유쾌하게">
        <div class="g2"><div><label class="f" for="ng_theme">화면 테마</label><select class="in" id="ng_theme">${opt([['auto','AI가 고르기'],['tactical','택티컬'],['fantasy','판타지'],['neon','네온 사이버'],['pastel','파스텔'],['noir','모노 누아르']],'auto')}</select></div><div><label class="f" for="ng_n">캐릭터 수</label><select class="in" id="ng_n">${opt([[6,'6명'],[8,'8명'],[10,'10명']],8)}</select></div></div>
-       <label class="f" for="ng_style">이 게임 그림체 태그 (선택, 비우면 앞에서 적은 그림체)</label><input class="in" id="ng_style" placeholder="예: dark fantasy, muted colors">
+<label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ng_fan" onchange="document.getElementById('ng_srcw').hidden=!this.checked"><span><b>2차 창작</b> <span class="muted" style="font-size:.8rem">(원작 세계관·캐릭터로 만들기)</span></span></label>
+       <div id="ng_srcw" hidden><label class="f" for="ng_src">원작 이름</label><input class="in" id="ng_src" placeholder="예: 작품 이름"><p class="muted" style="margin:4px 0 0;font-size:.78rem">원작 설정을 최대한 따르되, 원작에서 미성년자·학생인 캐릭터는 넣지 않고 성인 캐릭터만 써요. 개인 감상용으로만 써 주세요.</p></div>
+   <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ng_fan" onchange="document.getElementById('ng_srcw').hidden=!this.checked"><span><b>2차 창작</b> <span class="muted" style="font-size:.8rem">(원작 세계관·캐릭터로 만들기)</span></span></label>
+       <div id="ng_srcw" hidden><label class="f" for="ng_src">원작 이름</label><input class="in" id="ng_src" placeholder="예: 작품 이름"><p class="muted" style="margin:4px 0 0;font-size:.78rem">원작 설정을 최대한 따르되, 원작에서 미성년자·학생인 캐릭터는 넣지 않고 성인 캐릭터만 써요. 개인 감상용으로만 써 주세요.</p></div>
+    <label class="f" for="ng_style">이 게임 그림체 태그 (선택, 비우면 앞에서 적은 그림체)</label><input class="in" id="ng_style" placeholder="예: dark fantasy, muted colors">
        <p class="muted" id="ng_stat" style="margin:8px 0 0"></p>
        <button class="btn block" data-act="swmake" style="margin-top:10px">AI로 만들기</button>`:`<span class="muted">글 AI 키를 넣으면 쓸 수 있어요. <button class="linkb" data-act="swgo1">키 넣으러 가기</button></span>`}</div>
      <div class="sw-opt"><b>☆ 샘플 게임 「낙성계약」</b><span>미리 만들어 둔 SF 이능 세계관이에요. 나중에 설정 → 게임 목록에서 AI로 새 게임을 언제든 만들 수 있어요.</span><button class="btn ghost block" data-act="swdone" style="margin-top:10px">샘플로 시작</button></div>
@@ -3613,7 +3840,7 @@ function openFormation(stage,ctx,startAct){
   const slot=i=>{const c=charById(squadSel[i]); if(!c) return `<button class="fslot empty" data-act="fsl" data-i="${i}"><span>+</span><i>${i<2?'전열':'후열'}</i></button>`;
     const m=matchup(c,en), o=own(c.id);
     return `<button class="fslot r${c.rarity}" data-act="fpick" data-id="${c.id}" style="--ec:${ECOL[c.elem]}"><div class="fs-art">${art(c)}</div><span class="el" style="--ec:${ECOL[c.elem]}">${esc(c.elem)}</span>${m.good>m.bad?'<em class="adv">유리</em>':m.bad>m.good?'<em class="dis">불리</em>':''}<div class="fs-t"><b>${esc(c.name)}</b><span>Lv.${o.lv} · ${esc(ROLE[c.role])}</span><span class="pw">${nf(charPower(c))}</span></div></button>`;};
-  const head2=FORM.ctx.kind==='farm'?`<span class="muted">보상: ${rewardText(farmReward(stage.farm.key,stage.farm.lv))}</span>`:FORM.ctx.kind==='event'?`<span class="muted">이벤트 스테이지</span>`:`<span class="muted">보상 ◆${nf(stage.reward)}${P().cleared[stage.id]?'':' (첫 클리어 2배)'}</span>`;
+  const head2=FORM.ctx.kind==='raid'?`<span class="muted">이번 주 누적 피해로 보상을 받아요 · 오늘 ${raidTriesLeft()}/3</span>`:FORM.ctx.kind==='rogue'?`<span class="muted">이 4명으로 끝까지 가요. 체력은 이어져요.</span>`:FORM.ctx.kind==='farm'?`<span class="muted">보상: ${rewardText(farmReward(stage.farm.key,stage.farm.lv))}</span>`:FORM.ctx.kind==='event'?`<span class="muted">이벤트 스테이지</span>`:`<span class="muted">보상 ◆${nf(stage.reward)}${P().cleared[stage.id]?'':' (첫 클리어 2배)'}</span>`;
   openModal(`${head(esc(FORM.ctx.code?FORM.ctx.code+' ':'')+esc(stage.title),head2)}
     <div class="fenemy">${en.map(e=>`<div class="fe ${e.boss?'boss':''}" style="--ec:${ECOL[e.elem]}"><div class="fe-art">${enemyArt(e)}</div><span class="el" style="--ec:${ECOL[e.elem]}">${esc(e.elem)}</span><b>${esc(e.name)}</b><span>${e.boss?'BOSS · ':''}${nf(e.hp)}</span></div>`).join('')}</div>
     <p class="muted" style="margin:6px 0 0">적 속성: ${Object.entries(elemCount).map(([k,v])=>`${esc(k)}×${v}`).join(' ')} → ${Object.keys(elemCount).map(k=>{const w=ELEMS.find(x=>BEATS[x]===k);return w?`<b style="color:${ECOL[w]}">${esc(w)}</b> 유리`:'';}).filter(Boolean).join(', ')}</p>
@@ -3830,10 +4057,16 @@ async function newGame(t){
   const kw=$('#ng_kw').value.trim(); if(!kw){toast('장르와 키워드를 적어 주세요');return;}
   const tone=$('#ng_tone').value.trim(), th=$('#ng_theme').value, n=+$('#ng_n').value, stat=m=>{const e=$('#ng_stat');if(e)e.textContent=m;};
   const ngSty=$('#ng_style')?$('#ng_style').value.trim():'';
+  const src=($('#ng_fan')&&$('#ng_fan').checked&&$('#ng_src'))?$('#ng_src').value.trim():'';
+  const FAN=src?`\n2차 창작: 원작 「${src}」을(를) 바탕으로 한다. 세계관·세력·용어·인물을 원작 설정에 최대한 충실하게 쓰고, 원작 캐릭터는 원작 이름 그대로 쓴다. 원작에서 미성년자이거나 학생인 캐릭터는 등장시키지 않고 성인 캐릭터만 고른다(모자라면 원작 세계에 있을 법한 오리지널 성인 캐릭터로 채운다). 학교 배경은 쓰지 않는다.`:'';
+  const DK=JSON.stringify({kw,tone,th,n,ngSty,src}); let DR=null; try{ DR=JSON.parse(localStorage.getItem('ggm-ng-draft')||'null'); }catch(e){} if(!DR||DR.key!==DK) DR={key:DK,r:{}};
+  const saveDR=()=>{ try{ localStorage.setItem('ggm-ng-draft',JSON.stringify(DR)); }catch(e){} };
+  const ngStep=async(k,label,fn,ok)=>{ if(DR.r[k]&&ok(DR.r[k])){ stat(label+' (이전에 만든 것 이어 쓰기)'); return DR.r[k]; }
+    for(let i=0;i<3;i++){ stat(label+(i?` · 다시 시도 ${i}/2`:'')); const r=await fn(); if(r&&ok(r)){ DR.r[k]=r; saveDR(); return r; } await wait(1500); } return null; };
+  if(Object.keys(DR.r).length) toast('지난번에 만들던 단계부터 이어서 만들어요');
   t.disabled=true; const base=`규칙: 모든 등장인물은 성인이지만 나이는 언급하지 않는다. 학교 설정 금지. 서브컬처 수집형 RPG. 노골적인 성적 묘사 금지. 한국어로 쓴다.`;
-  stat('1/3 세계관과 게임 정의를 만드는 중…');
-  const a=await aiJSON(`${base}\n새 가챠 게임을 기획한다. 장르와 키워드: "${kw}". 분위기: "${tone||'자유'}".\n게임 이름은 키워드에서 떠올린 고유한 이름으로 짓는다. 샘플 게임 이름(낙성계약)과 비슷하게 짓지 말고, '계약'이라는 단어는 쓰지 않는다.\n화면 테마는 ${th==='auto'?'tactical, fantasy, neon, pastel, noir 중 어울리는 것':th}.\nJSON만 출력: {"title":"게임 이름","sub":"영문 부제","theme":"tactical|fantasy|neon|pastel|noir","accent":"#rrggbb","terms":{"player":"플레이어 호칭","currency":"유료 재화","gold":"일반 재화","expMat":"경험치 재료","wMat":"무기 재료","core":"돌파 재료","gacha":"뽑기 이름(2~3자)","ops":"전투 메뉴 이름(2~3자)","crew":"아군 호칭(2~3자)","talk":"메신저 앱 이름","dispatch":"파견 이름","farm":"재료 던전 이름","pass":"패스 이름","event":"이벤트","weapon":"전용 무기 호칭","files":"캐릭터 비밀 기록 호칭","skin":"의상 호칭","enhance":"강화","limit":"돌파 호칭"},"elems":[{"n":"속성1(1~2자)","c":"#색"},{"n":"속성2","c":"#색"},{"n":"속성3","c":"#색"}],"roles":{"atk":"","def":"","sup":""},"farms":[{"key":"exp","name":""},{"key":"gold","name":""},{"key":"wmat","name":""},{"key":"core","name":""}],"world":{"name":"","summary":"2~3문장, 플레이어 입장 포함","lore":"6~10문장","plot":"숨겨진 진실, 복선, 1부 전체 전개 6~10문장","factions":[{"name":"","desc":""}]},"dispatches":[{"name":"","desc":"","hours":1,"need":2}]}  파견은 6개, hours는 0.5~12.`,null,'complex');
-  if(!a){t.disabled=false;stat('');return;}
+  const a=await ngStep('a','1/4 세계관과 게임 정의를 만드는 중…',()=>aiJSON(`${base}${FAN}\n새 가챠 게임을 기획한다. 장르와 키워드: "${kw}". 분위기: "${tone||'자유'}".\n게임 이름은 키워드에서 떠올린 고유한 이름으로 짓는다. 샘플 게임 이름(낙성계약)과 비슷하게 짓지 말고, '계약'이라는 단어는 쓰지 않는다.\n화면 테마는 ${th==='auto'?'tactical, fantasy, neon, pastel, noir 중 어울리는 것':th}.\nJSON만 출력: {"title":"게임 이름","sub":"영문 부제","theme":"tactical|fantasy|neon|pastel|noir","accent":"#rrggbb","terms":{"player":"플레이어 호칭","currency":"유료 재화","gold":"일반 재화","expMat":"경험치 재료","wMat":"무기 재료","core":"돌파 재료","gacha":"뽑기 이름(2~3자)","ops":"전투 메뉴 이름(2~3자)","crew":"아군 호칭(2~3자)","talk":"메신저 앱 이름","dispatch":"파견 이름","farm":"재료 던전 이름","pass":"패스 이름","event":"이벤트","weapon":"전용 무기 호칭","files":"캐릭터 비밀 기록 호칭","skin":"의상 호칭","enhance":"강화","limit":"돌파 호칭"},"elems":[{"n":"속성1(1~2자)","c":"#색"},{"n":"속성2","c":"#색"},{"n":"속성3","c":"#색"}],"roles":{"atk":"","def":"","sup":""},"farms":[{"key":"exp","name":""},{"key":"gold","name":""},{"key":"wmat","name":""},{"key":"core","name":""}],"world":{"name":"","summary":"2~3문장, 플레이어 입장 포함","lore":"6~10문장","plot":"숨겨진 진실, 복선, 1부 전체 전개 6~10문장","factions":[{"name":"","desc":""}]},"dispatches":[{"name":"","desc":"","hours":1,"need":2}]}  파견은 6개, hours는 0.5~12.`,null,'complex'),r=>r&&r.title&&r.world);
+  if(!a){t.disabled=false;stat('세계관 생성에 실패했어요. 같은 내용으로 다시 누르면 이어서 만들어요.');return;}
   const ng=defaults(); ng.meta=Object.assign(clone(DEFAULT_META),{title:String(a.title||'새 게임'),sub:String(a.sub||''),theme:['tactical','fantasy','neon','pastel','noir'].includes(a.theme)?a.theme:'tactical',accent:/^#[0-9a-f]{6}$/i.test(a.accent||'')?a.accent:'#ffb400'});
   ng.meta.artTags=ngSty;
   ng.meta.terms=Object.assign(clone(DEFAULT_META.terms),a.terms||{}); if(Array.isArray(a.elems)&&a.elems.length===3) ng.meta.elems=a.elems.map((e,i)=>({n:String(e.n||DEFAULT_META.elems[i].n).slice(0,4),c:/^#[0-9a-f]{6}$/i.test(e.c||'')?e.c:DEFAULT_META.elems[i].c}));
@@ -3843,13 +4076,18 @@ async function newGame(t){
   ng.dispatches=(Array.isArray(a.dispatches)?a.dispatches:[]).slice(0,6).map((d,i)=>({id:'d'+(i+1),name:String(d.name||'파견'),desc:String(d.desc||''),hours:num(d.hours,0.5,24,2),need:num(parseInt(d.need,10),1,4,2),reward:rw[i%rw.length]}));
   if(!ng.dispatches.length) ng.dispatches=clone(DEFAULT_DISP);
   const oldG=G; G=ng; applyMeta();
-  stat(`2/3 ${T('crew')} ${n}명을 만드는 중…`);
-  const b=await aiJSON(`${RULES}\n세계관: ${ng.world.summary}\n${ng.world.lore}\n플롯: ${ng.world.plot}\n세력: ${ng.world.factions.map(f=>f.name+'('+f.desc+')').join(', ')}\n\n이 게임의 ${T('crew')} ${n}명을 만들어라. SSR 2~3명, SR 3명, 나머지 R. 세력을 고르게 나누고, 역할(atk/def/sup)과 속성도 고르게. 각자 플롯과 연결된 비밀을 files에 넣는다. 이름은 세계관에 어울리게.\nJSON만 출력: {"chars":[${charSchema()}, ...]} ${NAI_CHAR}`,null,'complex');
-  if(!b||!Array.isArray(b.chars)||!b.chars.length){G=oldG;applyMeta();t.disabled=false;stat('캐릭터 생성에 실패했어요. 다시 시도해 주세요.');return;}
+  const b=await ngStep('b',`2/4 ${T('crew')} ${n}명을 만드는 중…`,()=>aiJSON(`${RULES}${FAN}\n세계관: ${ng.world.summary}\n${ng.world.lore}\n플롯: ${ng.world.plot}\n세력: ${ng.world.factions.map(f=>f.name+'('+f.desc+')').join(', ')}\n\n이 게임의 ${T('crew')} ${n}명을 만들어라. SSR 2~3명, SR 3명, 나머지 R. 세력을 고르게 나누고, 역할(atk/def/sup)과 속성도 고르게. 각자 플롯과 연결된 비밀을 files에 넣는다. 이름은 세계관에 어울리게.\nJSON만 출력: {"chars":[${charSchema()}, ...]} ${NAI_CHAR}${src?' 원작 캐릭터라면 naiPrompt 앞부분에 Danbooru 캐릭터 태그와 작품 태그(예: 이름 (작품명), 작품명)를 넣는다.':''}`,null,'complex'),r=>r&&Array.isArray(r.chars)&&r.chars.length);
+  if(!b){G=oldG;applyMeta();t.disabled=false;stat('캐릭터 생성에 실패했어요. 같은 내용으로 다시 누르면 1단계는 건너뛰고 이어서 만들어요.');return;}
   ng.chars=[]; b.chars.slice(0,12).forEach(x=>{const c=cleanChar(x); if(!c.name)return; c.ord=ng.chars.length; ng.chars.push(c);});
-  stat('3/3 오프닝, 1장, 배너, 자료 목록을 만드는 중…');
-  const c3=await aiJSON(`${RULES}\n${ctx().replace(/메인 스토리 진행:.*\n/,'')}\n${SCRIPT_FMT}\n${THREAD_FMT}\n\n이 게임의 시작 부분을 만들어라.\nopening.lines: 검은 화면에 한 줄씩 뜨는 오프닝 문구 5~7개, 마지막은 게임 제목.\nopening.prologue: 프롤로그 대본 30~45줄. 세계관 소개, 첫 동료들과의 강렬한 만남, 플레이어가 특별한 이유의 복선, 선택지 1개.\nchapter: 1장, 스테이지 4개(pre 12~20줄, post 6~12줄, 마지막 보스). 적 체력 700~1300, 공격 70~100, 방어 25~55, 보스 체력 4배.\nbackgrounds: 이 대본들에 쓰인 배경 이름과 NovelAI 프롬프트("no humans, scenery"로 시작) 8~14개. props: 소품 3~6개("no humans, object focus"로 시작). music: 배경음 7~9개(타이틀, 로비, 일상, 긴장, 전투, 보스전, 뽑기 연출, 감성 포함, 영어 프롬프트, instrumental, seamless loop). sfxNames는 쓰지 않는다.\nbanners: 상시 배너 이름 1개, 확률 업 배너 1개(SSR 1명), 세력 한정 배너 1개. threads: 메신저 대화 3~4개.\nJSON만 출력: {"opening":{"lines":[],"prologue":""},"chapter":{"title":"1장 제목","stages":[{"title":"","pre":"","post":"","enemies":[{"name":"","elem":"${ELEMS.join('|')}","hp":0,"atk":0,"def":0,"spd":0,"boss":false,"look":"새 적이면 NovelAI 영어 외형 태그(괴물은 no humans로 시작)"}]}]},"backgrounds":[{"name":"","prompt":""}],"props":[{"name":"","prompt":""}],"music":[{"name":"","prompt":""}],"banners":{"std":"","pickup":{"name":"","char":""},"faction":{"name":"","faction":""}},"threads":[{"char":"","title":"","trigger":"start|clear","afterStage":1,"script":""}]}`,null,'complex');
-  if(!c3||!c3.chapter){G=oldG;applyMeta();t.disabled=false;stat('스토리 생성에 실패했어요. 다시 시도해 주세요.');return;}
+
+  ng.world.source=src;
+  const CX0=`${RULES}${FAN}\n${ctx().replace(/메인 스토리 진행:.*\n/,'')}`;
+  const c3a=await ngStep('c3a','3/4 오프닝, 배경·소품·음악 목록, 배너를 만드는 중…',()=>aiJSON(`${CX0}\n${SCRIPT_FMT}\n\n이 게임의 시작 부분을 만들어라.\nopening.lines: 검은 화면에 한 줄씩 뜨는 오프닝 문구 5~7개, 마지막은 게임 제목.\nopening.prologue: 프롤로그 대본 30~40줄. 세계관 소개, 첫 동료들과의 강렬한 만남, 플레이어가 특별한 이유의 복선, 선택지 1개.\nbackgrounds: 프롤로그와 1장에 쓸 배경 이름과 NovelAI 프롬프트("no humans, scenery"로 시작) 8~12개. props: 소품 3~6개("no humans, object focus"로 시작). music: 배경음 7~9개(타이틀, 로비, 일상, 긴장, 전투, 보스전, 뽑기 연출, 감성 포함, 영어 프롬프트, instrumental, seamless loop).\nbanners: 상시 배너 이름 1개, 확률 업 배너 1개(SSR 1명), 세력 한정 배너 1개.\nJSON만 출력: {"opening":{"lines":[],"prologue":""},"backgrounds":[{"name":"","prompt":""}],"props":[{"name":"","prompt":""}],"music":[{"name":"","prompt":""}],"banners":{"std":"","pickup":{"name":"","char":""},"faction":{"name":"","faction":""}}}`,null,'complex'),r=>r&&r.opening&&Array.isArray(r.backgrounds));
+  if(!c3a){G=oldG;applyMeta();t.disabled=false;stat('오프닝 생성에 실패했어요. 같은 내용으로 다시 누르면 앞 단계는 건너뛰고 이어서 만들어요.');return;}
+  const bgNames=(c3a.backgrounds||[]).map(x=>x&&x.name).filter(Boolean), prNames=(c3a.props||[]).map(x=>x&&x.name).filter(Boolean);
+  const c3b=await ngStep('c3b','4/4 1장 스토리와 메신저를 만드는 중…',()=>aiJSON(`${CX0}\n${SCRIPT_FMT}\n${THREAD_FMT}\n\n프롤로그 다음으로 이어지는 1장을 만들어라. 배경은 이 이름만 쓴다: ${bgNames.join(', ')}. 소품: ${prNames.join(', ')}.\nchapter: 스테이지 4개(pre 10~18줄, post 6~10줄, 마지막 스테이지는 보스). 적 체력 700~1300, 공격 70~100, 방어 25~55, 보스 체력 4배.\nthreads: 메신저 대화 3개.\nJSON만 출력: {"chapter":{"title":"1장 제목","stages":[{"title":"","pre":"","post":"","enemies":[{"name":"","elem":"${ELEMS.join('|')}","hp":0,"atk":0,"def":0,"spd":0,"boss":false,"look":"새 적이면 NovelAI 영어 외형 태그(괴물은 no humans로 시작)"}]}]},"threads":[{"char":"","title":"","trigger":"start|clear","afterStage":1,"script":""}]}`,null,'complex'),r=>r&&r.chapter&&Array.isArray(r.chapter.stages)&&r.chapter.stages.length);
+  const c3=c3b?Object.assign({},c3a,c3b):null;
+  if(!c3||!c3.chapter){G=oldG;applyMeta();t.disabled=false;stat('1장 스토리 생성에 실패했어요. 같은 내용으로 다시 누르면 앞 단계(세계관·캐릭터·오프닝)는 건너뛰고 1장만 다시 만들어요. 그림은 아직 그리지 않았어요.');return;}
   ng.opening={lines:strs(c3.opening&&c3.opening.lines),prologue:nl(c3.opening&&c3.opening.prologue)};
   const ch=c3.chapter; ng.chapters=[{id:'c1',ord:0,kind:'main',title:String(ch.title||'1장'),stages:(ch.stages||[]).slice(0,6).map((s2,i)=>({id:'s1'+(i+1),title:String(s2.title||'작전'),reward:300+100*i,pre:nl(s2.pre),post:nl(s2.post),
     enemies:(Array.isArray(s2.enemies)?s2.enemies:[]).slice(0,5).map(e2=>({name:String(e2.name||'적'),elem:ELEMS.includes(e2.elem)?e2.elem:ELEMS[0],hp:num(e2.hp,100,99999,900),atk:num(e2.atk,10,999,80),def:num(e2.def,0,500,35),spd:num(e2.spd,50,160,95),boss:!!e2.boss}))}))}];
@@ -3870,6 +4108,7 @@ async function newGame(t){
   ng.prog.scene=clone(snd.scene); ng.ver=VER; G=oldG;
   await flush(); const id2='g'+uid(); localStorage.setItem(pjKey(id2),JSON.stringify(ng));
   const pj=PJ(); pj.list.push({id:id2,title:ng.meta.title}); pj.active=id2; localStorage.setItem(PJKEY,JSON.stringify(pj));
+  try{ localStorage.removeItem('ggm-ng-draft'); }catch(e){}
   stat('완성! 새 게임으로 전환해요.'); setTimeout(()=>location.reload(),900);
 }
 function readBanner(){const b=BD;b.name=$('#bn_name').value.trim()||b.name;b.desc=$('#bn_desc').value.trim();b.type=$('#bn_type').value;b.bg=$('#bn_bg').value;b.pool.mode=$('#bn_mode').value;b.rate=num($('#bn_rate').value,0,100,50);b.active=$('#bn_act').value==='1';return b;}
@@ -3903,6 +4142,7 @@ function openProjects(){
   openModal(`${head('게임 목록')}
     ${pj.list.map(x=>`<div class="ep"><span class="t"><b>${esc(x.title)}</b><span class="muted">${x.id===pj.active?'지금 플레이 중':''}</span></span>${x.id===pj.active?'':`<button class="btn sm" data-act="pjswitch" data-id="${x.id}">전환</button><button class="btn sm ghost" data-act="pjdel" data-id="${x.id}">삭제</button>`}</div>`).join('')}
     <div class="row" style="margin-top:12px"><button class="btn" data-act="newgame-open">AI로 새 게임 만들기</button><button class="btn ghost" data-act="pjblank">기본 게임 복사본 만들기</button></div>
+    <label class="f" for="pj_start">앱을 켤 때</label><select class="in" id="pj_start" onchange="try{localStorage.setItem('ggm-start',this.value)}catch(e){}">${opt([['last','마지막으로 한 게임 바로 시작'],['pick','게임 목록에서 골라서 시작']],startMode())}</select>
     <p class="muted">게임마다 진행 상황, ${T('crew')}, 스토리가 따로 저장돼요. 이미지와 소리는 기기 안에 같이 보관돼요.</p>`);
 }
 function openNewGame(){
@@ -4218,7 +4458,17 @@ function myStyle(){return naiCfg().styles[0];}
 const BOOT_CATS=[['char','스탠딩',true],['illust','일러스트 (타이틀·로비·픽업)',true],['bg','배경',true],['icon','재화 아이콘',true],['prop','소품 (스토리에 나오는 물건)',true],['weapon','전용 무기',true],['enemy','적',false],['map','작전 지도',false],['cg','이벤트 CG',false]];
 let BP=null;
 function bootPrepNeeded(){ const p=P(); return !p.seenOpening&&!p.bootPrep&&imgReady()&&drawTodo(BOOT_CATS.map(x=>x[0])).length>0; }
-function showStart(){ if(bootPrepNeeded()) showBootPrep(); else showTitle(); }
+
+/* ===== 시작할 때 게임 고르기 ===== */
+function startMode(){ try{ return localStorage.getItem('ggm-start')||'last'; }catch(e){ return 'last'; } }
+function showPicker(){
+  const pj=PJ();
+  $('#ov').innerHTML=`<div class="setup"><div class="sw-bg" style="${bgStyle(P().titleBg||'')}"></div><div class="sw-card"><div class="sw-logo"><i>GACHA GAME MAKER</i><b>어떤 게임을 할까요?</b></div>
+    <div class="pk-list">${pj.list.map(x=>`<button class="pk-g ${x.id===pj.active?'on':''}" data-act="pickgame" data-id="${esc(x.id)}"><b>${esc(x.title)}</b><span>${x.id===pj.active?'마지막으로 한 게임':''}</span></button>`).join('')}</div>
+    <label style="display:flex;gap:8px;margin-top:12px;font-size:.85rem"><input type="checkbox" id="pk_last"><span>다음부터 묻지 않고 마지막 게임으로 시작</span></label></div></div>`;
+  $('#ov').hidden=false;
+}
+function showStart(){ try{ if(startMode()==='pick'&&PJ().list.length>1&&!sessionStorage.getItem('ggm-picked')){ showPicker(); return; } }catch(e){} if(bootPrepNeeded()) showBootPrep(); else showTitle(); }
 function showBootPrep(){
   const all=drawTodo(BOOT_CATS.map(x=>x[0])), cnt=k=>all.filter(x=>x.cat===k).length, c=naiCfg();
   if(!BP) BP={cats:new Set(BOOT_CATS.filter(x=>x[2]).map(x=>x[0]))};
@@ -4248,6 +4498,131 @@ function bootPrepRun(cats){
 }
 
 /* ===== 아이폰·웹 ===== */
+
+
+/* ===== PC·폰 연동 (내 GitHub 비공개 저장소) ===== */
+const SYKEY='ggm-sync', SYIDX='ggm-sync-idx';
+function SY(){ try{ return JSON.parse(localStorage.getItem(SYKEY))||{}; }catch(e){ return {}; } }
+function saveSY(o){ localStorage.setItem(SYKEY,JSON.stringify(o)); }
+function syIdx(){ try{ return JSON.parse(localStorage.getItem(SYIDX))||{}; }catch(e){ return {}; } }
+function saveSyIdx(o){ try{ localStorage.setItem(SYIDX,JSON.stringify(o)); }catch(e){} }
+function syDevice(){ const o=SY(); return o.device||(IS_NATIVE?'안드로이드 폰':IS_IOS?'아이폰':document.body.classList.contains('desk')?'PC':'브라우저'); }
+function syReady(){ const o=SY(); return !!(o.repo&&o.token); }
+function bytesToB64(u8){ let s=''; for(let i=0;i<u8.length;i+=0x8000) s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000)); return btoa(s); }
+async function shaHex(buf){ const h=await crypto.subtle.digest('SHA-256',buf); return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join(''); }
+function ghH(o,extra){ return Object.assign({Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',Authorization:'Bearer '+String(o.token||'').trim()},extra||{}); }
+async function gh(o,path,opt){ opt=opt||{}; const r=await http('https://api.github.com/repos/'+o.repo.trim()+path,{method:opt.method||'GET',headers:ghH(o,Object.assign(opt.body?{'Content-Type':'application/json'}:{},opt.binary?{Accept:'application/vnd.github.raw+json'}:{})),body:opt.body,binary:!!opt.binary,timeout:opt.timeout||120000});
+  if(r.status===403||r.status===429){ const t=r.text||''; if(/secondary rate|abuse|rate limit/i.test(t)&&!opt.retried){ await wait(61000); return gh(o,path,Object.assign({},opt,{retried:true})); } }
+  if(r.status>=400&&!opt.okStatus?.includes(r.status)) throw Object.assign(errOf(r),{status:r.status});
+  if(opt.binary) return r; try{ return r.text?JSON.parse(r.text):{}; }catch(e){ return {}; } }
+function syLsKeys(withKeys){ const pj=PJ(); const keys=[PJKEY,SETUP_KEY,...pj.list.map(x=>pjKey(x.id))]; keys.push(NKEY,SKEY); if(withKeys) keys.push(PKEY); return keys; }
+function syStrip(k,v,withKeys){ if(withKeys||v==null) return v; try{ if(k===NKEY){ const o=JSON.parse(v); delete o.key; return JSON.stringify(o); } if(k===SKEY){ const o=JSON.parse(v); delete o.fishKey; delete o.elKey; return JSON.stringify(o); } }catch(e){} return v; }
+function syMerge(k,v){ if(v==null) return v; try{ if(k===NKEY){ const cur=JSON.parse(localStorage.getItem(NKEY)||'{}'), o=JSON.parse(v); if(!o.key&&cur.key) o.key=cur.key; return JSON.stringify(o); } if(k===SKEY){ const cur=JSON.parse(localStorage.getItem(SKEY)||'{}'), o=JSON.parse(v); ['fishKey','elKey'].forEach(x=>{ if(!o[x]&&cur[x]) o[x]=cur[x]; }); return JSON.stringify(o); } }catch(e){} return v; }
+let SYJOB=null;
+function syBar(t){ let el=$('#syBar'); if(!t){ if(el) el.remove(); return; } if(!el){ el=document.createElement('div'); el.id='syBar'; el.className='prepchip'; document.body.appendChild(el); } el.innerHTML=`<b>☁ ${esc(t)}</b>`; }
+async function syRemote(o){ // -> {head,tree,paths,state}
+  let ref=await gh(o,'/git/ref/heads/'+(o.branch||'main'),{okStatus:[404,409]});
+  if(!ref||!ref.object){ await gh(o,'/contents/README.md',{method:'PUT',body:{message:'init',content:bytesToB64(new TextEncoder().encode('가챠 게임 메이커 동기화 저장소 (비공개로 두세요)'))}}); ref=await gh(o,'/git/ref/heads/'+(o.branch||'main')); }
+  const head=ref.object.sha, commit=await gh(o,'/git/commits/'+head), tree=await gh(o,'/git/trees/'+commit.tree.sha+'?recursive=1');
+  const paths={}; (tree.tree||[]).forEach(x=>{ if(x.type==='blob') paths[x.path]=x.sha; });
+  let state=null; if(paths['sync/state.json']){ const r=await gh(o,'/git/blobs/'+paths['sync/state.json'],{binary:true}); try{ let j=JSON.parse(r.bytes?new TextDecoder().decode(r.bytes):(r.text||'')); if(j&&j.encoding==='base64'&&j.content) j=JSON.parse(new TextDecoder().decode(b64ToBytes(j.content.replace(/\s/g,'')))); state=j; }catch(e){} }
+  return {head,treeSha:commit.tree.sha,paths,state};
+}
+async function syPush(force){
+  const o=SY(); if(!syReady()){ openSync(); return; } if(SYJOB){ toast('동기화 중이에요'); return; }
+  SYJOB='push'; try{
+    syBar('클라우드 확인 중…'); await flush();
+    const R=await syRemote(o);
+    if(!force&&R.state&&R.state.at>(o.last||0)&&R.state.device!==syDevice()){ syBar(''); SYJOB=null;
+      openModal(`${head('다른 기기에 더 새 데이터가 있어요')}<p><b>${esc(R.state.device||'다른 기기')}</b>에서 ${esc(new Date(R.state.at).toLocaleString())}에 올린 데이터가 있어요. 그대로 올리면 그 데이터를 덮어써요.</p><div class="row" style="margin-top:12px"><button class="btn" data-act="sypull">그 데이터 받기</button><button class="btn ghost" data-act="sypushf">그래도 올리기</button></div>`); return; }
+    const idx=syIdx(), keys=await idbKeys(), bin={}, types={};
+    let i=0; for(const k of keys){ i++; if(i%10===0) syBar(`그림 확인 ${i}/${keys.length}`);
+      const b=await idbGet(k); if(!b||!(b instanceof Blob)) continue; types[k]=b.type||'';
+      const ent=idx[k]; if(ent&&ent.size===b.size&&ent.hash){ bin[k]=ent.hash; continue; }
+      const h=await shaHex(await b.arrayBuffer()); idx[k]={hash:h,size:b.size}; bin[k]=h; }
+    saveSyIdx(idx);
+    const need=[...new Set(Object.values(bin))].filter(h=>!R.paths['sync/b/'+h]), entries=[];
+    const byHash={}; Object.entries(bin).forEach(([k,h])=>{ byHash[h]=byHash[h]||k; });
+    let n=0; for(const h of need){ n++; syBar(`올리는 중 ${n}/${need.length}`); const b=await idbGet(byHash[h]);
+      const r=await gh(o,'/git/blobs',{method:'POST',body:{content:bytesToB64(new Uint8Array(await b.arrayBuffer())),encoding:'base64'}}); entries.push({path:'sync/b/'+h,mode:'100644',type:'blob',sha:r.sha}); await wait(700); }
+    const withKeys=!!o.keys, ls={}; syLsKeys(withKeys).forEach(k=>{ const v=localStorage.getItem(k); if(v!=null) ls[k]=syStrip(k,v,withKeys); });
+    const state={v:1,at:Date.now(),device:syDevice(),build:APP_BUILD,ls,bin,types};
+    const sb=await gh(o,'/git/blobs',{method:'POST',body:{content:bytesToB64(new TextEncoder().encode(JSON.stringify(state))),encoding:'base64'}});
+    entries.push({path:'sync/state.json',mode:'100644',type:'blob',sha:sb.sha});
+    syBar('저장하는 중…');
+    const tree=await gh(o,'/git/trees',{method:'POST',body:{base_tree:R.treeSha,tree:entries}});
+    const cm=await gh(o,'/git/commits',{method:'POST',body:{message:`sync ${state.device} ${new Date(state.at).toISOString()}`,tree:tree.sha,parents:[R.head]}});
+    await gh(o,'/git/refs/heads/'+(o.branch||'main'),{method:'PATCH',body:{sha:cm.sha}});
+    const o2=SY(); o2.last=state.at; o2.lastDir='up'; o2.localAt=G.prog.savedAt||Date.now(); saveSY(o2);
+    toast(`클라우드에 올렸어요${need.length?' · 새 파일 '+need.length+'개':''}`);
+  }catch(e){ toast('올리기 실패. '+syErr(e)); }
+  finally{ SYJOB=null; syBar(''); if(tab==='studio') render(); }
+}
+async function syPull(){
+  const o=SY(); if(!syReady()){ openSync(); return; } if(SYJOB){ toast('동기화 중이에요'); return; }
+  SYJOB='pull'; try{
+    syBar('클라우드 확인 중…'); await flush();
+    const R=await syRemote(o); if(!R.state){ toast('클라우드에 아직 올린 데이터가 없어요'); return; }
+    const S=R.state, idx=syIdx(); let n=0; const todo=Object.entries(S.bin||{}).filter(([k,h])=>!(idx[k]&&idx[k].hash===h));
+    for(const [k,h] of todo){ n++; syBar(`받는 중 ${n}/${todo.length}`); const sha=R.paths['sync/b/'+h]; if(!sha) continue;
+      const r=await gh(o,'/git/blobs/'+sha,{binary:true}); let bytes=r.bytes; if(!bytes&&r.text){ try{ bytes=b64ToBytes(JSON.parse(r.text).content.replace(/\s/g,'')); }catch(e){} }
+      if(!bytes) continue; const blob=new Blob([bytes],{type:(S.types||{})[k]||''}); await idbPut(k,blob); idx[k]={hash:h,size:blob.size}; }
+    saveSyIdx(idx);
+    Object.entries(S.ls||{}).forEach(([k,v])=>{ try{ localStorage.setItem(k,syMerge(k,v)); }catch(e){} });
+    const o2=SY(); o2.last=S.at; o2.lastDir='down'; o2.localAt=0; saveSY(o2);
+    toast(`${S.device||'다른 기기'}의 데이터를 받았어요. 다시 시작할게요`); setTimeout(()=>location.reload(),900);
+  }catch(e){ toast('받기 실패. '+syErr(e)); }
+  finally{ SYJOB=null; syBar(''); }
+}
+function syErr(e){ if(e&&e.status===404) return '저장소를 찾지 못했어요. 이름과 토큰 권한(Contents 읽기/쓰기)을 확인해 주세요.'; if(e&&(e.status===401||e.status===403)) return '토큰이 올바르지 않거나 이 저장소에 쓰기 권한이 없어요.'; return AIERR[e&&e.code]||((e&&e.message)||'다시 시도해 주세요'); }
+async function syCheckOnStart(){
+  const o=SY(); if(!syReady()||o.auto===false) return;
+  try{ const R=await syRemote(o); const S=R.state; if(!S||S.at<=(o.last||0)||S.device===syDevice()) return;
+    const localChanged=(G.prog.savedAt||0)>(o.localAt||0)+5000&&o.last;
+    const show=()=>{ if(!$('#modal').hidden||!$('#ov').hidden) return setTimeout(show,2500);
+      openModal(`${head('다른 기기의 새 데이터가 있어요')}<p><b>${esc(S.device||'다른 기기')}</b> · ${esc(new Date(S.at).toLocaleString())}</p>${localChanged?'<p style="color:var(--rose)">이 기기에도 아직 올리지 않은 진행이 있어요. 받으면 이 기기의 진행은 덮어써져요.</p>':''}<div class="row" style="margin-top:12px"><button class="btn" data-act="sypull">받기</button><button class="btn ghost" data-act="close">나중에</button></div>`); };
+    show(); }catch(e){}
+}
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'){ const o=SY(); if(syReady()&&o.autoUp&&!SYJOB&&(G.prog.savedAt||0)>(o.localAt||0)+5000) syPush(false); } });
+function openSync(){
+  const o=SY();
+  openModal(`${head('PC·폰 연동',`<span class="muted">내 GitHub 비공개 저장소에 게임을 올리고 받아요</span>`)}
+    <ol class="a2hs"><li><button class="linkb" data-act="sylink" data-url="https://github.com/new?name=ggm-save&visibility=private">GitHub에서 비공개 저장소 만들기</button> (이름 예: ggm-save, <b>Private</b>)</li>
+    <li><button class="linkb" data-act="sylink" data-url="https://github.com/settings/personal-access-tokens/new">토큰 만들기</button> → Repository access: <b>Only select repositories</b>에서 그 저장소만 → Permissions의 <b>Contents: Read and write</b> → 만들기</li>
+    <li>아래에 <b>아이디/저장소이름</b>과 토큰을 넣고, 다른 기기에도 똑같이 넣어요.</li></ol>
+    <label class="f" for="sy_repo">저장소</label><input class="in" id="sy_repo" value="${esc(o.repo||'')}" placeholder="내아이디/ggm-save">
+    <label class="f" for="sy_tok">토큰</label><input class="in" id="sy_tok" type="password" autocomplete="off" value="${esc(o.token||'')}" placeholder="github_pat_...">
+    <label class="f" for="sy_dev">이 기기 이름</label><input class="in" id="sy_dev" value="${esc(syDevice())}">
+    <label style="display:flex;gap:8px;margin-top:10px"><input type="checkbox" id="sy_auto" ${o.auto!==false?'checked':''}><span>켤 때 다른 기기의 새 데이터가 있으면 알려 주기</span></label>
+    <label style="display:flex;gap:8px;margin-top:6px"><input type="checkbox" id="sy_up" ${o.autoUp?'checked':''}><span>앱을 나갈 때 자동으로 올리기</span></label>
+    <label style="display:flex;gap:8px;margin-top:6px"><input type="checkbox" id="sy_keys" ${o.keys?'checked':''}><span>AI·그림·목소리 키도 같이 옮기기 <span class="muted" style="font-size:.8rem">(비공개 저장소일 때만 켜세요)</span></span></label>
+    <p class="muted" style="margin:8px 0 0;font-size:.82rem">게임 진행, 만든 게임들, 그림·음악·목소리가 올라가요. 그림은 바뀐 것만 올려서 두 번째부터는 빨라요. 토큰은 이 기기에만 저장돼요.</p>
+    <div class="row" style="margin-top:14px"><button class="btn" data-act="sysave">저장하고 연결 확인</button></div>
+    ${syReady()?`<div class="row" style="margin-top:8px"><button class="btn sm" data-act="sypush">지금 올리기</button><button class="btn sm ghost" data-act="sypull">받기</button></div>`:''}`);
+}
+/* ===== PC 화면 ===== */
+function deskMode(){ let v='auto'; try{ v=localStorage.getItem('ggm-desk')||'auto'; }catch(e){} return v; }
+function applyDesk(){ const on=deskMode()!=='off'&&window.innerWidth>=900; document.body.classList.toggle('desk',on);
+  let side=$('#deskSide'); if(!on){ if(side) side.remove(); return; }
+  if(!side){ side=document.createElement('aside'); side.id='deskSide'; document.body.appendChild(side); }
+  side.innerHTML=`<div class="ds-logo"><i>GACHA GAME MAKER</i><b>${esc(G.meta.title)}</b><span>${esc(G.meta.sub||'')}</span></div>
+    <div class="ds-keys"><h4>키보드</h4><p><kbd>1</kbd>~<kbd>5</kbd> 아래 메뉴</p><p><kbd>Space</kbd> <kbd>Enter</kbd> 대사 넘기기</p><p><kbd>Esc</kbd> 창 닫기</p><p><kbd>A</kbd> 스토리 자동 진행</p></div>
+    <p class="ds-foot">설정 → 아이폰·웹 연결에서 PC 화면을 끌 수 있어요.</p>`;
+  try{ const l=G.lib.find(x=>x.kind==='bg'&&x.name===P().lobbyBg), s=l&&imgSrc(l); document.body.style.setProperty('--deskbg',s?`url('${s}')`:'none'); }catch(e){}
+}
+window.addEventListener('resize',()=>{ clearTimeout(window.__dk); window.__dk=setTimeout(applyDesk,150); });
+document.addEventListener('keydown',e=>{
+  const tg=e.target, typing=tg&&(/^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName)||tg.isContentEditable); if(typing||e.ctrlKey||e.metaKey||e.altKey) return;
+  const modalOpen=!$('#modal').hidden, phoneOpen=!$('#phone').hidden, ov=$('#ov');
+  if(e.key==='Escape'){ if(modalOpen){ closeModal(); e.preventDefault(); } else if(phoneOpen){ closePhone(); e.preventDefault(); } return; }
+  if(modalOpen||phoneOpen) return;
+  if(!ov.hidden){ const vn=$('#vn'), ti=ov.querySelector('.title,[data-act=opnext]');
+    if(vn&&(e.key===' '||e.key==='Enter'||e.key==='ArrowRight')){ e.preventDefault(); const ch=$('#vnCh'); if(ch&&ch.children.length) return; vn.click(); return; }
+    if(vn&&(e.key==='a'||e.key==='A')){ const b=$('#vnAuto'); if(b) b.click(); return; }
+    if(ti&&(e.key===' '||e.key==='Enter')){ e.preventDefault(); ti.click(); }
+    return; }
+  const map={'1':'crew','2':'ops','3':'lobby','4':'contract','5':'studio'}; if(map[e.key]){ const b=document.querySelector(`.tab[data-tab="${map[e.key]}"]`); if(b) b.click(); }
+});
 function openA2HS(first){ if(first) localStorage.setItem('ggm-a2hs','1');
   openModal(`${head('홈 화면에 추가해 주세요',`<span class="muted">아이폰은 앱처럼 쓰려면 이 단계가 필요해요</span>`)}
     <ol class="a2hs"><li>Safari 아래쪽(또는 위쪽)의 <b>공유 버튼</b> <span class="kbd">⬆︎</span>을 눌러요.</li><li>목록을 내려서 <b>홈 화면에 추가</b>를 눌러요.</li><li>오른쪽 위 <b>추가</b>를 누르면 홈 화면에 '가챠 메이커' 아이콘이 생겨요.</li><li>앞으로는 그 아이콘으로 열어요. 전체 화면으로 열리고, 저장한 게임도 안전하게 남아요.</li></ol>
@@ -4369,11 +4744,11 @@ function openBackup(){
    ========================================================= */
 function ctx(){
   const w=G.world, prog=G.chapters.filter(c=>c.kind==='main').map(ch=>ch.title+': '+ch.stages.map(s=>s.title+(P().cleared[s.id]?'(완료)':'')).join(', ')).join(' / ');
-  return `게임 "${G.meta.title}". 세계관 "${w.name}": ${w.summary}\n상세 설정: ${w.lore}\n메인 플롯(작가용 비밀 설정 포함): ${w.plot||'미정'}\n세력: ${w.factions.map(f=>f.name+'('+f.desc+')').join(', ')}\n메인 스토리 진행: ${prog}\n${T('crew')}: ${G.chars.map(c=>`${c.name}(${RL[c.rarity]}, ${c.faction||'무소속'}, ${c.elem}속성 ${ROLE[c.role]}, ${String(c.profile).slice(0,80)} 말투 예: "${(c.lines[0]||'').slice(0,40)}"${c.faces.length?' 표정: '+c.faces.map(f=>f.name).join('/'):''})`).join('; ')}\n배경 목록: ${G.lib.filter(l=>l.kind==='bg').map(l=>l.name).join(', ')}\n소품 목록: ${G.lib.filter(l=>l.kind==='prop').map(l=>l.name).join(', ')}\n음악 목록: ${G.lib.filter(l=>l.kind==='bgm').map(l=>l.name).join(', ')}\n효과음 목록: ${G.lib.filter(l=>l.kind==='sfx').map(l=>l.name).join(', ')}\nCG 목록: ${G.lib.filter(l=>l.kind==='cg').map(l=>l.name).join(', ')||'없음'}`;
+  return `게임 "${G.meta.title}". ${w.source?'원작(2차 창작): '+w.source+' — 원작 설정을 따른다. 원작에서 미성년자·학생인 캐릭터는 쓰지 않는다.\n':''}세계관 "${w.name}": ${w.summary}\n상세 설정: ${w.lore}\n메인 플롯(작가용 비밀 설정 포함): ${w.plot||'미정'}\n세력: ${w.factions.map(f=>f.name+'('+f.desc+')').join(', ')}\n메인 스토리 진행: ${prog}\n${T('crew')}: ${G.chars.map(c=>`${c.name}(${RL[c.rarity]}, ${c.faction||'무소속'}, ${c.elem}속성 ${ROLE[c.role]}, ${String(c.profile).slice(0,80)} 말투 예: "${(c.lines[0]||'').slice(0,40)}"${c.faces.length?' 표정: '+c.faces.map(f=>f.name).join('/'):''})`).join('; ')}\n배경 목록: ${G.lib.filter(l=>l.kind==='bg').map(l=>l.name).join(', ')}\n소품 목록: ${G.lib.filter(l=>l.kind==='prop').map(l=>l.name).join(', ')}\n음악 목록: ${G.lib.filter(l=>l.kind==='bgm').map(l=>l.name).join(', ')}\n효과음 목록: ${G.lib.filter(l=>l.kind==='sfx').map(l=>l.name).join(', ')}\nCG 목록: ${G.lib.filter(l=>l.kind==='cg').map(l=>l.name).join(', ')||'없음'}`;
 }
 function charSchema(){return `{"name":"짧은 이름","faction":"소속 세력","rarity":1~3 정수(3=SSR),"role":"atk|def|sup","elem":"${ELEMS.join('|')}","hp":800~1700,"atk":80~180,"def":35~100,"spd":80~125,"skill":{"name":"","kind":"dmg|aoe|heal|shield|buff","power":0.8~3.0,"cd":2~4,"desc":"한 줄"},"profile":"2~3문장","intro":"${T('gacha')} 연출 첫마디","lines":["로비 대사 4개"],"affLines":{"4":["호감도 4부터 나오는 대사"],"7":["호감도 7부터"]},"lvLines":["${T('enhance')} 시 대사 2개"],"dupLines":["${T('limit')} 시 대사 1개"],"touch":{"head":["머리 터치 반응 2개"],"body":["몸 터치 시 당황하거나 놀리는 반응 2개"]},"files":[{"dup":1,"text":"${T('limit')} 1단계에 공개되는 비밀 설정"},{"dup":3,"text":"3단계 비밀 설정, 메인 플롯과 연결"}],"weapon":{"name":"${T('weapon')} 이름","desc":"한 줄","prompt":"NovelAI 영어 태그, no humans, object focus로 시작해 simple background, white background로 끝"},"naiPrompt":"..."}`;}
-function aiErrText(e){ const base=AIERR[e&&e.code]||'AI 호출에 실패했어요.'; const m=String((e&&e.message)||'').trim(); return m?base+' (서버: '+m.slice(0,160)+')':base; }
-const AIERR={el_nokey:'설정의 소리에서 ElevenLabs 키를 넣어 주세요.',fish_nokey:'설정의 소리에서 Fish Audio 키를 넣어 주세요.',no_ai:'설정의 글 AI에서 AI를 먼저 등록해 주세요.',model_not_found:'모델 이름이나 리전을 확인해 주세요.',sa_bad:'서비스 계정 JSON을 확인해 주세요. 파일 내용 전체를 붙여넣어야 해요.',bad_key:'키가 올바르지 않거나 권한이 없어요. 설정의 글 AI에서 확인해 주세요.',network:'인터넷 연결을 확인해 주세요.',low_credit:'API 크레딧이 부족해요. Claude Console에서 충전해 주세요.',not_granted:'AI 사용 권한이 꺼져 있어요. 앱의 권한 메뉴에서 켤 수 있어요.',rate_limited:'요청이 많아요. 잠시 후 다시 시도해 주세요.',refused:'AI가 이 요청은 쓰지 않았어요. 수위나 내용을 바꿔 다시 시도해 주세요.',invalid_json:'AI 응답을 읽지 못했어요. 다시 시도해 주세요.',cancelled:'취소했어요.'};
+function aiErrText(e){ const base=AIERR[e&&e.code]||'AI 호출에 실패했어요.'; const m=String((e&&e.message)||'').trim(); if(e&&e.code==='origin_block') return base+' '+m; return m?base+' (서버: '+m.slice(0,160)+')':base; }
+const AIERR={origin_block:'이 서비스가 브라우저에서 온 요청(Origin 헤더)을 막았어요(403).',el_nokey:'설정의 소리에서 ElevenLabs 키를 넣어 주세요.',fish_nokey:'설정의 소리에서 Fish Audio 키를 넣어 주세요.',no_ai:'설정의 글 AI에서 AI를 먼저 등록해 주세요.',model_not_found:'모델 이름이나 리전을 확인해 주세요.',sa_bad:'서비스 계정 JSON을 확인해 주세요. 파일 내용 전체를 붙여넣어야 해요.',bad_key:'키가 올바르지 않거나 권한이 없어요. 설정의 글 AI에서 확인해 주세요.',network:'인터넷 연결을 확인해 주세요.',low_credit:'API 크레딧이 부족해요. Claude Console에서 충전해 주세요.',not_granted:'AI 사용 권한이 꺼져 있어요. 앱의 권한 메뉴에서 켤 수 있어요.',rate_limited:'요청이 많아요. 잠시 후 다시 시도해 주세요.',refused:'AI가 이 요청은 쓰지 않았어요. 수위나 내용을 바꿔 다시 시도해 주세요.',invalid_json:'AI 응답을 읽지 못했어요. 다시 시도해 주세요.',cancelled:'취소했어요.'};
 async function aiJSON(prompt,btn,tier){
   if(!SAMPLE){toast('설정의 글 AI에서 AI를 먼저 등록해 주세요');return null;}
   const label=btn?btn.textContent:''; if(btn){btn.disabled=true;btn.textContent='AI가 쓰는 중…';}
@@ -4410,7 +4785,7 @@ function parseScript(t){
     else if((m=l.match(/^\[(배경|소품|효과음|효과|사진|음악|톡|CG|cg)\s*[:：]\s*(.+?)\]$/))) o={type:'cmd',cmd:m[1],arg:m[2].trim()};
     else if((m=l.match(/^\[(.+?)\]/))) o={type:'place',text:m[1].trim()};
     else if((m=l.match(/^선택\s*[:：]\s*(.+)$/))) o={type:'choice',opts:m[1].split('|').map(s=>s.trim()).filter(Boolean)};
-    else if((m=l.match(/^([^:：\s][^:：]{0,20})[:：]\s*(.+)$/))){ let who=m[1].trim(),face=''; const fm=who.match(/^(.+?)\s*\[(.+?)\]$/); if(fm){who=fm[1].trim();face=fm[2].trim();} o={type:'say',who,face,text:m[2]}; }
+    else if((m=l.match(/^([^:：\s][^:：]{0,20})[:：]\s*(.+)$/))){ let who=m[1].trim(),face=''; const fm=who.match(/^(.+?)\s*\[(.+?)\]$/); if(fm){who=fm[1].trim();face=fm[2].trim();} const cm=m[2].trim().match(/^\[(배경|소품|효과음|효과|사진|음악|톡|CG|cg)\s*[:：]\s*(.+?)\]$/); o=cm?{type:'cmd',cmd:cm[1],arg:cm[2].trim(),who}:{type:'say',who,face,text:m[2]}; }
     else o={type:'nar',text:l};
     o.cond=cond; return o;
   });
@@ -4539,16 +4914,17 @@ function startBattle(chId,stId){
 }
 function startStage(s,ctx){
   const busy=busyIds();
-  const squad=P().squad.map(charById).filter(c=>c&&own(c.id)&&!busy.has(c.id)).slice(0,4);
+  const squad=(ctx.squad||P().squad).map(charById).filter(c=>c&&own(c.id)&&(ctx.squad||!busy.has(c.id))).slice(0,4);
   if(!squad.length){toast('편성할 수 있는 '+T('crew')+'이(가) 없어요. 파견 중인지 확인해 주세요.');return;}
   const fbon=factionBonus(squad.map(c=>c.id));
   const allies=squad.map(c=>{const st=stats(c),o=own(c.id);return {side:'a',slot:squad.indexOf(c),c,name:c.name,elem:c.elem,role:c.role,maxhp:st.hp,hp:st.hp,atk:Math.round(st.atk*(1+(fbon[c.faction]||0)/100)),def:st.def,spd:st.spd,g:Math.random()*600,cd:Math.ceil(c.skill.cd/2),sh:0,mul:1,wlv:o.wlv||0};});
   const enemies=s.enemies.map(e=>({side:'e',name:e.name,elem:e.elem,boss:e.boss,maxhp:e.hp,hp:e.hp,atk:e.atk,def:e.def,spd:e.spd,g:Math.random()*400,turns:0,sh:0,mul:1}));
-  B={ch:ctx.ch||null,ctx,s,allies,enemies,auto:true,speed:1,timer:null,over:false,log:[],burst:0,ticks:0};
+  if(ctx.prep) ctx.prep(allies,enemies);
+  B={ch:ctx.ch||null,ctx,s,allies,enemies,auto:true,speed:1,timer:null,over:false,log:[],burst:ctx.burst0||0,ticks:0};
   allies.forEach(u=>{u.dmg=0;});
   if(Object.keys(fbon).length) setTimeout(()=>B&&blog(Object.entries(fbon).map(([f,v])=>`${f} 소속 보너스 공격 +${v}%`).join(', ')),300);
   $('#ov').innerHTML=`<div class="bt"><div class="bt-bg" style="${bgStyle(stageBg(s)||'폐선로')}"></div>
-    <div class="bt-top"><span class="ttl"><i>${ctx.kind==='farm'?'TRAINING':ctx.kind==='event'?'EVENT':'OPERATION'}</i>${esc(s.title)}</span><button data-act="bauto" class="on">자동</button><button data-act="bspeed">1x</button><button data-act="bquit">후퇴</button></div>
+    <div class="bt-top"><span class="ttl"><i>${ctx.kind==='farm'?'TRAINING':ctx.kind==='event'?'EVENT':ctx.kind==='raid'?'RAID · '+Math.ceil(RAID_TICKS/11)+'s':ctx.kind==='rogue'?'EXPEDITION':'OPERATION'}</i>${esc(s.title)}</span><button data-act="bauto" class="on">자동</button><button data-act="bspeed">1x</button><button data-act="bquit">후퇴</button></div>
     <div class="bt-en">${enemies.map((u,i)=>`<div class="eu ${u.boss?'boss':''} ${enemyLib(u.name)&&imgSrc(enemyLib(u.name))?'hasimg':''}" id="u_e${i}" style="--ec:${ECOL[u.elem]}">${enemyArt(u)}<b>${esc(u.name)}</b><div class="hpb"><i></i></div><div class="gg"><i></i></div></div>`).join('')}</div>
     <div class="bt-log" id="bLog"></div>
     <button class="burst" id="bBurst" data-act="burst"><span class="bfill"></span><b>BURST</b><small>0%</small></button>
@@ -4562,6 +4938,7 @@ function bTick(){
   if(!B||B.over) return;
   B.ticks++;
   for(const u of [...B.allies,...B.enemies]){ if(u.hp<=0||B.over) continue; u.g+=u.spd; if(u.g>=1000){u.g-=1000;u.side==='a'?allyAct(u):enemyAct(u);bCheck();} }
+  if(B.ctx.kind==='raid'&&B.ticks>=RAID_TICKS&&!B.over){ bEnd(true); return; }
   if(B.auto&&B.burst>=100&&!B.over) doBurst();
   bUpdate();
 }
@@ -4611,6 +4988,7 @@ function bUpdate(){
 function bCheck(){if(B.over)return;if(!alive(B.enemies).length)bEnd(true);else if(!alive(B.allies).length)bEnd(false);}
 function bEnd(win){
   B.over=true; clearInterval(B.timer); bUpdate(); bump('battle');
+  if(B.ctx.kind==='raid'||B.ctx.kind==='rogue'){ const html=B.ctx.kind==='raid'?raidEnd(win):rogueEnd(win); const d=document.createElement('div');d.className='result';d.innerHTML=html;$('.bt').appendChild(d); return; }
   const s=B.s, kind=B.ctx.kind; let html;
   if(win){
     sfx('승리'); const p=P(); let r={}, first=false, exp=60, note='';
@@ -4800,6 +5178,32 @@ document.addEventListener('click',async e=>{
   case 'pxsave': { const v=$('#px_url').value.trim(); if(v&&!/^https:\/\//.test(v)){ toast('https:// 로 시작하는 주소를 넣어 주세요'); break; } localStorage.setItem('ggm-proxy',v); PXHOSTS.clear(); closeModal(); render(); toast(v?'중계 서버를 저장했어요':'중계 서버를 껐어요'); break; }
   case 'pxtest': { const v=$('#px_url').value.trim(); if(!v){toast('주소를 넣어 주세요');break;} t.disabled=true; try{ const r=await fetch(v.replace(/\/+$/,'')+'/?u='+encodeURIComponent('https://raw.githubusercontent.com/'+RELEASE_REPO+'/main/version.json')); toast(r.ok?'중계 서버가 잘 동작해요':'중계 서버 응답: '+r.status); }catch(e){ toast('중계 서버에 연결하지 못했어요'); } t.disabled=false; break; }
   case 'appre': { readAp(); const x=OAI_PRESETS[+t.dataset.i]; if(!x) break; APD.base=x[1]; if(x[2]&&!APD.model) APD.model=x[2]; if(!APD.name||APD.name===AITYPE.openai||OAI_PRESETS.some(y=>y[0]===APD.name)) APD.name=x[0]; if($('.sw-card')) renderSetup(); else openAp(); break; }
+  case 'syopen': openSync(); break;
+  case 'sylink': openUrl(t.dataset.url); break;
+  case 'sypush': closeModal(); syPush(false); break;
+  case 'sypushf': closeModal(); syPush(true); break;
+  case 'sypull': { const o=SY(); if(o.last&&(G.prog.savedAt||0)>(o.localAt||0)+5000&&!confirm('이 기기에 아직 올리지 않은 진행이 있어요. 받으면 이 기기의 진행은 덮어써져요. 받을까요?')) break; closeModal(); syPull(); break; }
+  case 'sysave': { const repo=$('#sy_repo').value.trim().replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').replace(/\/+$/,''), token=$('#sy_tok').value.trim();
+      if(!/^[\w.-]+\/[\w.-]+$/.test(repo)||!token){ toast('저장소(아이디/이름)와 토큰을 넣어 주세요'); break; }
+      const o=Object.assign(SY(),{repo,token,device:$('#sy_dev').value.trim()||syDevice(),auto:$('#sy_auto').checked,autoUp:$('#sy_up').checked,keys:$('#sy_keys').checked}); saveSY(o);
+      t.disabled=true; t.textContent='확인 중…';
+      try{ const info=await gh(o,''); if(!info.private){ toast('이 저장소는 공개예요. 비공개(Private)로 바꾼 뒤 다시 저장해 주세요'); o.token=''; saveSY(o); t.disabled=false; t.textContent='저장하고 연결 확인'; break; }
+        if(info.permissions&&info.permissions.push===false){ toast('이 토큰은 저장소에 쓸 권한이 없어요 (Contents: Read and write)'); t.disabled=false; t.textContent='저장하고 연결 확인'; break; }
+        const R=await syRemote(o); closeModal(); render();
+        if(R.state&&R.state.device!==o.device){ openModal(`${head('연결됐어요')}<p>클라우드에 <b>${esc(R.state.device)}</b>에서 ${esc(new Date(R.state.at).toLocaleString())}에 올린 데이터가 있어요.</p><div class="row" style="margin-top:12px"><button class="btn" data-act="sypull">그 데이터 받기</button><button class="btn ghost" data-act="sypushf">이 기기 데이터 올리기</button></div>`); }
+        else { openModal(`${head('연결됐어요')}<p>이 기기의 게임을 클라우드에 올려 둘까요? 그다음 다른 기기에서 같은 저장소로 연결하고 '받기'를 누르면 돼요.</p><div class="row" style="margin-top:12px"><button class="btn" data-act="sypush">지금 올리기</button><button class="btn ghost" data-act="close">나중에</button></div>`); }
+      }catch(err){ toast('연결 실패. '+syErr(err)); t.disabled=false; t.textContent='저장하고 연결 확인'; } break; }
+  case 'bkgo': { const o={share:t.dataset.share==='1',img:t.dataset.img==='1',audio:t.dataset.aud==='1',dest:$('#bk_dest').value,voice:$('#bk_voice')?$('#bk_voice').checked:false}; closeModal(); exportGo(o); break; }
+  case 'bkshare': { try{ await CAP.Share.share({title:APP_NAME+' 백업',files:[t.dataset.uri]}); }catch(e){} break; }
+  case 'pickgame': { if($('#pk_last')&&$('#pk_last').checked) try{ localStorage.setItem('ggm-start','last'); }catch(e){} try{ sessionStorage.setItem('ggm-picked','1'); }catch(e){} const pj=PJ(); if(id===pj.active){ showStart(); break; } await flush(); pj.active=id; localStorage.setItem(PJKEY,JSON.stringify(pj)); location.reload(); break; }
+  case 'raidgo': { if(!raidTriesLeft()){ toast('오늘 도전 횟수를 다 썼어요'); break; } const b=raidBoss(); squadSel=null; FORM=null; openFormation({id:'raid',title:'레이드 · '+b.name,enemies:[b],reward:0,pre:'',post:''},{kind:'raid'},'raidstart'); break; }
+  case 'raidstart': { P().squad=[...squadSel]; const r=RAID(); r.tries[today()]=(r.tries[today()]||0)+1; mark('prog'); closeModal(); const b=raidBoss(), hp0=Math.max(1,b.total-r.dmg);
+      startStage({id:'raid',title:'레이드 · '+b.name,enemies:[b],reward:0,pre:'',post:''},{kind:'raid',total:b.total,hp0,prep:(al,en)=>{ en[0].maxhp=b.total; en[0].hp=hp0; }}); break; }
+  case 'rgnew': { squadSel=null; FORM=null; openFormation({id:'rg_prev',title:'심연 탐사 · 대원 4명 고르기',enemies:rgEnemies({k:progK(),floor:1},'battle'),reward:0,pre:'',post:''},{kind:'rogue'},'rgstart'); break; }
+  case 'rgstart': { if(!squadSel.length) break; P().squad=[...squadSel]; closeModal(); rgStart([...squadSel]); break; }
+  case 'rgnode': { const run=RG().run; if(!run) break; run.msg=''; rgNode(t.dataset.v); break; }
+  case 'rgrelic': { const run=RG().run; if(!run) break; run.relics.push(t.dataset.v); run.pick=null; run.msg=RELICS[t.dataset.v][0]+'을(를) 얻었어요'; mark('prog'); render(); break; }
+  case 'rgquit': { if(!confirm('탐사를 끝낼까요? 지금까지 간 층만큼 보상을 받아요.')) break; const html=rgFinish(false); openModal(`<div class="result" style="position:static">${html.replace('data-act="bdone"','data-act="close"')}</div>`); render(); break; }
   case 'csframe': { const p2=P(); p2.csFull=!p2.csFull; mark('prog'); const a2=$('.cs-art'); if(a2) a2.classList.toggle('up',!p2.csFull); t.textContent=p2.csFull?'상반신':'전신'; break; }
   case 'artgo': { const k=ART_ASK; ART_ASK=null; closeModal(); if(k) artRun(k); break; }
   case 'artalways': { const sv=naiSaved(); sv.autoArt='auto'; localStorage.setItem(NKEY,JSON.stringify(sv)); const k=ART_ASK; ART_ASK=null; closeModal(); if(k) artRun(k); toast('앞으로는 자동으로 그려요. 설정 → 그림 AI에서 바꿀 수 있어요'); break; }
@@ -4843,6 +5247,10 @@ document.addEventListener('click',async e=>{
   case 'openthread': { const n=$('#notif'); n.innerHTML=''; openPhone(id); break; }
   case 'phclose': closePhone(); break;
   case 'phback': phoneList(); break;
+  case 'phtab': PHT=t.dataset.v; phoneList(); break;
+  case 'openfc': openFree(id); break;
+  case 'fcsend': fcSend(); break;
+  case 'fcmenu': { const c=charById(id); if(!c) break; if(confirm(`${c.name}와(과)의 갠톡 기록을 모두 지울까요?\n(호감도는 그대로예요)`)){ delete FC()[id]; mark('prog'); openFree(id); } break; }
   case 'phpick': { if(!PH) break; const th=threadById(PH.tid),c=threadChar(th),s=p.inbox[PH.tid],L=parseScript(th.script)[s.pos];
       if(!L||L.type!=='choice') break; const n=+t.dataset.n; s.pick=n; s.pos++; const en={w:'me',t:sub(L.opts[n-1])}; s.log.push(en); s.at=Date.now();
       $('#phIn').innerHTML='<span class="muted" style="text-align:center">…</span>'; $('#phChat').insertAdjacentHTML('beforeend',bubbleHTML(en,c)); phScroll(); mark('prog'); phPlay(th,c,s,PH.token); break; }
@@ -4924,10 +5332,12 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
   case 'bauto': B.auto=!B.auto; t.classList.toggle('on',B.auto); break;
   case 'bspeed': B.speed=B.speed>=3?1:B.speed+1; t.textContent=B.speed+'x'; t.classList.toggle('on',B.speed>1); bRun(); break;
   case 'burst': if(B&&B.burst>=100) doBurst(); else toast('BURST 게이지가 다 차야 해요'); break;
-  case 'bquit': if(confirm('후퇴할까요? 보상은 받을 수 없어요.')){clearInterval(B.timer);B=null;closeOv();render();} break;
+  case 'bquit': if(B&&(B.ctx.kind==='raid'||B.ctx.kind==='rogue')){ if(confirm(B.ctx.kind==='raid'?'여기서 끝낼까요? 지금까지 준 피해는 기록돼요.':'후퇴하면 이번 탐사가 끝나요. 지금까지의 보상은 받아요.')){ if(!B.over) bEnd(false); } break; }
+      if(confirm('후퇴할까요? 보상은 받을 수 없어요.')){clearInterval(B.timer);B=null;closeOv();render();} break;
   case 'skill': { const u=B&&B.allies[+t.dataset.i]; if(u&&u.hp>0&&u.cd<=0&&!B.over) useSkill(u); bUpdate(); break; }
   case 'bretry': { const st=B.s,cx=B.ctx; B=null; startStage(st,cx); break; }
-  case 'bdone': { const win=t.dataset.win==='1',first=t.dataset.first==='1',s=B.s; B=null; closeOv(); render();
+  case 'bdone': { if(B&&(B.ctx.kind==='raid'||B.ctx.kind==='rogue')){ B=null; closeOv(); tab='challenge'; render(); break; }
+      const win=t.dataset.win==='1',first=t.dataset.first==='1',s=B.s; B=null; closeOv(); render();
       if(win&&first&&s.post) playStory(s.title,s.post,()=>{render();checkTriggers();}); else checkTriggers(); break; }
   case 'pull': pull(+t.dataset.n); break;
   case 'flip': revealCard(+t.dataset.i); break;
@@ -5036,7 +5446,7 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
       toast(`표정 ${n}개를 만들었어요`); openChar(id); break; }
   case 'skin-open': openSkin(id); break;
   case 'aiskin': { const c=charById(id), idea=$('#sk_idea').value.trim(); if(!idea){toast('의상 아이디어를 적어 주세요');break;}
-      const r=await aiJSON(`캐릭터 기본 프롬프트: ${c.naiPrompt}\n새 의상: ${idea}\n이 캐릭터의 외모(머리, 눈, 체형)는 유지하고 의상과 소품만 바꾼 NovelAI 영어 태그 프롬프트를 써라. "1girl, solo, mature female"로 시작하고 "full body, standing, simple background, white background"로 끝낸다.\nJSON만 출력: {"prompt":"..."}`,t,'quick');
+      const r=await aiJSON(`캐릭터 기본 프롬프트: ${c.naiPrompt}\n새 의상: ${idea}\n이 캐릭터의 외모(머리, 눈, 체형)는 유지하고 의상과 소품만 바꾼 NovelAI 영어 태그 프롬프트를 써라. "1girl, solo"(남자는 "1boy, solo")로 시작하고 "full body, standing, simple background, white background"로 끝낸다.\nJSON만 출력: {"prompt":"..."}`,t,'quick');
       if(r&&r.prompt&&$('#sk_prompt')){ $('#sk_prompt').value=String(r.prompt); if(!$('#sk_name').value.trim()) $('#sk_name').value=idea.slice(0,16); } break; }
   case 'skingo': { const c=charById(id), pr=$('#sk_prompt').value.trim(), nm=$('#sk_name').value.trim()||'새 '+T('skin'); if(!pr){toast('프롬프트를 채워 주세요');break;} if(!imgReady()){toast(imgNeed());break;}
       const src=imgSrc(c); t.disabled=true; t.textContent='그리는 중…';
@@ -5100,7 +5510,7 @@ JSON만 출력: {"tags":"태그, 태그"}`,t);
       const pj=PJ(); const me=pj.list.find(x=>x.id===pj.active); if(me){me.title=m.title;localStorage.setItem(PJKEY,JSON.stringify(pj));}
       markAll(); applyMeta(); closeModal(); render(); toast('게임 정의를 저장했어요'); break; }
   case 'pj-open': openProjects(); break;
-  case 'pjswitch': { await flush(); const pj=PJ(); pj.active=id; localStorage.setItem(PJKEY,JSON.stringify(pj)); location.reload(); break; }
+  case 'pjswitch': { await flush(); try{ sessionStorage.setItem('ggm-picked','1'); }catch(e){} const pj=PJ(); pj.active=id; localStorage.setItem(PJKEY,JSON.stringify(pj)); location.reload(); break; }
   case 'pjdel': { if(!confirm('이 게임을 삭제할까요? 되돌릴 수 없어요.')) break; const pj=PJ(); pj.list=pj.list.filter(x=>x.id!==id); localStorage.setItem(PJKEY,JSON.stringify(pj)); localStorage.removeItem(pjKey(id)); openProjects(); break; }
   case 'pjblank': { await flush(); const id2='g'+uid(), d=defaults(); d.meta.title=G.meta.title+' (사본)'; localStorage.setItem(pjKey(id2),JSON.stringify(d)); const pj=PJ(); pj.list.push({id:id2,title:d.meta.title}); pj.active=id2; localStorage.setItem(PJKEY,JSON.stringify(pj)); location.reload(); break; }
   case 'newgame-open': openNewGame(); break;
@@ -5260,7 +5670,7 @@ document.addEventListener('input',e=>{
   $('#r_ssr').value=s.ssr;$('#r_sr').value=s.sr;$('#v_ssr').textContent=s.ssr+'%';$('#v_sr').textContent=s.sr+'%';$('#v_pity').textContent=s.pity+'회';
   if(P().pity>=s.pity)P().pity=s.pity-1; mark('prog');
 });
-document.addEventListener('change',e=>{ if(e.target.id==='fsort'&&FORM){ FORM.sort=e.target.value; refreshForm(); return; } if(e.target.id==='ct_tol'||e.target.id==='ct_soft'){ return; } if(e.target.id==='np_frame'){ reNaiPrep(); return; } if(e.target.id==='np_style'||e.target.id==='np_posesel'){ if(e.target.id==='np_posesel'&&e.target.value!=='__custom') $('#np_pose').value=e.target.value; reNaiPrep(); return; } });
+document.addEventListener('change',e=>{ if(e.target.id==='fsort'&&FORM){ FORM.sort=e.target.value; refreshForm(); return; } if(e.target.id==='ct_tol'||e.target.id==='ct_soft'){ return; } if(e.target.id==='np_frame'){ reNaiPrep(); return; } if(e.target.id==='desk_mode'){ try{localStorage.setItem('ggm-desk',e.target.value);}catch(_){} applyDesk(); return; } if(e.target.id==='np_style'||e.target.id==='np_posesel'){ if(e.target.id==='np_posesel'&&e.target.value!=='__custom') $('#np_pose').value=e.target.value; reNaiPrep(); return; } });
 document.addEventListener('input',e=>{ if(e.target.id==='np_pose') reNaiPrep(); if(e.target.id==='ct_tol') $('#ct_tolv').textContent=e.target.value; if(e.target.id==='ct_soft') $('#ct_softv').textContent=e.target.value; if(e.target.id==='ct_ptol') $('#ct_ptolv').textContent=e.target.value; if(e.target.id==='ct_brush'){ $('#ct_brushv').textContent=e.target.value; cutPlaceCursor(); cutDrawLoupe(); } if(e.target.id==='ct_pmode'){ const br=['brush','restore'].includes(e.target.value); $('#ct_bs').hidden=!br; $('#ct_pt').hidden=br; $('.cutgo').lastChild.textContent=br?'커서 위치에 한 번 찍기':'커서 위치 지우기'; cutPlaceCursor(); cutDrawLoupe(); } });
 document.addEventListener('change',e=>{if(e.target.id==='nai_prov'){ const cf=e.target.value==='comfy'; $('#comfyBox').hidden=!cf; $('#naiBox').hidden=cf; return; } if(e.target.id==='sw_img'){ swRead(); renderSetup(); return; } if(e.target.id==='ap_type'||e.target.id==='ap_pub'){readAp();APD.type=$('#ap_type').value;if($('#ap_pub'))APD.pub=$('#ap_pub').value;if(e.target.id==='ap_type'){APD.model='';APD.quick='';if(Object.values(AITYPE).includes(APD.name))APD.name='';} if(SW&&$('#ov .setup')) renderSetup(); else openAp();return;}});
 document.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.pset; if(!k) return; P()[k]=e.target.value.trim(); mark('prog'); if(k!=='player') render(); else toast('이름을 저장했어요');});
@@ -5281,6 +5691,7 @@ setupAI(); render(); loadAudio().then(()=>sceneBgm());
   if(o.failed){ o.failed=false; if(o.build) o.badBuild=o.build; saveLV(o); setTimeout(()=>toast('새 버전이 실행되지 않아 설치 버전으로 돌아왔어요'),1500); }
   if(o.superseded){ delete o.superseded; saveLV(o); }
   if(IS_NATIVE&&o.auto!==false&&Date.now()-(o.checked||0)>3*3600e3) setTimeout(()=>checkUpdate(false),5000);
+  setTimeout(()=>{ try{ syCheckOnStart(); }catch(e){} },3500);
   if(!IS_NATIVE){ try{ navigator.storage&&navigator.storage.persist&&navigator.storage.persist(); }catch(e){} if(IS_IOS&&!IS_STANDALONE&&!localStorage.getItem('ggm-a2hs')){ let n=0; const tryA=()=>{ if(localStorage.getItem('ggm-a2hs')) return; if($('#modal').hidden&&$('#ov').hidden) openA2HS(true); else if(n++<400) setTimeout(tryA,3000); }; setTimeout(tryA,2500); } }
 })();
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&!$('#ov').querySelector('.title')&&P().seenOpening) setTimeout(()=>liveTick(false),800); });
@@ -5297,35 +5708,55 @@ if(CAP&&CAP.App) CAP.App.addListener('backButton',()=>{
   CAP.App.minimizeApp&&CAP.App.minimizeApp();
 });
 const blobToData=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(b);});
-async function exportFile(opt){
-  opt=opt||{}; const share=!!opt.share;
-  toast(share?'공유 팩을 만드는 중이에요':'백업 파일을 만드는 중이에요');
-  const images={};
-  if(!share||opt.img!==false) for(const o of allImgObjs()){ if(o.img&&o.img.idb){ try{const b=await idbGetNS(o.id); if(b) images[o.id]=await blobToData(b);}catch(e){} } }
-  const audios={};
-  if(!share||opt.audio) for(const l of G.lib){ if(l.audio&&l.audio.idb){ try{const b=await idbGetNS('a_'+l.id); if(b) audios[l.id]=await blobToData(b);}catch(e){} } }
-  const voices={};
-  if(!share&&confirm('저장된 캐릭터 음성도 백업에 넣을까요? 넣으면 새 폰에서 다시 만들지 않아도 돼요. (파일이 커질 수 있어요)')){
-    try{ for(const k of await idbKeys()){ if(String(k).startsWith('v_')){ const b=await idbGet(k); if(b) voices[k]=await blobToData(b); } } }catch(e){}
+function bkDests(){ return IS_NATIVE?[['docs','문서 폴더 (Documents/가챠게임메이커)'],['download','다운로드 폴더 (Download/가챠게임메이커)'],['share','공유하기 (구글 드라이브·카톡 등으로 보내기)']]
+  :[...(window.showSaveFilePicker?[['pick','저장할 곳 직접 고르기']]:[]),['download','다운로드 폴더'],...(navigator.canShare?[['share','공유하기 (파일 앱·드라이브 등)']]:[])]; }
+function bkDest(){ let v=''; try{ v=localStorage.getItem('ggm-bkdest')||''; }catch(e){} const L=bkDests(); return L.some(x=>x[0]===v)?v:L[0][0]; }
+function exportFile(opt){ opt=opt||{}; const share=!!opt.share;
+  openModal(`${head(share?'공유 팩 저장':'백업 파일 저장')}
+    <label class="f" for="bk_dest">저장 위치</label><select class="in" id="bk_dest">${opt_(bkDests(),bkDest())}</select>
+    ${share?'':`<label style="display:flex;gap:8px;margin-top:10px"><input type="checkbox" id="bk_voice"><span>캐릭터 음성도 넣기 <span class="muted" style="font-size:.8rem">(새 기기에서 다시 만들지 않아도 돼요. 파일이 커져요)</span></span></label>`}
+    <p class="muted" style="margin:8px 0 0;font-size:.82rem">${IS_NATIVE?'문서·다운로드 폴더에 저장하면 휴대폰의 \'내 파일\' 앱에서 찾을 수 있어요. 앱을 지워도 남아요.':'PC에서는 \'직접 고르기\'로 원하는 폴더에 저장할 수 있어요.'}</p>
+    <div class="row" style="margin-top:14px"><button class="btn" data-act="bkgo" data-share="${share?1:0}" data-img="${opt.img===false?0:1}" data-aud="${opt.audio?1:0}">저장</button><button class="btn ghost" data-act="close">취소</button></div>`);
+}
+function opt_(list,v){ return list.map(([k,l])=>`<option value="${esc(k)}" ${k===v?'selected':''}>${esc(l)}</option>`).join(''); }
+async function bkWriter(dest,name){
+  if(IS_NATIVE&&CAP&&CAP.Filesystem){
+    const FS=CAP.Filesystem, sub=dest==='docs'?'가챠게임메이커/':dest==='download'?'Download/가챠게임메이커/':'', dir=dest==='docs'?'DOCUMENTS':dest==='download'?'EXTERNAL_STORAGE':'CACHE', path=sub+name;
+    if(dest!=='share'){ try{ if(FS.requestPermissions) await FS.requestPermissions(); }catch(e){} }
+    let first=true, buf='';
+    const put=async()=>{ if(!buf&&!first) return; const data=buf; buf=''; if(first){ await FS.writeFile({path,data,directory:dir,encoding:'utf8',recursive:true}); first=false; } else await FS.appendFile({path,data,directory:dir,encoding:'utf8'}); };
+    return {write:async s=>{ buf+=s; if(buf.length>1500000) await put(); }, close:async()=>{ await put(); const u=await FS.getUri({path,directory:dir}); return {uri:u.uri,where:dest==='share'?'':(dest==='docs'?'Documents/':'')+path}; }};
   }
-  let game=G;
-  if(share){ game=JSON.parse(JSON.stringify(G)); delete game.prog; imgObjsOf(game).forEach(o=>{ if(!images[o.id]) o.img=null; }); if(!opt.audio) game.lib.forEach(l=>{ if(l.audio) l.audio=null; }); game.chars.forEach(c=>{ delete c.voiceId; delete c.voiceName; }); }
-  const text=JSON.stringify({app:'starfall-contract',kind:share?'share':'backup',ver:VER,build:APP_BUILD,at:new Date().toISOString(),game,images,audios,voices});
+  if(dest==='pick'&&window.showSaveFilePicker){ const h=await window.showSaveFilePicker({suggestedName:name,types:[{description:'백업 파일',accept:{'application/json':['.json']}}]}); const ws=await h.createWritable(); return {write:s=>ws.write(s),close:async()=>{ await ws.close(); return {where:h.name}; }}; }
+  const parts=[]; return {write:async s=>{ parts.push(s); },close:async()=>({blob:new Blob(parts,{type:'application/json'})})};
+}
+async function exportGo(o){
+  const share=!!o.share, dest=o.dest; try{ localStorage.setItem('ggm-bkdest',dest); }catch(e){}
+  const stamp=new Date(), ds=stamp.toISOString().slice(0,10)+'_'+String(stamp.getHours()).padStart(2,'0')+String(stamp.getMinutes()).padStart(2,'0');
   const safe=String(G.meta.title||'game').replace(/[^\w가-힣-]+/g,'_').slice(0,20);
-  const name=(share?'starfall-share-'+safe+'-':'starfall-backup-')+new Date().toISOString().slice(0,10)+'.json';
-  const title=share?G.meta.title+' 공유 팩':APP_NAME+' 백업';
+  const name=(share?'gacha-share-'+safe+'-':'gacha-backup-'+safe+'-')+ds+'.json', title=share?G.meta.title+' 공유 팩':APP_NAME+' 백업';
+  let w; try{ w=await bkWriter(dest,name); }catch(e){ if(e&&e.name==='AbortError') return; if(IS_NATIVE&&dest!=='share'){ toast('그 폴더에 쓸 수 없어서 공유하기로 바꿔 저장해요'); return exportGo(Object.assign({},o,{dest:'share'})); } toast('저장할 곳을 열지 못했어요'); return; }
   try{
-    if(CAP&&CAP.Filesystem){
-      const w=await CAP.Filesystem.writeFile({path:name,data:text,directory:'CACHE',encoding:'utf8'});
-      if(CAP.Share) await CAP.Share.share({title,files:[w.uri]});
-      else toast('앱 캐시에 저장했어요');
-      return;
-    }
-    const file=new File([text],name,{type:'application/json'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title}); return; }
-    const a=document.createElement('a'); a.href=URL.createObjectURL(file); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
-    toast(share?'공유 팩을 저장했어요':'백업 파일을 저장했어요');
-  }catch(e){ if(e&&e.name==='AbortError') return; toast('파일을 저장하지 못했어요'); }
+    syBar&&syBar(share?'공유 팩 만드는 중…':'백업 만드는 중…'); await flush();
+    let game=G; const imgOK={};
+    if(share){ game=JSON.parse(JSON.stringify(G)); delete game.prog; game.chars.forEach(c=>{ delete c.voiceId; delete c.voiceName; }); }
+    const objs=(!share||o.img)?allImgObjs().filter(x=>x.img&&x.img.idb):[];
+    if(share){ const want=new Set(objs.map(x=>x.id)); imgObjsOf(game).forEach(x=>{ if(!want.has(x.id)) x.img=null; }); if(!o.audio) game.lib.forEach(l=>{ if(l.audio) l.audio=null; }); }
+    await w.write(`{"app":"gacha-game-maker","kind":"${share?'share':'backup'}","ver":${JSON.stringify(VER)},"build":${JSON.stringify(APP_BUILD)},"at":${JSON.stringify(stamp.toISOString())},"game":`+JSON.stringify(game)+',"images":{');
+    let n=0, first=true; for(const x of objs){ n++; if(n%10===0) syBar(`그림 넣는 중 ${n}/${objs.length}`); try{ const b=await idbGetNS(x.id); if(b){ await w.write((first?'':',')+JSON.stringify(x.id)+':'+JSON.stringify(await blobToData(b))); first=false; } }catch(e){} }
+    await w.write('},"audios":{'); first=true;
+    if(!share||o.audio) for(const l of G.lib){ if(l.audio&&l.audio.idb){ try{ const b=await idbGetNS('a_'+l.id); if(b){ await w.write((first?'':',')+JSON.stringify(l.id)+':'+JSON.stringify(await blobToData(b))); first=false; } }catch(e){} } }
+    await w.write('},"voices":{'); first=true;
+    if(!share&&o.voice){ try{ for(const k of await idbKeys()){ if(String(k).startsWith('v_')){ const b=await idbGet(k); if(b){ await w.write((first?'':',')+JSON.stringify(k)+':'+JSON.stringify(await blobToData(b))); first=false; } } } }catch(e){} }
+    await w.write('}}');
+    syBar('저장하는 중…'); const r=await w.close(); syBar('');
+    if(r.uri&&dest==='share'){ if(CAP&&CAP.Share) await CAP.Share.share({title,files:[r.uri]}); return; }
+    if(r.blob){ const file=new File([r.blob],name,{type:'application/json'});
+      if(dest==='share'&&navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title}); return; }
+      const a=document.createElement('a'); a.href=URL.createObjectURL(file); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},4000);
+      toast('다운로드 폴더에 저장했어요 · '+name); return; }
+    openModal(`${head(share?'공유 팩을 저장했어요':'백업을 저장했어요')}<p style="word-break:break-all"><b>${esc(r.where||name)}</b></p><p class="muted">${IS_NATIVE?'휴대폰의 \'내 파일\'(파일 관리자) 앱에서 이 위치를 찾으면 돼요. 불러올 때는 설정 → 데이터 → 백업 파일 불러오기.':'불러올 때는 설정 → 데이터 → 백업 파일 불러오기.'}</p><div class="row" style="margin-top:12px">${IS_NATIVE&&r.uri&&CAP.Share?`<button class="btn ghost" data-act="bkshare" data-uri="${esc(r.uri)}">다른 곳으로도 보내기</button>`:''}<button class="btn" data-act="close">확인</button></div>`);
+  }catch(e){ syBar(''); if(e&&e.name==='AbortError') return; if(IS_NATIVE&&dest!=='share'){ toast('그 폴더에 저장하지 못해서 공유하기로 다시 저장해요'); return exportGo(Object.assign({},o,{dest:'share'})); } toast('파일을 저장하지 못했어요. '+((e&&e.message)||'')); }
 }
 $('#bkfile').addEventListener('change',async e=>{
   const f=e.target.files[0]; e.target.value=''; if(!f) return;

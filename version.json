@@ -1,13 +1,23 @@
 {
-  "build": "2026.10.07.21",
-  "notes": [],
+  "build": "2026.10.08.2",
+  "notes": [
+    "아이폰·PC 웹 버전",
+    "PC·폰 연동",
+    "갠톡(자유 채팅)",
+    "도감(로어북)",
+    "레이드·심연 탐사",
+    "백업 저장 위치 선택",
+    "새 게임 만들기 이어서 하기",
+    "2차 창작",
+    "오류 수정 다수"
+  ],
   "notice": null,
   "html": "www/index.html",
-  "sha256": "54b39ee684e68fa10ce6878eead0603560a4e5f1b2e543cda494c5d2e2d4fe4f",
+  "sha256": "dcc98685946f1983fef5850a9febf76ba025a3752678a9e442ddadf3798ae349",
   "apk": {
     "url": "https://github.com/jjhk0803/gacha-game-maker/releases/latest/download/gacha-game-maker.apk",
-    "build": "2026.10.07.21"
+    "build": "2026.10.08.2"
   },
   "feedback": "",
-  "at": "2026-10-07T04:44:36.807108Z"
+  "at": "2026-10-07T15:30:13.215344Z"
 }

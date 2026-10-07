@@ -1,15 +1,13 @@
 {
-  "build": "2026.10.08.3",
-  "notes": [
-    "대형 업데이트: 아이폰·PC 지원, 갠톡, 레이드, 심연 탐사"
-  ],
+  "build": "2026.10.08.2",
+  "notes": [],
   "notice": null,
   "html": "www/index.html",
-  "sha256": "d35b08989ff4d2d0a95aef3aeccb2adfc8da62d64f33c1ecf4c563a33bb3e06b",
+  "sha256": "dcc98685946f1983fef5850a9febf76ba025a3752678a9e442ddadf3798ae349",
   "apk": {
     "url": "https://github.com/jjhk0803/gacha-game-maker/releases/latest/download/gacha-game-maker.apk",
-    "build": "2026.10.08.3"
+    "build": "2026.10.08.2"
   },
   "feedback": "",
-  "at": "2026-10-07T15:42:49.406638Z"
+  "at": "2026-10-07T16:24:03.216488Z"
 }

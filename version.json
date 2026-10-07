@@ -1,14 +1,13 @@
 {
-  "build": "2026.10.07.1",
-  "notes": [
-    "첫 공개 배포"
-  ],
+  "build": "2026.10.07.10",
+  "notes": [],
+  "notice": null,
   "html": "www/index.html",
-  "sha256": "d07661915f1e0ad8ff490ba7dec00933c17918961dd462e193e9017e247c497e",
+  "sha256": "04892f177ef74494fc627d193ede40daf8d54f7a40d7f26372966bf5d93a7508",
   "apk": {
-    "url": "https://github.com/jjhk0803/starfall-contract/releases/latest/download/starfall-contract.apk",
-    "build": "2026.10.07.1"
+    "url": "https://github.com/jjhk0803/gacha-game-maker/releases/latest/download/gacha-game-maker.apk",
+    "build": "2026.10.07.10"
   },
   "feedback": "",
-  "at": "2026-10-06T14:32:19.665278Z"
+  "at": "2026-10-07T00:28:01.703078Z"
 }

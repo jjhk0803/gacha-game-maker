@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.10.07.19'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.10.07.21'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   try{
@@ -24,10 +24,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14161a">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="가챠 메이커">
 <title>가챠 게임 메이커</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;600;700&family=Rajdhani:wght@500;700&family=Nanum+Myeongjo:wght@700;800&family=Cinzel:wght@600&display=swap" rel="stylesheet">
@@ -906,6 +909,14 @@ body.lb-hidden .top,body.lb-hidden .tabs{opacity:0;pointer-events:none}
 .cx-note small{display:block;font-size:.68rem;color:#9a86ff;font-weight:700;letter-spacing:.08em;margin-bottom:4px}
 .cx-note p:last-child{margin-bottom:0}
 .cx-sub{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.cx-sub .btn{flex:1;min-width:30%}
+
+/* ===== 아이폰·웹 ===== */
+@supports (-webkit-touch-callout:none){ input.in,select.in,textarea.in,input,select,textarea{font-size:16px!important} }
+html{-webkit-text-size-adjust:100%}
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+.a2hs{margin:0 0 10px;padding-left:20px;line-height:1.8}.a2hs li{margin-bottom:4px}
+.kbd{display:inline-block;padding:0 6px;border:1px solid var(--line);background:var(--panel2);font-size:.85em}
+.ap-pre{margin:6px 0 2px}.ap-pre .chip{font-size:.75rem;padding:4px 10px}
 /* ===== 2026.10.07.2 ===== */
 .mlist{display:grid;gap:6px}
 .mrow{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rose);cursor:pointer}
@@ -1202,6 +1213,9 @@ function AIP(){
 }
 function saveAIP(d){localStorage.setItem(PKEY,JSON.stringify(d));setupAI();}
 function defKey(p){return p.type==='vertex'?'vertex_'+(p.pub||'google'):p.type;}
+function normBase(b){ let s=String(b||'').trim().replace(/\/+$/,'').replace(/\/chat\/completions$/i,'').replace(/\/+$/,'');
+  try{ const u=new URL(s); if(/^(www\.)?ollama\.com$/i.test(u.hostname)) return 'https://ollama.com/v1';
+    if(u.port==='11434'&&!/\/v1$/.test(u.pathname)) return u.origin+'/v1'; }catch(e){} return s; }
 function apValid(p){
   if(p.type==='anthropic'||p.type==='gemini') return !!p.key;
   if(p.type==='openai') return !!(p.base&&p.key&&(p.model||'').trim());
@@ -1211,6 +1225,11 @@ function apValid(p){
 function setupAI(){ SAMPLE=AIP().list.some(apValid)?{json:(pr,o)=>aiCall(pr,(o&&o.modelTier)||'default')}:null; }
 
 /* 네이티브 HTTP (앱에서는 CORS 없이 직접 호출) */
+const IS_NATIVE=!!(window.Capacitor&&(typeof window.Capacitor.isNativePlatform==='function'?window.Capacitor.isNativePlatform():window.Capacitor.Plugins&&window.Capacitor.Plugins.CapacitorHttp));
+const IS_IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const IS_STANDALONE=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+const PXHOSTS=new Set();
+function webProxy(){ if(IS_NATIVE) return ''; try{ return String(localStorage.getItem('ggm-proxy')||'').trim(); }catch(e){ return ''; } }
 function b64ToBytes(b){const s=atob(b);const u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u;}
 function b64url(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 async function http(url,{method='GET',headers={},body,binary=false,form=false,timeout=180000}={}){
@@ -1226,7 +1245,14 @@ async function http(url,{method='GET',headers={},body,binary=false,form=false,ti
     return {status:r.status,bytes,text,headers:hd};
   }
   const h={...headers}; delete h.Origin; delete h.Referer;
-  let res; try{ res=await fetch(url,{method,headers:h,body:body==null?undefined:(form?new URLSearchParams(body).toString():JSON.stringify(body))}); }catch(e){ throw {code:'network'}; }
+  const init={method,headers:h,body:body==null?undefined:(form?new URLSearchParams(body).toString():JSON.stringify(body))};
+  const PX=webProxy(); let host=''; try{ host=new URL(url).host; }catch(e){}
+  const viaPx=()=>fetch(PX.replace(/\/+$/,'')+'/?u='+encodeURIComponent(url),init);
+  let res;
+  if(PX&&PXHOSTS.has(host)){ try{ res=await viaPx(); }catch(e){ throw {code:'network',message:'중계 서버에 연결하지 못했어요'}; } }
+  else { try{ res=await fetch(url,init); }catch(e){
+      if(PX&&host&&host!==location.host){ try{ res=await viaPx(); PXHOSTS.add(host); }catch(e2){ throw {code:'network',message:'중계 서버에 연결하지 못했어요'}; } }
+      else throw {code:'network',message:IS_NATIVE?'':'웹 버전에서는 이 서비스가 직접 연결을 막았을 수 있어요(CORS). 설정 → 아이폰·웹 연결에서 중계 서버를 넣어 주세요.'}; } }
   const hd={}; try{res.headers.forEach((v,k)=>{hd[k.toLowerCase()]=v;});}catch(e){}
   if(binary&&res.ok) return {status:res.status,bytes:new Uint8Array(await res.arrayBuffer()),headers:hd};
   return {status:res.status,text:await res.text(),headers:hd};
@@ -1290,7 +1316,7 @@ async function aiOne(p,prompt,tier){
   const P2=prompt+'\n\n다른 설명이나 코드 블록 없이 JSON만 출력한다.';
   if(p.type==='anthropic') return claudeMsg('https://api.anthropic.com/v1/messages',{'x-api-key':p.key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},{model,max_tokens:max,messages:[{role:'user',content:P2}]},tier);
   if(p.type==='openai'){
-    const r=await http(String(p.base).replace(/\/+$/,'')+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+p.key},body:{model,max_tokens:max,messages:[{role:'user',content:P2}]},timeout:TMO[tier]});
+    const r=await http(normBase(p.base)+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+p.key},body:{model,max_tokens:max,messages:[{role:'user',content:P2}]},timeout:TMO[tier]});
     const j=okJSON(r), ch=(j.choices||[])[0]; if(!ch) throw {code:'upstream_error',message:JSON.stringify(j).slice(0,160)};
     if(ch.finish_reason==='content_filter') throw {code:'refused'};
     return parseLoose(ch.message&&ch.message.content);
@@ -1386,6 +1412,7 @@ function naiDrawItem(it){
 const NAI_HDR=tok=>({Authorization:'Bearer '+String(tok||'').trim(),'Content-Type':'application/json'});
 function naiErr(e,label){
   if(e&&/update to the image URL|refresh NovelAI/i.test(e.message||'')) return 'NovelAI 옛 서버 주소로 요청했어요. 설정의 그림 AI에서 생성 주소를 '+NAI_ENDPOINT+' 로 바꿔 주세요.';
+  if(!IS_NATIVE&&e&&e.code==='network'&&e.message) return (label?label+'. ':'')+e.message;
   if(imgProvider()==='comfy'&&e&&e.code==='network') return 'ComfyUI 서버에 연결하지 못했어요. PC에서 --listen 옵션으로 켰는지, 같은 와이파이인지, 주소(http://PC주소:8188)를 확인해 주세요.';
   const m={comfy_nourl:'설정의 그림 AI에서 ComfyUI 주소를 넣어 주세요.',comfy_wf:'ComfyUI 워크플로 문제: '+((e&&e.message)||''),comfy_err:'ComfyUI 오류: '+((e&&e.message)||''),comfy_timeout:'ComfyUI가 시간 안에 그림을 끝내지 못했어요. 설정에서 대기 시간을 늘려 보세요.',nai_locked:'NovelAI에서 다른 생성이 진행 중이에요. 잠시 뒤 다시 시도해 주세요.',nai_empty:'NovelAI 응답에 이미지가 없어요.',bad_key:'NovelAI 토큰이 올바르지 않아요. 설정의 그림 AI에서 확인해 주세요.',low_credit:'Anlas가 부족하거나 구독이 필요해요.',rate_limited:'NovelAI가 바빠요. 다른 생성이 끝난 뒤 다시 시도해 주세요.',network:'인터넷 연결을 확인해 주세요. 웹 버전에서는 그림 AI가 안 될 수 있어요.',nai_zip:'NovelAI 응답을 풀지 못했어요.',nai_nokey:'설정의 그림 AI에 NovelAI 토큰을 넣어 주세요.'};
   return m[e&&e.code]||((label||'그림 생성 실패')+'. '+((e&&e.message)||''));
@@ -2856,6 +2883,12 @@ function aiProfilesHTML(){
   return A.list.map(p=>{const on=p.id===A.active||(!A.list.some(x=>x.id===A.active)&&p===A.list[0]);const dm=DEFM[defKey(p)]||[''];
     return `<div class="ep"><span class="t"><b>${esc(p.name||AITYPE[p.type])} ${on?'<span class="badge r3c">사용 중</span>':''}</b><span class="muted">${AITYPE[p.type]}${p.type==='vertex'?(p.pub==='anthropic'?' · Claude':' · Gemini'):''} · ${esc(p.model||dm[0]||'모델 미지정')}${apValid(p)?'':' · 설정 미완료'}</span></span>${on?'':`<button class="btn sm" data-act="apuse" data-id="${p.id}">사용</button>`}<button class="btn sm ghost" data-act="apedit" data-id="${p.id}">편집</button></div>`;}).join('');
 }
+const OAI_PRESETS=[
+ ['OpenRouter','https://openrouter.ai/api/v1','','openrouter.ai → Keys에서 키를 만들어요. 모델 이름은 openrouter.ai/models의 ID(예: deepseek/deepseek-chat-v3.1)를 그대로 써요.'],
+ ['Ollama 클라우드','https://ollama.com/v1','gpt-oss:120b','ollama.com 로그인 → Settings → Keys에서 API 키를 만들어요. 모델은 ollama.com/search?c=cloud 에 있는 클라우드 모델 이름(예: gpt-oss:120b, qwen3-coder:480b)을 써요. 이름 끝의 -cloud는 빼요. 무료 플랜은 사용량 한도가 있어요.'],
+ ['내 PC Ollama','http://192.168.0.10:11434/v1','','PC에서 OLLAMA_HOST=0.0.0.0 으로 Ollama를 켜고, PC의 IP로 주소를 바꿔요(폰과 같은 와이파이). 키는 아무 글자나 넣으면 돼요. 모델은 ollama list에 나온 이름 그대로.'],
+ ['LM Studio','http://192.168.0.10:1234/v1','','LM Studio → Developer → Start Server, "Serve on Local Network"를 켜고 PC의 IP로 주소를 바꿔요. 키는 아무 글자나 넣으면 돼요.'],
+ ['DeepSeek','https://api.deepseek.com/v1','deepseek-chat','platform.deepseek.com → API keys에서 만들어요.']];
 const MODEL_SUGG={anthropic:['claude-opus-5-5','claude-sonnet-5-5','claude-haiku-4-5-20251001'],gemini:['gemini-2.5-pro','gemini-2.5-flash','gemini-2.5-flash-lite'],vertex_google:['gemini-2.5-pro','gemini-2.5-flash','gemini-2.5-flash-lite'],vertex_anthropic:[],openai:[]};
 function apForm(d){
   const dm=DEFM[defKey(d)]||['',''], sg=MODEL_SUGG[defKey(d)]||[];
@@ -2863,7 +2896,7 @@ function apForm(d){
   let fields='',help='';
   if(d.type==='anthropic'){ fields=f('ap_key','API 키',d.key,'sk-ant-...','password'); help='console.anthropic.com → API Keys에서 만들어요.'; }
   if(d.type==='gemini'){ fields=f('ap_key','API 키',d.key,'AIza...','password'); help='aistudio.google.com → Get API key에서 만들어요. 무료 사용량이 있어요.'; }
-  if(d.type==='openai'){ fields=f('ap_base','API 주소',d.base,'https://openrouter.ai/api/v1')+f('ap_key','API 키',d.key,'','password'); help='OpenRouter, DeepSeek, 로컬 LM Studio·Ollama 등 OpenAI 방식 API예요. 주소는 /chat/completions 앞부분까지 넣고, 모델 이름은 그 서비스에 나온 ID를 그대로 써요.'; }
+  if(d.type==='openai'){ fields=`<div class="chips ap-pre">${OAI_PRESETS.map((x,i)=>`<button class="chip" data-act="appre" data-i="${i}">${esc(x[0])}</button>`).join('')}</div>`+f('ap_base','API 주소',d.base,'https://openrouter.ai/api/v1')+f('ap_key','API 키',d.key,'','password'); help=(OAI_PRESETS.find(x=>normBase(x[1])===normBase(d.base))||[])[3]||'OpenRouter, DeepSeek, Ollama, LM Studio 등 OpenAI 방식 API예요. 위 버튼으로 주소를 채울 수 있어요. 주소는 /chat/completions 앞부분까지, 모델 이름은 그 서비스에 나온 이름을 그대로 써요.'; }
   if(d.type==='vertex'){
     fields=`<label class="f" for="ap_pub">모델 종류</label><select class="in" id="ap_pub">${opt([['google','Gemini'],['anthropic','Claude (Model Garden)']],d.pub||'google')}</select>
       <label class="f" for="ap_sa">서비스 계정 키 (JSON 파일 내용 전체)</label><textarea class="in" id="ap_sa" placeholder='{"type": "service_account", "project_id": ...}'>${esc(d.sa||'')}</textarea>
@@ -2890,6 +2923,7 @@ function readAp(){
   const v=id=>{const e=$('#'+id);return e?e.value.trim():undefined;};
   const d=APD;
   [['name','ap_name'],['key','ap_key'],['base','ap_base'],['pub','ap_pub'],['sa','ap_sa'],['region','ap_region'],['project','ap_project'],['vkey','ap_vkey'],['model','ap_model'],['quick','ap_quick']].forEach(([k,id])=>{const x=v(id);if(x!==undefined)d[k]=x;});
+  if(d.base) d.base=normBase(d.base);
   if(!d.name) d.name=AITYPE[d.type];
   return d;
 }
@@ -2900,6 +2934,7 @@ function openNaiSet(){
     <label class="f" for="nai_prov">그림 AI 종류</label><select class="in" id="nai_prov">${opt([['nai','NovelAI'],['comfy','ComfyUI (내 PC나 서버)']],c.provider||'nai')}</select>
     <div class="optbox" id="comfyBox" ${c.provider==='comfy'?'':'hidden'}>
       <label class="f" for="cf_url">ComfyUI 주소</label><input class="in" id="cf_url" value="${esc(comfyCfg().url)}" placeholder="http://192.168.0.10:8188">
+      ${!IS_NATIVE&&location.protocol==='https:'?'<p style="color:var(--rose);margin:4px 0 0;font-size:.82rem">아이폰·웹 버전에서는 https 주소만 연결돼요. PC의 ComfyUI를 Cloudflare Tunnel 같은 걸로 https 주소로 열고, --enable-cors-header 옵션도 켜 주세요.</p>':''}
       <p class="muted" style="margin:4px 0 0">PC에서 ComfyUI를 <code>--listen</code> 옵션으로 켜고, 폰과 같은 와이파이에서 PC의 IP 주소를 넣어요. 밖에서 쓰려면 Cloudflare Tunnel 같은 https 주소도 돼요.</p>
       <label class="f" for="cf_wf">워크플로 (API 형식 JSON)</label><textarea class="in" id="cf_wf" style="min-height:90px" placeholder='ComfyUI 메뉴 → Workflow → Export (API)로 저장한 파일 내용'>${esc(comfyCfg().wf)}</textarea>
       <div class="row" style="margin-top:6px"><button class="btn sm ghost" data-act="cfload">JSON 파일 불러오기</button><button class="btn sm ghost" data-act="cftest">연결 확인</button></div>
@@ -3131,8 +3166,10 @@ function studioHTML(){
   return `${pageHead('설정','SYSTEM')}
   <div class="panel"><h3>게임</h3><p class="muted" style="margin:0 0 10px">지금 게임: <b>${esc(G.meta.title)}</b>. 세계관, 용어, 속성, 화면 테마를 바꾸거나, AI로 완전히 다른 가챠 게임을 새로 만들 수 있어요. 게임은 여러 개 만들어 두고 오갈 수 있어요.</p>
     <div class="row"><button class="btn sm" data-act="meta-open">게임 정의 편집</button><button class="btn sm" data-act="newgame-open">AI로 새 게임 만들기</button><button class="btn sm ghost" data-act="pj-open">게임 목록 (${pj.list.length})</button></div></div>
-  <div class="panel"><h3>앱 업데이트</h3><p class="muted" style="margin:0 0 10px">지금 버전: ${esc(window.__LIVE__?'온라인 업데이트 '+window.__LIVE__:'설치 버전 '+APP_BUILD)}. 새 버전이 나오면 앱이 GitHub에서 받아 와요. API 키는 이 기기에만 저장되고 어디로도 보내지 않아요(각 AI 회사 서버로 직접 요청할 때만 써요).</p>
-    <div class="row"><button class="btn sm" data-act="upd-open">업데이트 설정</button><button class="btn sm ghost" data-act="updcheck">지금 확인</button></div></div>
+  ${IS_NATIVE?'':`<div class="panel"><h3>아이폰·웹 연결</h3><p class="muted" style="margin:0 0 10px">웹 버전은 열 때마다 최신이에요. 일부 AI 서비스는 브라우저에서 직접 부르는 걸 막아서(CORS), 막히면 중계 서버를 거쳐요. ${webProxy()?'지금 중계 서버: <b>'+esc(webProxy())+'</b>':'중계 서버 없음'}</p>
+    <div class="row"><button class="btn sm" data-act="pxopen">중계 서버 설정</button>${IS_IOS&&!IS_STANDALONE?'<button class="btn sm ghost" data-act="a2hs">홈 화면에 추가하는 법</button>':''}</div></div>`}
+  ${IS_NATIVE?`<div class="panel"><h3>앱 업데이트</h3><p class="muted" style="margin:0 0 10px">지금 버전: ${esc(window.__LIVE__?'온라인 업데이트 '+window.__LIVE__:'설치 버전 '+APP_BUILD)}. 새 버전이 나오면 앱이 GitHub에서 받아 와요. API 키는 이 기기에만 저장되고 어디로도 보내지 않아요(각 AI 회사 서버로 직접 요청할 때만 써요).</p>
+    <div class="row"><button class="btn sm" data-act="upd-open">업데이트 설정</button><button class="btn sm ghost" data-act="updcheck">지금 확인</button></div></div>`:''}
   <div class="panel"><h3>라이브 운영</h3><p class="muted" style="margin:0 0 10px">앱을 켤 때 날짜를 보고 새 콘텐츠를 자동으로 만들어요. 켠 항목만큼 글 AI 요금이 들어요.</p>
     <div class="chips">${[['talk','매일 새 '+T('talk')],['event','매주 새 이벤트'],['rerun','이벤트 복각'],['rotate','2주마다 확률 업 교체'],['pass','매달 '+T('pass')+' 초기화'],['chapter','매달 메인 다음 장']].map(([k,l])=>`<button class="chip ${P().live.on[k]?'on':''}" data-act="livetog" data-k="${k}">${esc(l)}</button>`).join('')}</div>
     <div class="row" style="margin-top:10px"><button class="btn sm" data-act="liverun">지금 업데이트 실행</button><button class="btn sm ghost" data-act="go" data-to="notice">공지 보기</button></div></div>
@@ -3274,6 +3311,7 @@ function renderSetup(){
     `<div class="sw-logo"><i>GACHA GAME MAKER</i><b>가챠 게임 메이커</b></div><p>내가 정한 세계관으로 나만의 가챠 게임을 만들어 노는 앱이에요. AI 키를 넣으면 세계관, 캐릭터, 스토리, 그림, 목소리까지 직접 만들 수 있어요. 키가 없으면 샘플 게임 「낙성계약」으로 바로 시작해요.</p>
      <ul class="sw-list"><li><b>글 AI</b> · 세계관, 캐릭터, 스토리, 메신저 만들기</li><li><b>NovelAI</b> · 스탠딩, 일러스트, 배경 그림</li><li><b>Fish Audio / ElevenLabs</b> · 목소리와 배경음 (선택)</li></ul>
      <p class="muted">키는 이 기기에만 저장되고, 각 AI 회사로 직접 요청할 때만 쓰여요. 나중에 설정에서 언제든 바꿀 수 있어요.</p>
+     ${IS_IOS&&!IS_STANDALONE?'<p style="margin:8px 0 0;padding:8px 10px;border-left:3px solid var(--rose);background:rgba(255,255,255,.06);font-size:.85rem">📱 아이폰이면 먼저 Safari 공유 버튼(⬆︎) → <b>홈 화면에 추가</b>로 설치한 뒤, 홈 화면 아이콘으로 열어서 시작하는 걸 추천해요. 그래야 저장한 게임이 안전하게 남아요.</p>':''}
      <div class="sw-btns"><button class="btn" data-act="swnext">시작하기</button><button class="btn ghost" data-act="swskipall">샘플 게임으로 바로</button></div>`,
     `<h2>글 AI</h2><p class="muted">세계관·캐릭터·스토리를 쓰는 AI예요. Gemini, Claude, Vertex AI(서비스 계정·익스프레스 키), OpenAI 호환(OpenRouter, 로컬 LM Studio 등)을 쓸 수 있고, 여러 개를 넣으면 하나가 실패할 때 다음 것으로 넘어가요.</p>
      ${AIP().list.length?`<div class="sw-added">${AIP().list.map(p=>`<span>✓ ${esc(p.name||AITYPE[p.type])}${p.model?' · '+esc(p.model):''}</span>`).join('')}</div>`:''}
@@ -4208,6 +4246,19 @@ function bootPrepRun(cats){
     if(ph==='done'){ const s=imgSrc(it.o); if(s) pv.innerHTML=`<img src="${esc(s)}" alt="">`; } };
   runPrep(cats,null,{fg:true,order:BOOT_CATS.map(x=>x[0]),step:upd,done:()=>{ if($('#bp_prev')) setTimeout(showTitle,700); }});
 }
+
+/* ===== 아이폰·웹 ===== */
+function openA2HS(first){ if(first) localStorage.setItem('ggm-a2hs','1');
+  openModal(`${head('홈 화면에 추가해 주세요',`<span class="muted">아이폰은 앱처럼 쓰려면 이 단계가 필요해요</span>`)}
+    <ol class="a2hs"><li>Safari 아래쪽(또는 위쪽)의 <b>공유 버튼</b> <span class="kbd">⬆︎</span>을 눌러요.</li><li>목록을 내려서 <b>홈 화면에 추가</b>를 눌러요.</li><li>오른쪽 위 <b>추가</b>를 누르면 홈 화면에 '가챠 메이커' 아이콘이 생겨요.</li><li>앞으로는 그 아이콘으로 열어요. 전체 화면으로 열리고, 저장한 게임도 안전하게 남아요.</li></ol>
+    <p class="muted">Safari 탭에서 그냥 쓰면 오래 안 열었을 때 아이폰이 저장 데이터를 지울 수 있어요. 가끔 설정 → 백업으로 내보내 두면 더 안전해요.</p>
+    <div class="row" style="margin-top:12px"><button class="btn" data-act="close">알겠어요</button></div>`); }
+function openProxySet(){
+  openModal(`${head('중계 서버 (아이폰·웹)')}
+    <p class="muted">브라우저는 보안 규칙(CORS) 때문에 일부 AI 서비스에 직접 연결하지 못해요. 그럴 때만 중계 서버를 거쳐요. 직접 연결이 되는 서비스는 그대로 직접 연결해요.</p>
+    <label class="f" for="px_url">중계 서버 주소</label><input class="in" id="px_url" value="${esc(webProxy())}" placeholder="https://내-이름.workers.dev">
+    <p class="muted" style="margin:6px 0 0">Cloudflare Workers에 무료로 직접 만들 수 있어요. 만드는 법은 배포 페이지 README의 '아이폰' 항목에 있어요. 중계 서버를 거치는 요청에는 API 키가 함께 지나가니, 내가 만든 서버나 믿을 수 있는 서버만 넣어 주세요.</p>
+    <div class="row" style="margin-top:14px"><button class="btn" data-act="pxsave">저장</button><button class="btn ghost" data-act="pxtest">연결 확인</button></div>`); }
 /* ===== 앱 업데이트 (GitHub에서 index.html 받기) ===== */
 const LVKEY='starfall-live';
 
@@ -4321,12 +4372,13 @@ function ctx(){
   return `게임 "${G.meta.title}". 세계관 "${w.name}": ${w.summary}\n상세 설정: ${w.lore}\n메인 플롯(작가용 비밀 설정 포함): ${w.plot||'미정'}\n세력: ${w.factions.map(f=>f.name+'('+f.desc+')').join(', ')}\n메인 스토리 진행: ${prog}\n${T('crew')}: ${G.chars.map(c=>`${c.name}(${RL[c.rarity]}, ${c.faction||'무소속'}, ${c.elem}속성 ${ROLE[c.role]}, ${String(c.profile).slice(0,80)} 말투 예: "${(c.lines[0]||'').slice(0,40)}"${c.faces.length?' 표정: '+c.faces.map(f=>f.name).join('/'):''})`).join('; ')}\n배경 목록: ${G.lib.filter(l=>l.kind==='bg').map(l=>l.name).join(', ')}\n소품 목록: ${G.lib.filter(l=>l.kind==='prop').map(l=>l.name).join(', ')}\n음악 목록: ${G.lib.filter(l=>l.kind==='bgm').map(l=>l.name).join(', ')}\n효과음 목록: ${G.lib.filter(l=>l.kind==='sfx').map(l=>l.name).join(', ')}\nCG 목록: ${G.lib.filter(l=>l.kind==='cg').map(l=>l.name).join(', ')||'없음'}`;
 }
 function charSchema(){return `{"name":"짧은 이름","faction":"소속 세력","rarity":1~3 정수(3=SSR),"role":"atk|def|sup","elem":"${ELEMS.join('|')}","hp":800~1700,"atk":80~180,"def":35~100,"spd":80~125,"skill":{"name":"","kind":"dmg|aoe|heal|shield|buff","power":0.8~3.0,"cd":2~4,"desc":"한 줄"},"profile":"2~3문장","intro":"${T('gacha')} 연출 첫마디","lines":["로비 대사 4개"],"affLines":{"4":["호감도 4부터 나오는 대사"],"7":["호감도 7부터"]},"lvLines":["${T('enhance')} 시 대사 2개"],"dupLines":["${T('limit')} 시 대사 1개"],"touch":{"head":["머리 터치 반응 2개"],"body":["몸 터치 시 당황하거나 놀리는 반응 2개"]},"files":[{"dup":1,"text":"${T('limit')} 1단계에 공개되는 비밀 설정"},{"dup":3,"text":"3단계 비밀 설정, 메인 플롯과 연결"}],"weapon":{"name":"${T('weapon')} 이름","desc":"한 줄","prompt":"NovelAI 영어 태그, no humans, object focus로 시작해 simple background, white background로 끝"},"naiPrompt":"..."}`;}
+function aiErrText(e){ const base=AIERR[e&&e.code]||'AI 호출에 실패했어요.'; const m=String((e&&e.message)||'').trim(); return m?base+' (서버: '+m.slice(0,160)+')':base; }
 const AIERR={el_nokey:'설정의 소리에서 ElevenLabs 키를 넣어 주세요.',fish_nokey:'설정의 소리에서 Fish Audio 키를 넣어 주세요.',no_ai:'설정의 글 AI에서 AI를 먼저 등록해 주세요.',model_not_found:'모델 이름이나 리전을 확인해 주세요.',sa_bad:'서비스 계정 JSON을 확인해 주세요. 파일 내용 전체를 붙여넣어야 해요.',bad_key:'키가 올바르지 않거나 권한이 없어요. 설정의 글 AI에서 확인해 주세요.',network:'인터넷 연결을 확인해 주세요.',low_credit:'API 크레딧이 부족해요. Claude Console에서 충전해 주세요.',not_granted:'AI 사용 권한이 꺼져 있어요. 앱의 권한 메뉴에서 켤 수 있어요.',rate_limited:'요청이 많아요. 잠시 후 다시 시도해 주세요.',refused:'AI가 이 요청은 쓰지 않았어요. 수위나 내용을 바꿔 다시 시도해 주세요.',invalid_json:'AI 응답을 읽지 못했어요. 다시 시도해 주세요.',cancelled:'취소했어요.'};
 async function aiJSON(prompt,btn,tier){
   if(!SAMPLE){toast('설정의 글 AI에서 AI를 먼저 등록해 주세요');return null;}
   const label=btn?btn.textContent:''; if(btn){btn.disabled=true;btn.textContent='AI가 쓰는 중…';}
   try{ return await SAMPLE.json(prompt,{modelTier:tier||'default',cache:false}); }
-  catch(e){ toast(AIERR[e&&e.code]||('AI 호출에 실패했어요. '+((e&&e.message)||'다시 시도해 주세요.'))); return null; }
+  catch(e){ toast(aiErrText(e)); return null; }
   finally{ if(btn&&btn.isConnected){btn.disabled=false;btn.textContent=label;} }
 }
 const nl=s=>String(s||'').replace(/\\n/g,'\n');
@@ -4743,6 +4795,11 @@ document.addEventListener('click',async e=>{
   case 'cxnote': { const k=t.dataset.k, v=prompt('메모로 덧붙일 내용'); if(!v||!v.trim()) break; const N=cxNotes(); (N[k]=N[k]||[]).push({text:v.trim(),at:'메모'}); mark('world'); openCx(k); break; }
   case 'cxdisc': { if(!SAMPLE){toast('설정의 글 AI에서 AI를 먼저 등록해 주세요');break;} t.disabled=true; const o0=t.textContent; t.textContent='쓰는 중… 1분쯤 걸려요'; const n=await cxDiscover(t); t.disabled=false; t.textContent=o0; if(n){ render(); toast(`새 기록 ${n}개를 실었어요`); } break; }
   case 'cxdeep': { const k=t.dataset.k; t.disabled=true; t.textContent='기록을 찾는 중…'; const ok=await cxDeepen(k,t); if(ok){ openCx(k); toast('새 기록을 덧붙였어요'); } else { t.disabled=false; t.textContent='✦ 더 알아보기'; } break; }
+  case 'a2hs': openA2HS(); break;
+  case 'pxopen': openProxySet(); break;
+  case 'pxsave': { const v=$('#px_url').value.trim(); if(v&&!/^https:\/\//.test(v)){ toast('https:// 로 시작하는 주소를 넣어 주세요'); break; } localStorage.setItem('ggm-proxy',v); PXHOSTS.clear(); closeModal(); render(); toast(v?'중계 서버를 저장했어요':'중계 서버를 껐어요'); break; }
+  case 'pxtest': { const v=$('#px_url').value.trim(); if(!v){toast('주소를 넣어 주세요');break;} t.disabled=true; try{ const r=await fetch(v.replace(/\/+$/,'')+'/?u='+encodeURIComponent('https://raw.githubusercontent.com/'+RELEASE_REPO+'/main/version.json')); toast(r.ok?'중계 서버가 잘 동작해요':'중계 서버 응답: '+r.status); }catch(e){ toast('중계 서버에 연결하지 못했어요'); } t.disabled=false; break; }
+  case 'appre': { readAp(); const x=OAI_PRESETS[+t.dataset.i]; if(!x) break; APD.base=x[1]; if(x[2]&&!APD.model) APD.model=x[2]; if(!APD.name||APD.name===AITYPE.openai||OAI_PRESETS.some(y=>y[0]===APD.name)) APD.name=x[0]; if($('.sw-card')) renderSetup(); else openAp(); break; }
   case 'csframe': { const p2=P(); p2.csFull=!p2.csFull; mark('prog'); const a2=$('.cs-art'); if(a2) a2.classList.toggle('up',!p2.csFull); t.textContent=p2.csFull?'상반신':'전신'; break; }
   case 'artgo': { const k=ART_ASK; ART_ASK=null; closeModal(); if(k) artRun(k); break; }
   case 'artalways': { const sv=naiSaved(); sv.autoArt='auto'; localStorage.setItem(NKEY,JSON.stringify(sv)); const k=ART_ASK; ART_ASK=null; closeModal(); if(k) artRun(k); toast('앞으로는 자동으로 그려요. 설정 → 그림 AI에서 바꿀 수 있어요'); break; }
@@ -4755,7 +4812,7 @@ document.addEventListener('click',async e=>{
       catch(err){ toast(naiErr(err,'시험 그리기 실패')); if(r0) r0.textContent=''; t.disabled=false; } break; }
   case 'swtestai': { swRead(); const pr=swProfile(), r0=$('#sw_res'); if(!apValid(pr)){toast('키를 넣어 주세요');break;} t.disabled=true; if(r0) r0.textContent='확인 중…';
       try{ const r=await aiOne(Object.assign(pr,{id:'tmp'}),'연결 테스트다. {"ok":true}를 그대로 출력하라.','quick'); SW.ok.ai=!!(r&&r.ok); if(r0) r0.textContent=SW.ok.ai?'✓ 연결됨':'응답은 왔지만 형식이 달라요'; }
-      catch(err){ if(r0) r0.textContent='✗ '+(AIERR[err&&err.code]||((err&&err.message)||'연결 실패')); } finally{ t.disabled=false; } break; }
+      catch(err){ if(r0) r0.textContent='✗ '+aiErrText(err); } finally{ t.disabled=false; } break; }
   case 'swtestnai': { swRead(); const r0=$('#sw_res'); if(!SW.nai){toast('토큰을 넣어 주세요');break;} t.disabled=true; if(r0) r0.textContent='확인 중…';
       try{ const r=await http(naiBase(naiCfg())+'/user/subscription',{headers:NAI_HDR(SW.nai),timeout:20000}); const j=okJSON(r); SW.ok.nai=true; if(r0) r0.textContent=`✓ 연결됨 · ${['Paper','Tablet','Scroll','Opus'][j.tier]||'구독'}`; }
       catch(err){ if(r0) r0.textContent='✗ '+naiErr(err,'연결 실패'); } finally{ t.disabled=false; } break; }
@@ -5223,7 +5280,8 @@ setupAI(); render(); loadAudio().then(()=>sceneBgm());
   if(window.__LIVE__){ o.boots=0; saveLV(o); }
   if(o.failed){ o.failed=false; if(o.build) o.badBuild=o.build; saveLV(o); setTimeout(()=>toast('새 버전이 실행되지 않아 설치 버전으로 돌아왔어요'),1500); }
   if(o.superseded){ delete o.superseded; saveLV(o); }
-  if(o.auto!==false&&Date.now()-(o.checked||0)>3*3600e3) setTimeout(()=>checkUpdate(false),5000);
+  if(IS_NATIVE&&o.auto!==false&&Date.now()-(o.checked||0)>3*3600e3) setTimeout(()=>checkUpdate(false),5000);
+  if(!IS_NATIVE){ try{ navigator.storage&&navigator.storage.persist&&navigator.storage.persist(); }catch(e){} if(IS_IOS&&!IS_STANDALONE&&!localStorage.getItem('ggm-a2hs')){ let n=0; const tryA=()=>{ if(localStorage.getItem('ggm-a2hs')) return; if($('#modal').hidden&&$('#ov').hidden) openA2HS(true); else if(n++<400) setTimeout(tryA,3000); }; setTimeout(tryA,2500); } }
 })();
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&!$('#ov').querySelector('.title')&&P().seenOpening) setTimeout(()=>liveTick(false),800); });
 if('serviceWorker' in navigator && location.protocol==='https:' && !window.Capacitor) navigator.serviceWorker.register('sw.js').catch(()=>{});

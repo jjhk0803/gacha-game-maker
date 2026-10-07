@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.10.08.15'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.10.08.18'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   try{
@@ -1380,7 +1380,8 @@ async function http(url,{method='GET',headers={},body,binary=false,form=false,ti
     return {status:r.status,bytes,text,headers:hd};
   }
   const pc=PCS(); let tgt=null; try{ tgt=new URL(url); }catch(e){}
-  if(pc&&tgt&&tgt.origin!==pc.base&&(!IS_NATIVE||isLocalHost(tgt.hostname))&&!url.startsWith(pc.base)){
+  const direct=tgt&&/(^|\.)(github\.com|githubusercontent\.com|github\.io)$/i.test(tgt.hostname); // GitHub는 브라우저에서 바로 돼요(PC를 거치지 않기)
+  if(pc&&tgt&&!direct&&tgt.origin!==pc.base&&(!IS_NATIVE||isLocalHost(tgt.hostname))&&!url.startsWith(pc.base)){
     return http(pc.base+'/api/proxy?u='+encodeURIComponent(url),{method,headers:Object.assign({},headers,{'X-GGM-Key':pc.key}),body,binary,form,timeout});
   }
   const h={...headers}; delete h.Origin; delete h.Referer;
@@ -2596,6 +2597,8 @@ let G; try{const r=localStorage.getItem(LKEY);G=fix(r?JSON.parse(r):defaults());
 let DB=null,BASE=null,SAMPLE=null,ASSETS=null;
 const dirty=new Set(); let flushT=null;
 function mark(...k){k.forEach(x=>dirty.add(x));clearTimeout(flushT);flushT=setTimeout(flush,700);}
+function flushNow(){ if(!dirty.size) return; clearTimeout(flushT); try{ flush(); }catch(e){} }
+addEventListener('pagehide',flushNow); document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') flushNow(); },true);
 function markAll(){mark('meta','world','prog','opening',...G.chars.map(c=>'c:'+c.id),...G.chapters.map(c=>'ch:'+c.id),...G.lib.map(l=>'l:'+l.id),...G.threads.map(t=>'t:'+t.id));}
 async function flush(){
   if(window.__NOFLUSH) return;
@@ -4862,7 +4865,13 @@ async function syPush(force){
     const byHash={}; Object.entries(bin).forEach(([k,h])=>{ byHash[h]=byHash[h]||k; });
     const br=o.branch||'main'; let head=R.head, baseTree=R.treeSha, committing=null, done=0, nextAt=0;
     const pace=async()=>{ const now=Date.now(), t=Math.max(now,nextAt); nextAt=t+850; if(t>now) await wait(t-now); };
-    const commitPart=async(part,msg)=>{ const tree=await gh(o,'/git/trees',{method:'POST',body:{base_tree:baseTree,tree:part}}); const cm=await gh(o,'/git/commits',{method:'POST',body:{message:msg,tree:tree.sha,parents:[head]}}); await gh(o,'/git/refs/heads/'+br,{method:'PATCH',body:{sha:cm.sha}}); head=cm.sha; baseTree=tree.sha; };
+    const commitPart=async(part,msg)=>{ for(let k=0;k<5;k++){
+        const tree=await gh(o,'/git/trees',{method:'POST',body:{base_tree:baseTree,tree:part}}); const cm=await gh(o,'/git/commits',{method:'POST',body:{message:msg,tree:tree.sha,parents:[head]}});
+        const r=await gh(o,'/git/refs/heads/'+br,{method:'PATCH',body:{sha:cm.sha},okStatus:[409,422]});
+        if(!(r&&r.message&&/fast.?forward|conflict|reference/i.test(r.message))){ head=cm.sha; baseTree=tree.sha; return; }
+        // 그 사이에 저장소가 바뀌었어요(예: 다른 기기 표시 파일) → 최신 위에 다시 얹기
+        const ref=await gh(o,'/git/ref/heads/'+br); head=ref.object.sha; baseTree=(await gh(o,'/git/commits/'+head)).tree.sha; await wait(400+k*600); }
+      throw {message:'저장소가 계속 바뀌고 있어요. 다른 기기에서 동시에 올리는 중인지 확인하고 잠시 뒤 다시 시도해 주세요'}; };
     const flushPart=async()=>{ if(committing) return committing; if(!entries.length) return; const part=entries; entries=[]; committing=commitPart(part,`sync 그림 ${done}/${need.length}`).catch(e=>{ entries=part.concat(entries); throw e; }).finally(()=>{ committing=null; }); return committing; };
     let qi=0;
     const worker=async()=>{ while(qi<need.length){ const h=need[qi++]; const b=await idbGet(byHash[h]); if(!b) continue; await pace();

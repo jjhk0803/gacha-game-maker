@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.10.08.22'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.10.08.24'; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   try{
@@ -944,6 +944,7 @@ kbd{display:inline-block;min-width:1.4em;padding:1px 6px;font:600 .75rem/1.4 var
 .ph-tabs button.on{color:var(--ink);border-bottom-color:var(--rose)}
 .fc-tag{font-size:.62rem;font-weight:700;padding:1px 5px;margin-left:4px;background:var(--rose);color:var(--rose-ink);vertical-align:middle}
 .ph-sw{flex:none;height:38px;padding:0 10px}
+
 .lobby .lb-far{position:absolute;inset:-14px;z-index:0;background-size:cover;background-position:center;transform:translate3d(calc(var(--px,0)*-10px),calc(var(--py,0)*-6px),0) scale(1.04);will-change:transform}
 .lobby.layer .lb-stage{background:transparent!important}
 .lobby.layer .lb-stage{transform:translate3d(calc(var(--px,0)*6px),calc(var(--py,0)*3px),0)}
@@ -1280,6 +1281,59 @@ body.desk .lb-season{top:84px}
 .onode.lock{opacity:.55}.onode.lock .dia{font-size:.7rem}
 .onode .dia>*{transform:rotate(-45deg)}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}.op-txt{opacity:1}}
+
+/* ===== 로비 정리 (2026.10.08.24) ===== */
+.lobby{min-height:0}
+.lb-tr{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;align-items:flex-end;gap:5px;z-index:4}
+.lb-tr .lb-pass{position:relative;right:auto;top:auto}
+.lb-tr .lb-season,body.desk .lb-tr .lb-season{position:relative;left:auto;top:auto;transform:none;padding:3px 8px 3px 6px;font-size:.7rem}
+.lb-banner{width:auto;right:132px;max-width:300px}
+.lb-right{top:118px}
+.lb-left{top:84px}
+.lb-bottom{gap:8px}
+.lb-shops{flex-direction:row;width:auto;gap:6px;flex:none}
+.lb-shop{flex-direction:column;justify-content:center;width:62px;height:62px;padding:6px 4px;gap:3px;text-align:center;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%)}
+.lb-shop span{display:block}
+.lb-shop i{display:none}
+.lb-shop b{font-size:.74rem;line-height:1.1;white-space:nowrap}
+.lb-shop svg{width:22px;height:22px}
+.lb-sortie,.lb-sortie[class]{min-height:62px;padding:8px 12px}
+.lb-sortie b{font-size:1.25rem}
+.lb-sortie::before{width:96px;height:96px;top:-22px;border-width:10px}
+.lobby .bubble,.lobby.ill .bubble{margin:0 54px 0 56px;font-size:.84rem;padding:7px 11px}
+.lb-id b{font-size:1.4rem}
+.lb-foot{gap:6px}
+/* 캐릭터는 배너 아래부터 크게, 아래쪽은 UI 뒤로 */
+.lobby.lbsz-fit .lb-stage .lobby-art{top:78px;bottom:auto;height:calc((100% - 78px) * 1.12);left:-6%;width:112%}
+.lobby.lbsz-fit .lb-stage img.lobby-art{object-position:top center}
+.lobby.lbsz-big .lb-stage .lobby-art{top:40px;bottom:auto;height:calc((100% - 40px) * 1.3);left:-15%;width:130%}
+.lobby.lbsz-big .lb-stage img.lobby-art{object-position:top center}
+/* 좁은·낮은 화면 */
+.lobby.narrow .lb-banner{right:118px}
+.lobby.narrow .lb-banner .bf{width:48px}
+.lobby.narrow .lb-pass{padding:5px 9px}
+.lobby.narrow .lb-pass b{font-size:.9rem}
+.lobby.narrow .bubble{margin:0 46px 0 48px}
+.lobby.short .lb-ico{width:44px}
+.lobby.short .lb-ico .ic{width:34px;height:34px}
+.lobby.short .lb-ico .ic svg{width:17px;height:17px}
+.lobby.short .lb-ico b{font-size:.6rem}
+.lobby.short .lb-left,.lobby.short .lb-right{gap:2px}
+.lobby.short .lb-left{top:78px}.lobby.short .lb-right{top:108px}
+.lobby.short .lb-id i{display:none}
+.lobby.short .lb-id b{font-size:1.2rem}
+.lobby.short .lb-id span{font-size:.72rem}
+.lobby.short .lb-shop{width:54px;height:54px}
+.lobby.short .lb-sortie{min-height:54px}
+.lobby.short .lb-sortie b{font-size:1.1rem}
+.lobby.short .lb-sortie span{display:none}
+.lobby.short .bubble{font-size:.8rem;max-height:3.2em;overflow:hidden}
+.top .brand{min-width:0;flex:1 1 auto;margin-right:8px}
+.top .brand>*:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.top .brand i{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:380px){ .brand{font-size:1rem} .brand i{font-size:.54rem;letter-spacing:.18em} }
+/* PC: 캐릭터를 더 크게 */
+body.desk .lobby.lbsz-fit .lb-stage .lobby-art{height:calc((100% - 78px) * 1.22);left:-11%;width:122%}
 </style>
 </head>
 <body>
@@ -1312,7 +1366,7 @@ body.desk .lb-season{top:84px}
 function genderText(){ const g=P().gender; return g==='m'?`플레이어(${T('player')})는 남성이다. 호칭과 반응을 그에 맞춘다. `:g==='f'?`플레이어(${T('player')})는 여성이다. 호칭과 반응을 그에 맞춘다. `:`플레이어(${T('player')})의 성별은 정하지 않는다. 성별이 드러나는 호칭은 피한다. `; }
 function rulesText(){return genderText()+`규칙: 모든 등장인물은 성인이지만 나이는 절대 언급하지 않는다. 학교나 학생 설정은 쓰지 않는다. 서브컬처 수집형 게임의 분위기로, 진지한 전개 사이에 캐릭터 간 개그와 ${T('player')}을(를) 향한 가벼운 플러팅을 섞고 완급을 둔다. 노골적인 성적 묘사는 쓰지 않는다. 모든 글은 한국어로 쓴다. 이 게임의 용어: 플레이어 호칭 "${T('player')}", 유료 재화 "${T('currency')}", 뽑기 "${T('gacha')}", 전투 "${T('ops')}", 아군 "${T('crew')}", 메신저 "${T('talk')}". 속성: ${ELEMS.join(', ')} (${ELEMS.map((e,i)=>e+'은 '+ELEMS[(i+1)%3]+'에 강함').join(', ')}).`;}
 function scriptFmt(){return `대본 형식(한 줄에 하나): "이름: 대사" / 표정을 바꾸려면 "이름[표정]: 대사" (표정은 각 캐릭터의 표정 목록에서 고른다) / 그 외 문장은 나레이션 / [배경: 배경이름]은 배경 전환 / [장소이름]은 장소 자막과 배경 전환 / [소품: 소품이름]은 소품 클로즈업, [소품 끝]으로 닫음 / [효과: 흔들림], [효과: 플래시], [효과: 암전] / [효과음: 이름] / [음악: 음악이름]은 배경음 전환, [음악 끝]은 정지 / [톡: 캐릭터이름]부터 [톡 끝]까지는 휴대폰 메신저 화면으로 대화가 진행되는 장면 / [CG: CG이름]은 일러스트 한 장을 화면 가득 보여 주고, [CG 끝]으로 닫음 / "선택: 보기1 | 보기2"는 플레이어 선택지이고, 이어지는 줄 앞에 "1) "이나 "2) "를 붙이면 그 선택을 했을 때만 나온다. 플레이어 대사는 "${T('player')}: "로 쓰고, 문장 속에서 플레이어 이름은 {관리관}으로 쓴다. 배경, 소품, 음악, 효과음은 가능한 한 기존 목록의 이름을 그대로 쓴다.`;}
-function threadFmt(){return `메신저 형식(한 줄에 하나): "캐릭터이름: 메시지" / "나: 메시지"는 플레이어가 보낸 메시지 / "선택: 답장1 | 답장2"는 플레이어 답장 선택지(고른 답장이 자동 전송됨), 이어지는 줄 앞에 "1) " 같은 번호를 붙이면 그 답장을 골랐을 때만 나온다 / [사진: 소품 또는 배경 이름]은 사진 전송. 실제 메신저처럼 짧은 메시지를 여러 번 나눠 보내고, ㅋㅋ와 이모지를 써도 된다. 세계관과 메인 스토리의 사건, 떡밥을 자연스럽게 언급한다.`;}
+function threadFmt(){return `메신저 형식(한 줄에 하나): "캐릭터이름: 메시지" / "선택: 답장1 | 답장2"는 플레이어 답장 선택지(고른 답장이 전송됨). 플레이어의 말은 반드시 선택지로만 쓰고 "나: 메시지"처럼 플레이어 대사를 직접 쓰지 않는다(플레이어가 멋대로 말하면 안 된다). 선택지 없이 플레이어 반응이 필요하면 선택지 1개짜리로 쓴다, 이어지는 줄 앞에 "1) " 같은 번호를 붙이면 그 답장을 골랐을 때만 나온다 / [사진: 소품 또는 배경 이름]은 사진 전송. 실제 메신저처럼 짧은 메시지를 여러 번 나눠 보내고, ㅋㅋ와 이모지를 써도 된다. 세계관과 메인 스토리의 사건, 떡밥을 자연스럽게 언급한다.`;}
 Object.defineProperty(window,'RULES',{get:rulesText});
 Object.defineProperty(window,'SCRIPT_FMT',{get:scriptFmt});
 Object.defineProperty(window,'THREAD_FMT',{get:threadFmt});
@@ -2893,7 +2947,7 @@ function phMenu(cid){ const c=charById(cid); if(!c) return; const old=$('.ph-men
     <button data-act="phdelall" data-id="${esc(cid)}" class="danger" ${n?'':'disabled'}>대화방 전체 지우기 <small>${n}개</small></button>
     <button data-act="char" data-id="${esc(cid)}">${esc(T('crew'))} 정보</button>
     <button data-act="phmenuclose" class="ph-cancel">닫기</button></div></div>`); }
-function phMode(m){ if(!PH) return; PH.mode=m; const a=$('#phIn'), b=$('#phFree'); if(!a||!b) return; const hasPick=!!a.querySelector('[data-act=phpick]');
+function phMode(m){ if(!PH) return; PH.mode=m; const a=$('#phIn'), b=$('#phFree'); if(!a||!b) return; const hasPick=!!a.querySelector('[data-act=phpick],[data-act=phsay]');
   if(m==='pick'&&hasPick){ a.hidden=false; b.hidden=true; } else { a.hidden=true; b.hidden=false; const sw=b.querySelector('.ph-sw'); if(sw) sw.hidden=!hasPick; } phScroll(); }
 /* ===== 도전: 레이드 · 심연 탐사 ===== */
 const RAID_TICKS=700, RG_FLOORS=12;
@@ -3009,6 +3063,9 @@ function bannerStep(d){ const bs=G.banners.filter(b=>b.active!==false); if(bs.le
   document.addEventListener('pointermove',e=>{ if(e.pointerType==='mouse'&&document.querySelector('.lobby.layer')) set(e.clientX/innerWidth*2-1,e.clientY/innerHeight*2-1); },{passive:true});
   addEventListener('deviceorientation',e=>{ if(e.gamma==null||!document.querySelector('.lobby.layer')) return; set(e.gamma/30,(e.beta-45)/30); },{passive:true});
 })();
+function fitLobby(){ const l=document.querySelector('.lobby'); if(!l) return; const tb=document.querySelector('.tabs'); const top=l.getBoundingClientRect().top+(document.scrollingElement?document.scrollingElement.scrollTop:0);
+  const tabsH=tb?tb.getBoundingClientRect().height:0; const h=Math.max(360,Math.floor(innerHeight-top-tabsH)); l.style.height=h+'px'; l.classList.toggle('short',h<600); l.classList.toggle('narrow',l.clientWidth<370); }
+addEventListener('resize',()=>{ clearTimeout(window.__fitT); window.__fitT=setTimeout(fitLobby,120); });
 /* ===== 신규 픽업 만들기 ===== */
 let NEWPU=false;
 function openNewPickup(){
@@ -3045,6 +3102,7 @@ async function fcSend(){
   if(FCBUSY||!PH||!PH.fc) return; const cid=PH.fc, c=charById(cid), inp=$('#fcIn'); if(!c||!inp) return; const text=inp.value.trim(); if(!text) return;
   if(!SAMPLE){ toast('설정의 글 AI에서 AI를 먼저 등록해 주세요'); return; }
   const f=fcOf(cid), token=PH.token, alive=()=>PH&&PH.token===token&&$('#phChat'); inp.value=''; inp.style.height='';
+  if(PH.tid){ const th=threadById(PH.tid), s0=th&&P().inbox[PH.tid]; if(th&&s0&&!s0.done){ s0.done=true; s0.freed=true; s0.pos=parseScript(th.script).length; s0.at=Date.now(); if(own(c.id)) addAff(c,10); updateBadge(); } PH.tid=null; const pi=$('#phIn'); if(pi) pi.innerHTML=''; phMode('free'); const sw=$('.ph-sw'); if(sw) sw.hidden=true; }
   const me={w:'me',t:text,at:Date.now()}; f.log.push(me); f.at=me.at; if(alive()){ const ch=$('#phChat'); if(ch.children.length===1&&ch.querySelector('.sys')&&roomLog(cid).length===1) ch.innerHTML=''; ch.insertAdjacentHTML('beforeend',bubbleHTML(me,c)); phScroll(); } mark('prog');
   FCBUSY=true; const ty=document.createElement('div'); ty.className='msg'; ty.innerHTML=`<div class="av sm">${art(c)}</div><div class="bub typing"><i></i><i></i><i></i></div>`; if(alive()){ $('#phChat').appendChild(ty); phScroll(); }
   try{
@@ -3064,9 +3122,9 @@ ${f.sum?'예전 대화 요약: '+f.sum:''}
 최근 대화:
 ${recent}
 
-규칙: 실제 메신저처럼 짧은 말풍선 1~3개로 답한다. 지문, 괄호 속 행동 묘사, 이름표 없이 대사만 쓴다. ${c.name}의 말투와 성격을 지킨다. 플레이어가 아직 보지 못한 메인 플롯의 비밀이나 반전은 말하지 않고 모르는 척하거나 얼버무린다. 대화가 부적절한 방향으로 가면 캐릭터답게 화제를 돌린다. 가끔 먼저 질문을 던지거나 최근 사건을 언급해도 좋다.
+규칙: 실제 메신저처럼 짧은 말풍선 1~3개로 답한다. 너는 ${c.name}의 말만 쓴다. ${playerName()}의 대사, 생각, 행동을 절대 대신 쓰지 않는다. 지문, 괄호 속 행동 묘사, 이름표 없이 대사만 쓴다. ${c.name}의 말투와 성격을 지킨다. 플레이어가 아직 보지 못한 메인 플롯의 비밀이나 반전은 말하지 않고 모르는 척하거나 얼버무린다. 대화가 부적절한 방향으로 가면 캐릭터답게 화제를 돌린다. 가끔 먼저 질문을 던지거나 최근 사건을 언급해도 좋다.
 JSON만 출력: {"replies":["말풍선1","말풍선2"],"aff":0~2 정수(대화가 즐겁거나 의미 있었으면 1~2)}`,null,'default');
-    ty.remove(); const reps=(r&&Array.isArray(r.replies)?r.replies:r&&r.reply?[r.reply]:[]).map(x=>String(x||'').trim()).filter(Boolean).slice(0,4);
+    ty.remove(); const pn=playerName(), reps=(r&&Array.isArray(r.replies)?r.replies:r&&r.reply?[r.reply]:[]).map(x=>String(x||'').trim()).map(x=>x.replace(new RegExp('^'+c.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\s*[:：]\\s*'),'')).filter(x=>x&&!new RegExp('^(나|'+pn.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'|'+T('player')+')\\s*[:：]').test(x)).slice(0,4);
     if(!reps.length){ if(r) toast('답장을 받지 못했어요. 다시 보내 주세요'); return; }
     for(let i=0;i<reps.length;i++){
       if(i){ const t2=document.createElement('div'); t2.className='msg'; t2.innerHTML=ty.innerHTML; if(alive()){ $('#phChat').appendChild(t2); phScroll(); } await wait(Math.min(1600,400+reps[i].length*30)); t2.remove(); }
@@ -3097,7 +3155,7 @@ async function phPlay(t,c,s,token){
     if(L.type==='choice'){ $('#phIn').innerHTML=L.opts.map((o,i)=>`<button type="button" class="btn ghost block" data-act="phpick" data-tid="${esc(t.id)}" data-n="${i+1}">${esc(sub(o))}</button>`).join('')+`<button class="linkb ph-sw2" data-act="phmode" data-v="free">⌨ 직접 입력으로 전환</button>`; phMode('pick'); return; }
     let entry=null;
     if(L.type==='say'){
-      if(isMe(L.who)){ await wait(400); entry={w:'me',t:sub(L.text)}; }
+      if(isMe(L.who)){ $('#phIn').innerHTML=`<button type="button" class="btn ghost block" data-act="phsay" data-tid="${esc(t.id)}">▶ ${esc(sub(L.text))}</button><button class="linkb ph-sw2" data-act="phmode" data-v="free">⌨ 직접 입력으로 전환</button>`; phMode('pick'); return; }
       else{
         const ty=document.createElement('div'); ty.className='msg'; ty.innerHTML=`<div class="av sm">${art(c)}</div><div class="bub typing"><i></i><i></i><i></i></div>`;
         $('#phChat').appendChild(ty); phScroll();
@@ -3122,7 +3180,7 @@ async function phPlay(t,c,s,token){
    ========================================================= */
 let tab='lobby';
 const PHONE_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg>';
-function render(){
+function render(){ setTimeout(()=>{ try{ fitLobby(); }catch(e){} },0);
   if(tab==='lobby'&&typeof mailTick==='function') mailTick();
   if(tab==='lobby'&&typeof cashTick==='function') cashTick();
   $('#gems').textContent=nf(P().gems); try{ $('#ic_gold').innerHTML=rIco('gold'); $('#ic_gems').innerHTML=rIco('gems'); }catch(e){} $('#gold').textContent=nf(P().gold); dm();
@@ -3163,8 +3221,8 @@ function lobbyHTML(){
       ${ill?`<img class="lobby-ill" src="${esc(ill)}" alt="${esc(c.name)}" draggable="false">`:pose?`<img class="art lobby-art lobby-pose" src="${esc(pose)}" alt="${esc(c.name)}" draggable="false">`:has?art(c,'lobby-art'):''}<div class="lb-shade"></div>
     </div>
     <div class="lb-ui">
-      ${seasonChip()}${bn?`<button class="lb-banner" data-act="go" data-to="contract" data-swipe="banner"><span class="bgl" style="${bn.bg?bgStyle(bn.bg):bgStyle(p.gachaBg||'낙성 분화구')}"></span><span class="bt"><i>${TYPE[bn.type]||'RECRUIT'}</i><b>${esc(bn.name)}</b><span>${bup?esc(bup.name)+' 확률 업':esc(T('gacha'))}</span></span><span class="bf">${bup?art(bup):''}</span></button>`:''}
-      <button class="lb-pass" data-act="go" data-to="pass"><i>SEASON PASS</i><b>Lv.${passLv()}</b>${passClaimable()?'<em></em>':''}</button>
+      ${bn?`<button class="lb-banner" data-act="go" data-to="contract" data-swipe="banner"><span class="bgl" style="${bn.bg?bgStyle(bn.bg):bgStyle(p.gachaBg||'낙성 분화구')}"></span><span class="bt"><i>${TYPE[bn.type]||'RECRUIT'}</i><b>${esc(bn.name)}</b><span>${bup?esc(bup.name)+' 확률 업':esc(T('gacha'))}</span></span><span class="bf">${bup?art(bup):''}</span></button>`:''}
+      <div class="lb-tr"><button class="lb-pass" data-act="go" data-to="pass"><i>SEASON PASS</i><b>Lv.${passLv()}</b>${passClaimable()?'<em></em>':''}</button>${seasonChip()}</div>
       <div class="lb-left">
         ${ico('phone','','talk',T('talk'),unread()||'')}
         ${evs.length?ico('go','event','event',T('event'),evs.length):''}
@@ -4649,18 +4707,18 @@ function cxEntries(){
 }
 function cxSeenSet(){ const p=P(); if(!p.cxSeen||typeof p.cxSeen!=='object') p.cxSeen={}; return p.cxSeen; }
 let CXMEMO=null;
-function cxNewFast(){ const p=P(), sig=[Object.keys(p.cleared).length,Object.keys(p.owned).length,cxStore().length,G.lib.length,G.chapters.length,Object.keys(cxSeenSet()).length].join('|'); if(CXMEMO&&CXMEMO.sig===sig) return CXMEMO.n; const n=cxNew(); CXMEMO={sig,n}; return n; }
+function cxNewFast(){ const p=P(), sig=[Object.keys(p.cleared).length,Object.keys(p.owned).length,cxStore().length,G.lib.length,G.chapters.length,Object.keys(cxSeenSet()).length,Object.keys(p.cxBadge||{}).length].join('|'); if(CXMEMO&&CXMEMO.sig===sig) return CXMEMO.n; cxNew(); const s=cxSeenSet(), bd=p.cxBadge||{}; const n=cxEntries().filter(e=>e.open&&!s[e.key]&&!bd[e.key]).length; CXMEMO={sig,n}; return n; }
 function cxNew(list){ const p=P(); if(!p.cxSeen||typeof p.cxSeen!=='object'){ p.cxSeen={}; (list||cxEntries()).forEach(e=>{ if(e.open&&!e.stored) p.cxSeen[e.key]=1; }); mark('prog'); } const s=cxSeenSet(); return (list||cxEntries()).filter(e=>e.open&&!s[e.key]).length; }
 function cxCard(e){ const isNew=e.open&&!cxSeenSet()[e.key];
   const pic=e.open?(e.char?art(e.char,'cx-ch'):e.img?`<img src="${esc(e.img)}" alt="" class="${e.contain?'ct':''}" loading="lazy">`:`<span class="cx-glyph">${esc((e.title||'?').slice(0,1))}</span>`):'<span class="cx-glyph">?</span>';
   const snip=e.open?String(e.body||(e.notes[0]&&e.notes[0].text)||'아직 기록이 없어요').replace(/\n+/g,' ').slice(0,70):cxLockText(e.unlock);
   return `<button class="cx-card ${e.open?'':'lock'} c-${esc(e.cat)}" data-act="cxview" data-k="${esc(e.key)}"><span class="cx-pic">${pic}</span><span class="cx-tx"><i>${esc(CX_LABEL[e.cat]||'')}</i><b>${e.open?esc(e.title):'???'}</b><span>${esc(snip)}</span></span>${isNew?'<em>NEW</em>':''}</button>`; }
 function codexHTML(){
-  const all=cxEntries(), cat=CXCAT, list=all.filter(e=>cat==='all'||e.cat===cat), un=all.filter(e=>e.open).length; cxNew(all);
+  const all=cxEntries(), cat=CXCAT, list=all.filter(e=>cat==='all'||e.cat===cat), un=all.filter(e=>e.open).length; cxNew(all); { const p=P(), s=cxSeenSet(); p.cxBadge=p.cxBadge||{}; let ch=false; all.forEach(e=>{ if(e.open&&!s[e.key]&&!p.cxBadge[e.key]){ p.cxBadge[e.key]=1; ch=true; } }); if(ch){ CXMEMO=null; mark('prog'); } }
   const cnt=k=>k==='all'?all.length:all.filter(e=>e.cat===k).length;
   return `${pageHead('도감','LORE BOOK','lobby')}
   <div class="cx-head"><div class="cx-meter"><b>${un}</b><span>/ ${all.length} 기록 해금</span></div><div class="cx-bar"><i style="width:${all.length?un/all.length*100:0}%"></i></div>
-    <div class="cx-acts">${SAMPLE?`<button class="btn sm" data-act="cxdisc">✦ AI로 로어북 채우기</button>`:''}<button class="btn sm ghost" data-act="cxadd">＋ 직접 쓰기</button></div></div>
+    <div class="cx-acts">${SAMPLE?`<button class="btn sm" data-act="cxdisc">✦ AI로 로어북 채우기</button>`:''}<button class="btn sm ghost" data-act="cxadd">＋ 직접 쓰기</button>${all.some(e=>e.open&&!cxSeenSet()[e.key])?'<button class="btn sm ghost" data-act="cxreadall">NEW 모두 지우기</button>':''}</div></div>
   <div class="cx-cats">${CX_CATS.filter(([k])=>cnt(k)).map(([k,l])=>`<button class="${k===cat?'on':''}" data-act="cxcat" data-v="${k}">${l}<em>${cnt(k)}</em></button>`).join('')}</div>
   ${!cxStore().length&&SAMPLE?`<div class="panel cx-hint"><b>세계를 더 깊게</b><p class="muted" style="margin:4px 0 0">AI가 세계관과 메인 플롯을 바탕으로 장소, 용어, 역사, 숨은 인물 같은 기록을 써요. 비밀이 담긴 기록은 해당 스테이지를 깨야 열려요.</p></div>`:''}
   <div class="cx-list">${list.map(cxCard).join('')||'<p class="muted">항목이 없어요</p>'}</div>`;
@@ -4668,7 +4726,7 @@ function codexHTML(){
 function openCx(key){
   const e=cxEntries().find(x=>x.key===key); if(!e) return;
   if(!e.open){ toast(cxLockText(e.unlock)||'아직 잠겨 있어요'); return; }
-  cxSeenSet()[key]=1; mark('prog');
+  cxSeenSet()[key]=1; CXMEMO=null; mark('prog'); document.querySelectorAll('.cx-card[data-k]').forEach(el=>{ if(el.dataset.k===key){ const em=el.querySelector('em'); if(em) em.remove(); } });
   const para=t=>String(t||'').split(/\n{2,}/).map(x=>`<p>${esc(x).replace(/\n/g,'<br>')}</p>`).join('');
   openModal(`<div class="cx-view c-${esc(e.cat)}">
     ${e.img||e.char?`<div class="cx-hero">${e.char?art(e.char,'cx-ch'):`<img src="${esc(e.img)}" alt="" class="${e.contain?'ct':''}">`}</div>`:''}
@@ -5665,6 +5723,7 @@ document.addEventListener('click',async e=>{
   case 'rgrelic': { const run=RG().run; if(!run) break; run.relics.push(t.dataset.v); run.pick=null; run.msg=RELICS[t.dataset.v][0]+'을(를) 얻었어요'; mark('prog'); render(); break; }
   case 'rgquit': { if(!confirm('탐사를 끝낼까요? 지금까지 간 층만큼 보상을 받아요.')) break; const html=rgFinish(false); openModal(`<div class="result" style="position:static">${html.replace('data-act="bdone"','data-act="close"')}</div>`); render(); break; }
   case 'pcopen': openPcSet(); break;
+  case 'cxreadall': { const s=cxSeenSet(); cxEntries().forEach(e=>{ if(e.open) s[e.key]=1; }); CXMEMO=null; mark('prog'); render(); break; }
   case 'webupdcheck': checkWebUpdate(true); break;
   case 'webupdgo': applyWebUpdate(t); break;
   case 'webupdskip': { const o=LV(); if(WEBUPD) o.webSkip=WEBUPD.build; saveLV(o); closeModal(); toast('다음 버전이 나오면 다시 알려 드릴게요'); break; }
@@ -5747,6 +5806,8 @@ document.addEventListener('click',async e=>{
   case 'phdelall': { const c=charById(id); if(!c) break; if(!confirm(`${c.name}와(과)의 대화방을 모두 지울까요?\n(이야기로 받은 대화도 기록만 지워지고, 호감도는 그대로예요)`)) break;
       roomThreads(id).forEach(({s})=>{ s.log.length=0; }); delete FC()[id]; mark('prog'); openRoom(id); toast('대화방을 비웠어요'); break; }
   case 'phmode': phMode(t.dataset.v); break;
+  case 'phsay': { if(!PH) break; const tid=t.dataset.tid||PH.tid, th=threadById(tid), s=th&&p.inbox[tid]; if(!th||!s) break; const c=threadChar(th), L=parseScript(th.script)[s.pos]; if(!L||L.type!=='say'||!isMe(L.who)) { openRoom(c.id); break; }
+      const en={w:'me',t:sub(L.text),at:Date.now()}; s.pos++; s.log.push(en); s.at=en.at; PH.tid=tid; $('#phIn').innerHTML=''; phMode('free'); $('#phChat').insertAdjacentHTML('beforeend',bubbleHTML(en,c)); phScroll(); mark('prog'); phPlay(th,c,s,PH.token); break; }
   case 'phnew': phNewList(); break;
   case 'char': openChar(id); break;
   case 'cspoke': { const c=charById(id); if(!c) break; const o=own(c.id), lv=o?affLv(o):1, x=e.clientX||innerWidth/2, y=e.clientY||innerHeight/2, r=t.getBoundingClientRect(), zone=(y-r.top)/r.height<0.3?'head':'body';

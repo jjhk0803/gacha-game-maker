@@ -1,0 +1,31 @@
+{
+  "build": "2026.10.16.2",
+  "source": "/workspace/scratch/b8cb97c2a73d/maker-integration/www/index.html",
+  "viewport": "390x844",
+  "checks": [
+    "detail training panel contains no explanation paragraphs",
+    "detail raw stat explanation removed",
+    "common enhancement keeps requested explanation and places resources immediately above bottom buttons",
+    "common enhancement still spends and raises rank",
+    "mastery uses the same bottom resource layout"
+  ],
+  "layout": {
+    "hasComparison": true,
+    "hasInvincibleExplanation": false,
+    "keptExplanation": "세 스킬의 공통 레벨이 함께 올라갑니다. 스킬 편집·AI 재생성 후에도 투자한 레벨과 전문화는 해당 슬롯에 유지됩니다.",
+    "costImmediatelyBeforeButtons": true,
+    "comparisonBeforeCost": true,
+    "resources": [
+      "스킬 교본",
+      "크레딧"
+    ],
+    "confirmIsLast": true
+  },
+  "mastery": {
+    "explanation": "선택한 스킬만 전문화합니다. 스킬 편집·AI 재생성 후에도 투자한 레벨과 전문화는 해당 슬롯에 유지됩니다.",
+    "beforeButtons": true
+  },
+  "runtimeErrors": [],
+  "passed": true,
+  "androidDeviceTested": false
+}

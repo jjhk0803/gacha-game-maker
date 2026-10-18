@@ -1,0 +1,407 @@
+[
+  {
+    "generation": 1,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 1,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 23.80000000000007,
+      "survival": 0,
+      "damage": 8647,
+      "damageProgress": 0.9003540191586838,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 1,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 7,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 23.46000000000007,
+      "survival": 0,
+      "damage": 8434,
+      "damageProgress": 0.8781757600999583,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 1,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 23,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 19.210000000000026,
+      "survival": 0,
+      "damage": 7941,
+      "damageProgress": 0.8268429820907955,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 2,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 1,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 19.040000000000024,
+      "survival": 0,
+      "damage": 8949,
+      "damageProgress": 0.9317992503123699,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 2,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 7,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 25.160000000000085,
+      "survival": 0,
+      "damage": 8506,
+      "damageProgress": 0.8856726364014994,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 2,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 23,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 17.68000000000001,
+      "survival": 0,
+      "damage": 7036,
+      "damageProgress": 0.7326114119117034,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 3,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 1,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 18.870000000000022,
+      "survival": 0,
+      "damage": 10546,
+      "damageProgress": 1,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 3,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 7,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 22.440000000000058,
+      "survival": 0,
+      "damage": 8116,
+      "damageProgress": 0.8450645564348188,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 3,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 23,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 23.80000000000007,
+      "survival": 0,
+      "damage": 9334,
+      "damageProgress": 0.9718867138692212,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 4,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 1,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 19.040000000000024,
+      "survival": 0,
+      "damage": 10488,
+      "damageProgress": 1,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 4,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 7,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 25.50000000000009,
+      "survival": 0,
+      "damage": 8508,
+      "damageProgress": 0.8858808829654311,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 4,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 23,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 17.340000000000007,
+      "survival": 0,
+      "damage": 8736,
+      "damageProgress": 0.9096209912536443,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 5,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 1,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": true,
+      "time": 25.160000000000085,
+      "survival": 0.43474014945652173,
+      "damage": 14948,
+      "damageProgress": 1,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 5,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 7,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 14.109999999999996,
+      "survival": 0,
+      "damage": 6253,
+      "damageProgress": 0.6510828821324448,
+      "timeout": false
+    }
+  },
+  {
+    "generation": 5,
+    "level": 15,
+    "enemyLevel": 17,
+    "allyElements": [
+      "홍",
+      "청",
+      "녹"
+    ],
+    "enemyElements": [
+      "청",
+      "녹",
+      "홍"
+    ],
+    "options": {
+      "seed": 23,
+      "maxTime": 35
+    },
+    "expected": {
+      "win": false,
+      "time": 23.80000000000007,
+      "survival": 0,
+      "damage": 5820,
+      "damageProgress": 0.6059975010412328,
+      "timeout": false
+    }
+  }
+]

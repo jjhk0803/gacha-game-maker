@@ -1,0 +1,45 @@
+{
+  "upstreamCommit": "0cf37d029fb5ebb810531a67f0c3c0f088461e6e",
+  "upstreamRelease": "2026.10.16.2",
+  "localFeatureSnapshot": "2026.10.18.3",
+  "upstreamAddedOrModifiedNonemptyLines": 425,
+  "exactlyPreserved": 423,
+  "adaptedLines": [
+    "플레이 모드 제작 버튼 제한 + 스킬 편집 제한 결합",
+    "새 게임 AI 프롬프트 중복 제거 + 스킬 교본 용어 결합"
+  ],
+  "touchFunctionsUnchanged": {
+    "touchFace": true,
+    "faceSwap": true,
+    "petTick": true,
+    "charReact": true
+  },
+  "personalTestChannelEnabled": false,
+  "testsPassed": 209,
+  "browserReports": {
+    "combat": {
+      "checks": 56,
+      "passed": true
+    },
+    "impact": {
+      "checks": 8,
+      "passed": true
+    },
+    "growth": {
+      "checks": 6,
+      "passed": true
+    },
+    "layout": {
+      "checks": 5,
+      "passed": true
+    }
+  },
+  "browserChecks": 75,
+  "htmlSha256": "b3e2cf7b39f6faab1fa9159dade183124f7d68d1d4caf003963be0eed29f1a8c",
+  "testCommand": "npm test",
+  "androidDeviceTested": false,
+  "externalAIProviderTested": false,
+  "liveGitHubPublishingTested": false,
+  "upstreamVersionMetadataPreserved": true,
+  "prSubmission": "pending GitHub account connection"
+}

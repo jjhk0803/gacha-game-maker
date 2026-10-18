@@ -1,0 +1,15 @@
+{
+  "build": "2026.10.16.2",
+  "source": "/workspace/scratch/b8cb97c2a73d/maker-integration/www/index.html",
+  "checks": [
+    "level preview and actual deduction triple together",
+    "breakthrough costs 15 cores at first step",
+    "equipment unlock preview and spending require 60 books and 6000 credits",
+    "skill rank requires 30 books and 3000 credits",
+    "affinity gain, farm rewards and stamina recovery stay unchanged; cap becomes 240",
+    "current progress and remaining inventory survive page reload without repeated migration"
+  ],
+  "passed": true,
+  "runtimeErrors": [],
+  "androidDeviceTested": false
+}

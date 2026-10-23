@@ -4262,7 +4262,7 @@ function create(env=root){
  const cache=new Map(),baseline=new Map(),pending=new Map();let db=null,tail=Promise.resolve(),error=null,revision=0;
  const ls=env.localStorage,fs=env.Capacitor?.Plugins?.Filesystem;
  function report(e){error=e;env.dispatchEvent?.(new env.CustomEvent('ggm-storage-error',{detail:{message:String(e.message||e)}}));}
- function tx(stores,mode,fn){return new Promise((resolve,reject)=>{const t=db.transaction(stores,mode,mode==='readwrite'?{durability:'strict'}:{});let result;try{result=fn(t);}catch(e){t.abort();reject(e);return;}t.oncomplete=()=>resolve(result);t.onerror=t.onabort=()=>reject(t.error||Error('저장 작업이 취소되었습니다'));});}
+ function tx(stores,mode,fn){return new Promise((resolve,reject)=>{let t;try{t=db.transaction(stores,mode,mode==='readwrite'?{durability:'strict'}:{});}catch(eOpen){db=null;reject(eOpen);return;}let result;try{result=fn(t);}catch(e){t.abort();reject(e);return;}t.oncomplete=()=>resolve(result);t.onerror=t.onabort=()=>reject(t.error||Error('저장 작업이 취소되었습니다'));});}
  const getDisk=k=>new Promise((res,rej)=>{const q=db.transaction('records').objectStore('records').get(k);q.onsuccess=()=>res(q.result??null);q.onerror=()=>rej(q.error);});
  function conflict(){const e=Error('다른 메이커 화면에서 저장한 최신 기록이 있습니다. 이 화면의 변경 내용을 백업한 뒤 다른 화면을 닫고 다시 실행해 주세요. 최신 기록은 덮어쓰지 않았습니다.');e.code='storage_conflict';return e;}
  // Compare and write inside ONE transaction. A check made before opening it has a race window.
@@ -4285,7 +4285,7 @@ function create(env=root){
  function setItem(k,v){v=String(v);if(db&&managed(k)){cache.set(k,v);pending.set(k,{value:v,rev:++revision});queue();}else{try{ls.setItem(k,v);}catch(e){report(e);throw e;}}}
  function getItem(k){return db&&managed(k)?cache.get(k)??null:ls.getItem(k);}
  function removeItem(k){if(db&&managed(k)){cache.delete(k);pending.set(k,{value:null,rev:++revision});queue();}else ls.removeItem(k);}
- async function drain(){if(pending.size)queue();await tail;if(error&&!pending.size&&error.code!=='storage_conflict')error=null;if(error)throw error;}
+ async function drain(){if(pending.size)queue();await tail;if(error&&!pending.size&&error.code!=='storage_conflict')error=null;if(error&&/closing/i.test(String(error.message||''))){try{if(db)db.close();}catch(_){ }db=null;if(pending.size)queue();await tail;if(error&&!pending.size&&error.code!=='storage_conflict')error=null;}if(error)throw error;}
  async function readLive(k){if(fs&&env.__STORAGE_SHELL__){try{return (await fs.readFile({path:'updates/'+k+'.html',directory:'DATA',encoding:'utf8'})).data;}catch(e){if(/not.*exist|ENOENT|not.*found/i.test(String(e.message||e)))return null;throw e;}}
   return db?await getDisk(k):ls.getItem(k);}
  async function writeLive(k,v){if(fs&&env.__STORAGE_SHELL__){const path='updates/'+k+'-'+Date.now()+'.tmp';await fs.writeFile({path,data:v,directory:'DATA',encoding:'utf8',recursive:true});const r=await fs.readFile({path,directory:'DATA',encoding:'utf8'});if(r.data!==v)throw Error('업데이트 파일 확인에 실패했습니다');await fs.rename({from:path,to:'updates/'+k+'.html',directory:'DATA',toDirectory:'DATA'});}
@@ -6371,6 +6371,9 @@ function replaceAll(ng){
 /* 이미지 */
 const imgCache={};
 const IMGNS=PJ().active==='main'?'':PJ().active+'::';
+/* Cloudflare 터널(trycloudflare.com) 접속 시 이미지를 브라우저에 저장하지 않고 서버에서 직접 표시해요.
+   터널 주소는 서버를 켤 때마다 바뀌어서, 매번 이미지를 전부 내려받으면 브라우저 저장 공간이 계속 쌓여요. */
+const isTunnel=()=>/trycloudflare\.com$/i.test(location.hostname);
 async function idbGetNS(k){ let b=null; try{b=await idbGet(IMGNS+k);}catch(e){} if(!b&&IMGNS){ try{b=await idbGet(k);}catch(e){} } return b; }
 function idbOpen(){return appStorage.open();}
 async function idbPut(k,v){await appStorage.mediaWrite(k,v,LKEY);try{const ix=JSON.parse(appStorage.getItem('ggm-sync-idx')||'{}');if(ix[k]){delete ix[k];appStorage.setItem('ggm-sync-idx',JSON.stringify(ix));}}catch(e){}}
@@ -6390,7 +6393,25 @@ function imgSrc(o){
  if(o&&typeof G!=='undefined'&&G){const owner=(G.chars||[]).find(c=>c===o||(c.skins||[]).includes(o));if(owner){if(o!==owner)return skinPreviewSrc(owner,o);if(owner.useStanding===false)return owner.upper&&imgSrcRaw(owner.upper)||null;}}
  return imgSrcRaw(o);
 }
-function imgSrcRaw(o){ if(o&&!o.img&&o.alias&&typeof G!=='undefined'&&G&&G.lib){ const t=G.lib.find(x=>x.id===o.alias); return t&&t!==o&&!t.alias?imgSrc(t):null; } if(!o||!o.img) return null; if(o.img.asset) return null; if(o.img.idb) return imgCache[o.id]||null; return null; }
+function imgSrcRaw(o){
+ if(o&&!o.img&&o.alias&&typeof G!=='undefined'&&G&&G.lib){ const t=G.lib.find(x=>x.id===o.alias); return t&&t!==o&&!t.alias?imgSrc(t):null; }
+ if(!o||!o.img) return null; if(o.img.asset) return null;
+ if(o.img.idb){
+   const cached=imgCache[o.id]; if(cached) return cached;
+   if(isTunnel()){
+     try{
+       const pc=PCS(); if(pc){
+         const key=(typeof IMGNS!=='undefined'?IMGNS:'')+o.id;
+         let bin=null; try{ bin=JSON.parse(localStorage.getItem('__server_bin')||'{}'); }catch(e2){}
+         const h=bin&&(bin[key]||bin[o.id]);
+         if(h) return pc.base+'/api/store/blob/'+h+'?k='+pc.key;
+       }
+     }catch(e){}
+   }
+   return null;
+ }
+ return null;
+}
 const SKP={upper:'상반신',illust:'일러스트',lbcg:'돌파 CG'};
 let NOSKIN=0; // 계약(가챠) 화면·연출은 스킨 없이 기본 모습으로
 const noSkin=f=>function(){ NOSKIN++; try{ return f.apply(this,arguments); }finally{ NOSKIN--; } };
@@ -10183,13 +10204,14 @@ async function pcPull(src){
  if(PCJOB||!PCS())return false;PCJOB=true;PULLERR='';PULLERR_QUOTA=false;
  const prefix='sync-pc-'+uid()+'::',source=G,project=PJ().active,previous=window.__NOFLUSH;let committed=false;
  try{syBar('PC에서 받는 중…');await flush();const S=src&&src.state||await pcApi('/api/store/state',{ok404:true});if(!S)throw Error('PC에 아직 저장된 게임이 없어요');
-  const idx=await syncStageMedia(S,async(k,h)=>{let error;for(let t=0;t<3;t++){try{const r=await pcApi('/api/store/blob/'+h,{binary:true,timeout:60000});if(r?.bytes)return r.bytes;throw Error('빈 자료 응답');}catch(e){error=e;if(e?.code==='bad_key')throw e;if(t<2)await wait(1500*(t+1));}}throw error;},prefix);
+  if(isTunnel()){ try{ localStorage.setItem('__server_bin',JSON.stringify(S.bin||{})); }catch(eT){} }
+  const idx=isTunnel()?syIdx():await syncStageMedia(S,async(k,h)=>{let error;for(let t=0;t<3;t++){try{const r=await pcApi('/api/store/blob/'+h,{binary:true,timeout:60000});if(r?.bytes)return r.bytes;throw Error('빈 자료 응답');}catch(e){error=e;if(e?.code==='bad_key')throw e;if(t<2)await wait(1500*(t+1));}}throw error;},prefix);
   if(G!==source||PJ().active!==project)throw Error('작업 중 게임이 바뀌어 받기를 취소했습니다');await flush();window.__NOFLUSH=true;clearTimeout(flushT);
   const w=await lsApply(S.ls,null,prefix);committed=true;dirty.clear();saveSyIdx(idx);
   const o=PCS();o.last=src&&src.restore?src.cur||Date.now():S.at;o.localAt=src&&src.restore?0:w.at;if(src&&src.restore)o.restored=1;setPCS(o);
   toast('PC의 게임을 받았어요. 다시 시작할게요');setTimeout(()=>reloadGame(),800);return true;
  }catch(e){PULLERR_QUOTA=e?.name==='QuotaExceededError';PULLERR='PC에서 받기 실패. '+syErr(e);toast(PULLERR);if(committed){setTimeout(()=>reloadGame(),800);return true;}return false;}
- finally{if(!committed)window.__NOFLUSH=previous;await appStorage.discard(prefix).catch(()=>{});PCJOB=false;syBar('');}
+ finally{if(!committed)window.__NOFLUSH=previous;if(!(isTunnel()&&committed))await appStorage.discard(prefix).catch(()=>{});PCJOB=false;syBar('');}
 }
 async function pcStart(){
   const pc=PCS(); if(!pc) return; if(window.__BOOTSYNC){ setTimeout(pcStart,1500); return; }

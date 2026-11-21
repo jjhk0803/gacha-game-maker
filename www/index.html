@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.11.20.19'; var REQUIRED_APK='2026.11.13.3'; window.__REQUIRED_APK__=REQUIRED_APK; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.11.20.27'; var REQUIRED_APK='2026.11.13.3'; window.__REQUIRED_APK__=REQUIRED_APK; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   if(window.indexedDB){window.__STORAGE_SHELL__=BUILT;return;}
@@ -14586,15 +14586,56 @@ body.play [data-act='v2edit'].retired-repair {
   width: 0;
   height: 0;
 }
+/* 2026.11.20.20: centred above the card, rising from just outside its top edge. */
 [data-fx-canvas] .v3-motif b.v4-effect-glyph {
-  left: 18px;
-  top: -30px;
+  left: 0;
+  top: var(--glyph-top, -40px);
   font-size: 11px;
   min-width: 16px;
-  opacity: 0.9;
+  transform: translate(-50%, -100%);
+  animation: v6-glyph-rise 0.9s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+@keyframes v6-glyph-rise {
+  0% {
+    transform: translate(-50%, -40%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -220%);
+    opacity: 0;
+  }
 }
 .scut > .v6-fx-canvas {
   z-index: 20;
+}
+/* 2026.11.20.27 신규 대원 합류 준비 안내(실루엣 카드) */
+.pending-debut {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+.pending-debut-sil {
+  flex: 0 0 48px;
+  height: 64px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff8;
+  background: linear-gradient(180deg, #ffffff22, #00000055);
+  border: 1px dashed #ffffff55;
+}
+.pending-debut p {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
 }
 .weekly-raid .wr-badges,
 .weekly-raid .wr-rule {
@@ -18190,8 +18231,23 @@ var appConfirm =
       base: 0.2,
       charge: '보통',
       text: '상시 효과·평타 강화 같은 패시브가 엔진입니다. 패시브 비중 35% 이상으로 둡니다.'
+    },
+    // 2026.11.20.26: 명일방주 스킬의 44%가 "N초 동안 평타가 바뀌는 모드". 비중이 아니라 구조로 판정한다.
+    mode: {
+      label: '강화 모드형',
+      base: 0.15,
+      charge: '보통',
+      text: '궁극기를 쓰면 8~15초 동안 자신의 평타가 강화·변형됩니다(궁극기에 basic 효과: value·hits·duration, spread "적 전체"·"무작위 여러 명" 또는 repeat 2~5연타, 필요하면 자기 공격력·공격 속도 증가). 액티브·패시브는 모드 중 평타와 시너지를 냅니다.'
     }
   };
+  // 궁극기가 자신의 평타를 일정 시간 강화·변형하면 강화 모드형이다.
+  function isModeKit(kit) {
+    return (kit?.ultimate?.effects || []).some(
+      e =>
+        (e.type === 'basic' && (e.duration || 0) >= 6) ||
+        (['atk_up', 'spd_up'].includes(e.type) && e.target === 'self' && (e.duration || 0) >= 8)
+    );
+  }
   const SHAPE_HINTS = {
     burst: /필살|결전|일격|한 방|한방|폭발|섬멸|궁극|최후|단죄/,
     sustained: /연사|난타|연속|속사|난무|연격|쉼 없|끊임없/,
@@ -18220,7 +18276,8 @@ var appConfirm =
     return {
       id: c?.id,
       name: c?.name,
-      shape: classifyShape(shares),
+      shape: isModeKit(c?.skills) ? 'mode' : classifyShape(shares),
+      cadence: classifyCadence(c?.skills?.passive),
       shares,
       charge: c?.skills?.ultimate?.charge || '보통',
       ...kitSignature(c?.skills)
@@ -18253,6 +18310,190 @@ var appConfirm =
         break;
       }
     return { shape, forced: false, weights };
+  }
+  // ===== 2026.11.20.26 패시브 발동 유형(타 게임 데이터 기반)과 키트 씨앗 주머니 =====
+  // 범위는 4개 게임 패시브 2,724칸 정리 결과(docs/research): 주기 4~10초, N번째 3~6타, 확률 15~35%,
+  // 내부 쿨다운 3~10초, 중첩 상한 3~6. 매 타격 무제한 발동은 실제 게임에도 거의 없다.
+  const PASSIVE_CADENCES = {
+    aura: { label: '상시 오라', copies: 3, text: 'trigger always. 상시 능력치·오라 효과.' },
+    interval: { label: '주기', copies: 3, text: 'trigger interval, triggerEvery 4~10초.' },
+    nth_hit: { label: 'N번째 타격', copies: 3, text: 'trigger after_basic 또는 attack_hit, triggerEvery 3~6.' },
+    chance: { label: '확률', copies: 2, text: 'trigger attack_hit, triggerEvery 1, 효과 chance 15~35%.' },
+    icd: {
+      label: '내부 쿨다운',
+      copies: 2,
+      text: 'trigger attack_hit 또는 after_basic, triggerEvery 1, cooldown 3~10초.'
+    },
+    stack: {
+      label: '누적',
+      copies: 2,
+      text: '타격마다 자신에게 표식(mark, target self) 1중첩, maxStacks 3~6. 다른 효과가 basis "자신의 표식 중첩 수"로 비례하거나 detonate(from 자신)로 소모.'
+    },
+    kill: { label: '처치 시', copies: 2, text: 'trigger kill. 쌓이는 강화는 maxStacks 3~5.' },
+    battle_start: { label: '전투 시작 1회', copies: 2, text: 'trigger battle_start.' },
+    on_hit: { label: '피격 시', copies: 2, text: 'trigger on_hit 또는 ally_hit, cooldown 3~8초.' },
+    after_skill: { label: '스킬 연계', copies: 2, text: 'trigger after_active·after_ultimate·ally_ultimate.' },
+    hp_cond: {
+      label: '위기 각성',
+      copies: 1,
+      text: 'trigger hp_below 또는 lethal, 전투당 1회(limit 1) 또는 cooldown 20초 이상.'
+    },
+    mark_reach: {
+      label: '표식 중첩 도달',
+      copies: 1,
+      text: 'trigger mark_threshold. 다른 스킬이 쌓는 표식이 threshold에 도달하면 발동.'
+    },
+    heal_event: {
+      label: '회복·보호막 사건',
+      copies: 1,
+      roles: ['heal', 'support', 'guard'],
+      text: 'trigger heal_given·heal_received·shield_break, cooldown 2~8초.'
+    },
+    critical: { label: '치명타 시', copies: 1, roles: ['damage'], text: 'trigger critical, cooldown 1.5초 이상.' }
+  };
+  const EVENT_TRIGGERS = new Set(['after_basic', 'attack_hit']);
+  function classifyCadence(s) {
+    if (!s) return null;
+    const t = s.trigger,
+      fixed = {
+        always: 'aura',
+        battle_start: 'battle_start',
+        interval: 'interval',
+        kill: 'kill',
+        on_hit: 'on_hit',
+        ally_hit: 'on_hit',
+        after_active: 'after_skill',
+        after_ultimate: 'after_skill',
+        ally_ultimate: 'after_skill',
+        action_start: 'after_skill',
+        action_end: 'after_skill',
+        hp_below: 'hp_cond',
+        lethal: 'hp_cond',
+        mark_threshold: 'mark_reach',
+        heal_given: 'heal_event',
+        heal_received: 'heal_event',
+        shield_break: 'heal_event',
+        status_expired: 'heal_event',
+        critical: 'critical'
+      }[t];
+    if (fixed) return fixed;
+    if (!EVENT_TRIGGERS.has(t)) return null;
+    if ((s.triggerEvery || 1) >= 2) return 'nth_hit';
+    if ((s.effects || []).some(e => Number.isFinite(e.chance) && e.chance < 100)) return 'chance';
+    if ((s.cooldown || 0) >= 2) return 'icd';
+    if ((s.effects || []).some(e => e.type === 'mark' && e.target === 'self')) return 'stack';
+    return 'ungated';
+  }
+  // 매 타격 무제한 발동 패시브를 효과 종류에 맞는 유형으로 바꾼다. 반환: 보정 문장 목록.
+  function enforceCadence(s) {
+    const notes = [],
+      kind = classifyCadence(s);
+    if (kind === 'ungated') {
+      const types = (s.effects || []).map(e => e.type),
+        offensive = types.some(t =>
+          [
+            'damage',
+            'multi',
+            'extra',
+            'pierce',
+            'fixed',
+            'true_damage',
+            'dot',
+            'debuff',
+            'atk_down',
+            'def_down'
+          ].includes(t)
+        );
+      if (types.includes('sp')) {
+        s.triggerEvery = 4;
+        notes.push('패시브 발동: 매 타격 → 4번째 타격마다(SP는 N번째 타격형)');
+      } else if (offensive) {
+        for (const e of s.effects) if (!Number.isFinite(e.chance) || e.chance >= 100) e.chance = 25;
+        notes.push('패시브 발동: 매 타격 → 확률 25%(확률형)');
+      } else if (types.some(t => ['heal', 'heal_percent', 'shield', 'regen'].includes(t))) {
+        s.cooldown = Math.max(s.cooldown || 0, 5);
+        notes.push('패시브 발동: 매 타격 → 내부 쿨다운 5초');
+      } else {
+        s.cooldown = Math.max(s.cooldown || 0, 6);
+        notes.push('패시브 발동: 매 타격 → 내부 쿨다운 6초');
+      }
+    } else if (kind === 'interval' && (s.triggerEvery || 0) < 3) {
+      s.triggerEvery = 4;
+      s.cooldown = Math.max(s.cooldown || 0, 4);
+      notes.push('패시브 발동: 주기 3초 미만 → 4초');
+    }
+    return notes;
+  }
+  // 키트 씨앗: 유형 × 패시브 발동 유형 × 대표 매커니즘. 각 카드를 여러 장 넣은 주머니에서 뽑는다.
+  // 같은 씨앗이 다시 나올 수 있지만(여러 장) 한쪽으로 쏠리지 않는다. 기본형(none)은 약 1/3.
+  const SEED_COPIES = {
+    shape: { balanced: 4, burst: 2, sustained: 2, passive: 2, mode: 2 },
+    mechanismNone: 14,
+    mechanism: 2
+  };
+  const ROLE_DESIGN = { atk: ['damage', 'delivery'], def: ['guard', 'damage'], sup: ['support', 'heal', 'control'] };
+  function freshSeedBag(generation = 1) {
+    const shapes = [],
+      cadences = [],
+      mechanisms = [];
+    for (const [k, n] of Object.entries(SEED_COPIES.shape)) for (let i = 0; i < n; i++) shapes.push(k);
+    for (const [k, v] of Object.entries(PASSIVE_CADENCES)) for (let i = 0; i < v.copies; i++) cadences.push(k);
+    for (let i = 0; i < SEED_COPIES.mechanismNone; i++) mechanisms.push('none');
+    for (const m of REFERENCE_MECHANISMS) for (let i = 0; i < SEED_COPIES.mechanism; i++) mechanisms.push(m.id);
+    return { version: 1, generation, shapes, cadences, mechanisms };
+  }
+  // 주머니에서 직군에 맞는 카드를 하나씩 뽑는다(빈 주머니는 다시 채운다). bag을 직접 바꾼다.
+  function drawSeed(bag, { role = 'atk', random = Math.random } = {}) {
+    const fits = ROLE_DESIGN[role] || ROLE_DESIGN.atk,
+      fill = key => {
+        if (!bag[key]?.length) bag[key] = freshSeedBag(bag.generation)[key];
+      },
+      take = (key, ok = () => true) => {
+        fill(key);
+        let pool = bag[key].map((v, i) => [v, i]).filter(([v]) => ok(v));
+        if (!pool.length) {
+          bag[key] = freshSeedBag(bag.generation)[key];
+          pool = bag[key].map((v, i) => [v, i]).filter(([v]) => ok(v));
+        }
+        const [value, index] = pool[Math.floor(random() * pool.length)] || [bag[key][0], 0];
+        bag[key].splice(index, 1);
+        return value;
+      };
+    return {
+      shape: take('shapes'),
+      cadence: take(
+        'cadences',
+        k => !PASSIVE_CADENCES[k].roles || PASSIVE_CADENCES[k].roles.some(r => fits.includes(r))
+      ),
+      mechanism: take(
+        'mechanisms',
+        id => id === 'none' || REFERENCE_MECHANISMS.find(m => m.id === id)?.roles.some(r => fits.includes(r))
+      )
+    };
+  }
+  function seedDirective(seed) {
+    if (!seed) return '';
+    const shape = KIT_SHAPES[seed.shape] || KIT_SHAPES.balanced,
+      cadence = PASSIVE_CADENCES[seed.cadence],
+      mech = REFERENCE_MECHANISMS.find(m => m.id === seed.mechanism);
+    return (
+      `이 캐릭터의 키트 씨앗(앱이 정한 설계 축, 반드시 반영): 키트 유형 「${shape.label}」 — ${shape.text} ` +
+      (cadence ? `패시브 발동 「${cadence.label}」 — ${cadence.text} ` : '') +
+      (mech ? `대표 매커니즘 — ${mech.text} ` : '대표 매커니즘은 따로 없음(기본형: 단순하고 직관적인 효과 위주). ') +
+      '컨셉·이름·외형 설정이 이 씨앗을 자연스럽게 설명하도록 짜세요. 보정할 때도 씨앗은 바꾸지 말고 수치·지속·빈도만 조정하세요.'
+    );
+  }
+  // 생성 결과가 씨앗을 지켰는지(유형은 실측·구조, 패시브 발동은 분류, 매커니즘은 서명으로 확인).
+  function seedCheck(seed, kit) {
+    if (!seed || !kit) return [];
+    const out = [];
+    if (seed.shape === 'mode' && !isModeKit(kit)) out.push('mode');
+    const cadence = classifyCadence(kit.passive);
+    if (seed.cadence && cadence && cadence !== seed.cadence && !(seed.cadence === 'stack' && cadence === 'icd'))
+      out.push('cadence');
+    if (seed.mechanism && seed.mechanism !== 'none' && !kitSignature(kit).mechanisms.includes(seed.mechanism))
+      out.push('mechanism');
+    return out;
   }
   function shapeDirective(shape) {
     const s = KIT_SHAPES[shape] || KIT_SHAPES.balanced;
@@ -18295,13 +18536,20 @@ var appConfirm =
       shapes = Object.fromEntries(
         Object.keys(KIT_SHAPES).map(k => [KIT_SHAPES[k].label, known.filter(p => p.shape === k).length])
       );
-    return { measured: known.length, shapes };
+    // 2026.11.20.26 분포 기록: 패시브 발동 유형·대표 매커니즘 개수(측정 여부와 무관).
+    const count = list => list.reduce((m, k) => (k ? { ...m, [k]: (m[k] || 0) + 1 } : m), {});
+    return {
+      measured: known.length,
+      shapes,
+      cadences: count(profiles.map(p => p?.cadence)),
+      mechanisms: count(profiles.flatMap(p => p?.mechanisms || []))
+    };
   }
 
   // 상세 정보탭 '스킬 컨셉' 요약: 유형·궁극기 충전·핵심 플레이·연계 매커니즘.
   function kitConceptSummary(kit, shares) {
     if (!kit) return null;
-    const shape = classifyShape(shares),
+    const shape = isModeKit(kit) ? 'mode' : classifyShape(shares),
       sig = kitSignature(kit),
       label = id => (REFERENCE_MECHANISMS.find(m => m.id === id)?.text || '').split(':')[0].trim(),
       mechanisms = sig.mechanisms.map(label).filter(Boolean),
@@ -18314,7 +18562,49 @@ var appConfirm =
       mechanisms
     };
   }
+  // 2026.11.20.25 의미 있는 최소 효과량(1세대 기준, 피해·보호 수치는 세대 배율 적용).
+  // 반환: [{field, min}] — 해당 필드가 이 값 아래면 '있으나마나한 효과'로 본다. 연결용 효과(표식 등)는 없음.
+  const FLOOR_SCALED = new Set(['damage', 'extra', 'pierce', 'fixed', 'detonate', 'execute', 'shield', 'dot', 'regen']);
+  const FLOOR_HITS = new Set(['multi', 'scatter', 'chain']);
+  const FLOOR_STAT = new Set([
+    'atk_up',
+    'def_up',
+    'spd_up',
+    'atk_down',
+    'def_down',
+    'spd_down',
+    'vulnerable',
+    'buff',
+    'debuff'
+  ]);
+  function effectFloor(e = {}, scale = 1, trigger = '') {
+    const out = [],
+      atkBasis = !e.studio || !e.basis || e.basis === '시전자 공격력';
+    if ((FLOOR_SCALED.has(e.type) || FLOOR_HITS.has(e.type)) && e.studio && atkBasis) {
+      const base = FLOOR_HITS.has(e.type) ? 15 : e.type === 'shield' ? 30 : ['dot', 'regen'].includes(e.type) ? 8 : 40;
+      out.push({ field: 'value', min: Math.round(base * scale * 100) / 100 });
+    }
+    if (e.type === 'true_damage') out.push({ field: 'value', min: Math.round(0.4 * scale * 100) / 100 });
+    if (FLOOR_STAT.has(e.type)) out.push({ field: 'value', min: 8 });
+    if (e.type === 'crit_up') out.push({ field: 'value', min: 5 });
+    if (e.type === 'sp') out.push({ field: 'value', min: 5 });
+    if (e.type === 'heal_percent') out.push({ field: 'value', min: 3 });
+    if ((FLOOR_STAT.has(e.type) || e.type === 'crit_up') && !['always', 'battle_start'].includes(trigger))
+      out.push({ field: 'duration', min: 3 });
+    if (['stun', 'silence'].includes(e.type) && e.studio) out.push({ field: 'duration', min: 0.8 });
+    if (Number.isFinite(e.chance) && e.chance < 100) out.push({ field: 'chance', min: 10 });
+    return out;
+  }
   root.GGMSkillDesign = {
+    effectFloor,
+    PASSIVE_CADENCES,
+    classifyCadence,
+    enforceCadence,
+    freshSeedBag,
+    drawSeed,
+    seedDirective,
+    seedCheck,
+    isModeKit,
     VERSION: 1,
     ROLES,
     PRINCIPLES,
@@ -18683,18 +18973,29 @@ var appConfirm =
     });
   }
   // 2026.11.20.12 키트 유형 판정용: 역할 지표 기준 세 슬롯의 실제 기여 비중(합 1). 측정값이 없으면 null.
+  // 2026.11.20.22: 슬롯 비중은 캐릭터 직군 지표 하나가 아니라 각 슬롯이 맡은 역할의 지표로 잰다.
+  // 예: 탱커의 피해 액티브는 생존 시간이 아니라 피해량에서 차지한 몫으로 계산한다.
   function slotShares(type, slotReports) {
-    const key =
-        {
+    const keyOf = t =>
+        ({
           damage: 'personalDamage',
+          delivery: 'personalDamage',
           support: 'partyDamage',
           heal: 'healing',
           guard: 'healthySeconds',
           control: 'controlSeconds',
           cleanse: 'cleansedSeconds'
-        }[type] || 'personalDamage',
-      values = Object.fromEntries(
-        (slotReports || []).map(r => [r.slot, Math.max(0, Number(r.contribution?.[key]) || 0)])
+        })[t] || 'personalDamage',
+      reports = slotReports || [],
+      totals = {};
+    for (const r of reports)
+      for (const [k, v] of Object.entries(r.contribution || {}))
+        totals[k] = (totals[k] || 0) + Math.max(0, Number(v) || 0);
+    const values = Object.fromEntries(
+        reports.map(r => {
+          const k = keyOf(r.specialty || type);
+          return [r.slot, totals[k] > 0 ? Math.max(0, Number(r.contribution?.[k]) || 0) / totals[k] : 0];
+        })
       ),
       total = Object.values(values).reduce((n, v) => n + v, 0);
     if (!(total > 0)) return null;
@@ -19148,8 +19449,11 @@ var appConfirm =
       }
     };
   }
-  function axes(C, skill, slot) {
-    const out = [];
+  // 2026.11.20.25: 보정이 효과를 의미 있는 최소값 아래로 깎지 않는다(남은 조정은 다른 축이 맡는다).
+  function axes(C, skill, slot, scale = 1) {
+    const out = [],
+      floorOf = (e, field) =>
+        (C.Design.effectFloor?.(e, scale, skill.trigger) || []).find(f => f.field === field)?.min || 0;
     for (const [index, e] of skill.effects.entries()) {
       if (
         !['mark', 'cleanse', 'dispel', 'stun', 'silence', 'taunt', 'frost_mark', 'immune'].includes(e.type) &&
@@ -19161,7 +19465,7 @@ var appConfirm =
           index,
           field: 'value',
           label: C.SLOTS[slot] + ' 효과 ' + (index + 1) + ' 효과량',
-          min: spec[2],
+          min: Math.min(spec[3], Math.max(spec[2], floorOf(e, 'value'))),
           max: spec[3]
         });
       }
@@ -19180,7 +19484,7 @@ var appConfirm =
           index,
           field: e.type === 'frost_mark' ? 'turns' : 'duration',
           label: C.SLOTS[slot] + ' 제어·보호 시간',
-          min: 0.1,
+          min: Math.min(2, Math.max(0.1, floorOf(e, 'duration'))),
           max: 2
         });
     }
@@ -19343,7 +19647,7 @@ var appConfirm =
       for (const k of slots) {
         if (best.report.status === 'within' || evaluations >= 21) break;
         if (best.report.designFailures?.length && !best.report.designFailures.some(x => x.slot === k)) continue;
-        for (const a of axes(C, best.kit[k], k).filter(
+        for (const a of axes(C, best.kit[k], k, C.Policy.SCALES[C.generation(character) - 1] || 1).filter(
           a => !options.preserveMechanics || ['value', 'baseHeal'].includes(a.field)
         )) {
           if (best.report.status === 'within' || evaluations >= 21) break;
@@ -19423,6 +19727,7 @@ var appConfirm =
     kind,
     specialty,
     family,
+    slotShares,
     benchmarkKit,
     benchmarkSkill,
     referenceKit,
@@ -21555,14 +21860,17 @@ function trainingChanges(input, before, after, slot) {
   );
 }
 const EQUIPMENT_POLICY = {
-  version: 3,
+  // 4: 2026.11.20.22 옵션이 바꾸는 효과의 역할로 시험(이전 결과는 다시 검사 필요로 표시)
+  // 5: 2026.11.20.25 목표 중앙(5.5%)·장비 전체는 직군별 공통 스탯 기여 + 옵션 범위·재사용 대기 상한 30%·효과 없는 연계 제외
+  version: 5,
   min: 1.03,
   max: 1.08,
   hardMax: 1.1,
   total: [1.18, 1.25],
-  aim: 1.035,
+  aim: 1.055,
   limitedMin: 1.01,
   potencyMax: 50,
+  cooldownMax: 30,
   legacyPotency: 30,
   preferredPotency: [20, 40],
   growth: [0, 0.4, 0.55, 0.7, 0.85, 1]
@@ -21632,6 +21940,8 @@ function equipmentSafeOption(p) {
   if (!p) return p;
   if (['potency', 'wounded'].includes(p.modifier) && p.value > EQUIPMENT_POLICY.potencyMax)
     return { ...p, value: (p.version || 1) < 3 ? EQUIPMENT_POLICY.legacyPotency : EQUIPMENT_POLICY.potencyMax };
+  if (p.modifier === 'cooldown' && p.value > EQUIPMENT_POLICY.cooldownMax)
+    return { ...p, value: EQUIPMENT_POLICY.cooldownMax };
   return p;
 }
 function equipmentMigrate(c) {
@@ -21677,12 +21987,19 @@ function equipmentPolicyNote() {
     range = v => v.map(percent).join('~');
   return `최대 5단계 장비를 기준으로 같은 편성·난수에서 미장착 / 공통 스탯만 / 고유 효과 포함을 비교합니다. 고유 효과 목표 ${range([p.min, p.max])}%, 안전 상한 ${percent(p.hardMax)}%, 총상승 참고 목표 ${range(p.total)}%입니다.`;
 }
-function equipmentReport(ratio, totalRatio, lock = false, limited = false) {
+// 장비 전체 목표는 직군마다 다른 공통 스탯 기여(statRatio)에 고유 효과 범위를 더한 값이다.
+// statRatio를 모르면(이전 호출) 고정 범위 EQUIPMENT_POLICY.total을 쓴다.
+function equipmentTotalBand(statRatio) {
+  const p = EQUIPMENT_POLICY;
+  return Number.isFinite(statRatio) && statRatio > 0 ? [statRatio * p.min, statRatio * p.max] : p.total;
+}
+function equipmentReport(ratio, totalRatio, lock = false, limited = false, statRatio = null) {
   const p = EQUIPMENT_POLICY,
+    band = equipmentTotalBand(statRatio),
     status =
       !Number.isFinite(ratio) || !Number.isFinite(totalRatio)
         ? 'inconclusive'
-        : lock || ratio > p.max + 1e-8 || totalRatio > p.total[1] + 1e-8
+        : lock || ratio > p.max + 1e-8 || totalRatio > band[1] + 1e-8
           ? 'strong'
           : ratio < p.min - 1e-8 && !(limited && ratio >= p.limitedMin)
             ? 'weak'
@@ -21690,14 +22007,23 @@ function equipmentReport(ratio, totalRatio, lock = false, limited = false) {
   return {
     status,
     limitedContribution: status === 'within' && ratio < p.min - 1e-8,
-    totalStatus: totalRatio > p.total[1] + 1e-8 ? 'strong' : totalRatio < p.total[0] - 1e-8 ? 'below-target' : 'within',
+    totalStatus: totalRatio > band[1] + 1e-8 ? 'strong' : totalRatio < band[0] - 1e-8 ? 'below-target' : 'within',
+    totalTarget: band.map(v => Math.round(v * 10000) / 10000),
     unsafe: lock || ratio > p.hardMax + 1e-8,
     target: equipmentTarget(),
     draftOnly: status !== 'within'
   };
 }
 const EQUIPMENT_MODS = {
-  cooldown: { label: '연계 스킬 재사용 대기 감소', min: 1, max: 50, step: 1, unit: '%', value: 20 },
+  // 재사용 대기 감소는 비선형으로 커진다(제어 +69%·힐러 +55% @50%). 상한 30%.
+  cooldown: {
+    label: '연계 스킬 재사용 대기 감소',
+    min: 1,
+    max: EQUIPMENT_POLICY.cooldownMax,
+    step: 1,
+    unit: '%',
+    value: 20
+  },
   trigger_count: { label: '발동에 필요한 공격·피격 횟수 감소', min: 1, max: 3, step: 1, unit: '회', value: 1 },
   mark_stacks: { label: '표식 추가 중첩', min: 1, max: 3, step: 1, unit: '중첩', value: 1 },
   hits: { label: '연속 공격 타수 추가', min: 1, max: 3, step: 1, unit: '회', value: 1 },
@@ -21976,6 +22302,14 @@ function equipmentEffect(u, e, slot, index, t) {
     out.value = e.value * (1 + value / 100);
   return out;
 }
+function equipmentTestTypes(kit, bound, fallback) {
+  const s = kit[bound.sourceSlot],
+    affected = ['cooldown', 'trigger_count'].includes(bound.modifier)
+      ? s?.effects || []
+      : [s?.effects?.[bound.effectIndex]].filter(Boolean),
+    types = [...new Set(affected.map(e => (Assessment.kind(e) === 'delivery' ? 'damage' : Assessment.kind(e))))];
+  return types.length ? types : [fallback];
+}
 function* inspectEquipment(character, option, options = {}) {
   const c = clone(character),
     errors = equipmentValidate(c, option);
@@ -21983,24 +22317,27 @@ function* inspectEquipment(character, option, options = {}) {
   const bound = equipmentBind(c, option),
     kit = normalize(c.skills || defaults(c)),
     gen = generation(c),
-    type = Assessment.family(api, { ...c, skills: kit }),
+    family = Assessment.family(api, { ...c, skills: kit }),
+    // 2026.11.20.22: 장비 옵션은 캐릭터 직군이 아니라 옵션이 실제로 바꾸는 효과의 역할로 시험한다.
+    // 스킬 단위 옵션(재사용 대기·발동 횟수)은 그 스킬의 모든 효과, 효과 단위 옵션은 그 효과 하나.
+    // 역할이 여럿이면(도발+피해 등) 역할마다 측정해 가장 크게 바뀐 역할로 판정한다.
+    types = equipmentTestTypes(kit, bound, family),
     levels = options.levels || [1, 70, 120],
     seeds = options.seeds || [1, 2, 3],
     gearLevel = Math.round(clamp(options.gearLevel ?? 5, 0, 5, 5)),
     cache = options.baselineCache;
-  const used = {
-      damage: [0, 1],
-      support: [0, 1, 2],
-      heal: [2, 3, 4],
-      guard: [2, 3, 4],
-      control: [2, 3, 4],
-      cleanse: [4]
-    }[type] || [0, 1],
+  const usedFor = t =>
+      ({
+        damage: [0, 1],
+        support: [0, 1, 2],
+        heal: [2, 3, 4],
+        guard: [2, 3, 4],
+        control: [2, 3, 4],
+        cleanse: [4]
+      })[t] || [0, 1],
+    sums = Object.fromEntries(types.map(t => [t, { equipped: 0, base: 0, bare: 0 }])),
     rows = [];
-  let equipped = 0,
-    base = 0,
-    bare = 0,
-    n = 0,
+  let n = 0,
     lock = false;
   for (const lv of levels)
     for (let scenario = 0; scenario < 5; scenario++)
@@ -22048,7 +22385,7 @@ function* inspectEquipment(character, option, options = {}) {
           b1 = stored?.base || fight(true, false);
         if (!stored) cache?.set(key, { neutral, bare: b0, base: b1 });
         const result = fight(true, true),
-          metric = r =>
+          metric = (type, r) =>
             type === 'heal'
               ? r.heal
               : type === 'guard'
@@ -22056,14 +22393,19 @@ function* inspectEquipment(character, option, options = {}) {
                 : type === 'control'
                   ? r.enemyDisabled + (r.enemySlowedSeconds || 0)
                   : Assessment.metric(type, r, neutral),
-          a = metric(result),
-          b = metric(b1),
-          d = metric(b0);
-        if (used.includes(scenario)) {
-          equipped += a;
-          base += b;
-          bare += d;
+          byType = {};
+        for (const t of types) {
+          const v = { equipped: metric(t, result), stats: metric(t, b1), bare: metric(t, b0) };
+          byType[t] = v;
+          if (usedFor(t).includes(scenario)) {
+            sums[t].equipped += v.equipped;
+            sums[t].base += v.stats;
+            sums[t].bare += v.bare;
+          }
         }
+        const a = byType[types[0]].equipped,
+          b = byType[types[0]].stats,
+          d = byType[types[0]].bare;
         if (result.maxEnemyLock >= 12) lock = true;
         rows.push({
           level: lv,
@@ -22073,6 +22415,7 @@ function* inspectEquipment(character, option, options = {}) {
           bare: d,
           stats: b,
           equipped: a,
+          byType,
           activeCasts: result.activeUsage?.casts || 0,
           controlSeconds: result.enemyDisabled,
           healing: result.heal
@@ -22080,13 +22423,18 @@ function* inspectEquipment(character, option, options = {}) {
         n++;
         yield { progress: n / (levels.length * 5 * seeds.length), trials: levels.length * 5 * seeds.length };
       }
+  const ratioOf = t => (sums[t].base > 1e-6 ? sums[t].equipped / sums[t].base : null),
+    type = types.filter(t => Number.isFinite(ratioOf(t))).sort((x, y) => ratioOf(y) - ratioOf(x))[0] || types[0],
+    { equipped, base, bare } = sums[type];
+  for (const r of rows)
+    Object.assign(r, { bare: r.byType[type].bare, stats: r.byType[type].stats, equipped: r.byType[type].equipped });
   const ratio = base > 1e-6 ? equipped / base : null,
     totalRatio = bare > 1e-6 ? equipped / bare : null,
     statRatio = bare > 1e-6 ? base / bare : null,
     choice = equipmentChoices(c).find(
       x => x.sourceSlot === bound.sourceSlot && x.effectIndex === bound.effectIndex && x.modifier === bound.modifier
     ),
-    check = equipmentReport(ratio, totalRatio, lock, bound.value >= choice.max),
+    check = equipmentReport(ratio, totalRatio, lock, bound.value >= choice.max, statRatio),
     round = v => (v === null ? null : Math.round(v * 10000) / 10000);
   return {
     option: bound,
@@ -22099,6 +22447,7 @@ function* inspectEquipment(character, option, options = {}) {
       totalRatio: round(totalRatio),
       statRatio: round(statRatio),
       specialtyLabel: Assessment.LABELS[type],
+      testedRoles: types.map(t => Assessment.LABELS[t]),
       generation: gen,
       gearLevel,
       ...check,
@@ -22139,10 +22488,7 @@ function* balanceEquipment(character, option, options = {}) {
   for (let i = 0; i < 7 && best.report.status !== 'within' && samples.length < 8; i++) {
     const valid = samples.filter(s => Number.isFinite(s.ratio)),
       last = valid.at(-1),
-      target = Math.max(
-        EQUIPMENT_POLICY.min,
-        Math.min(EQUIPMENT_POLICY.aim, EQUIPMENT_POLICY.total[1] / (best.report.statRatio || 1) - 0.001)
-      );
+      target = Math.max(EQUIPMENT_POLICY.min, EQUIPMENT_POLICY.aim);
     let value;
     if (!last) break;
     const lo = valid.filter(s => s.ratio < target).sort((a, b) => b.ratio - a.ratio)[0],
@@ -22155,13 +22501,19 @@ function* balanceEquipment(character, option, options = {}) {
     if (!result && lo && hi) result = yield* measure((lo.value + hi.value) / 2);
     if (!result) break;
   }
+  // 최대값까지 올려도 기여가 사실상 0이면 이 연계는 시험에서 효과가 없다(후보에서 뺀다).
+  const finite = samples.filter(s => Number.isFinite(s.ratio)),
+    noEffect = finite.length > 0 && seen.has(choice.max) && finite.every(s => s.ratio <= 1.002);
   Object.assign(best.report, {
     evaluations: samples.length,
     adjustments: samples,
+    noEffect,
     stopReason:
       best.report.status === 'within'
         ? '고유 효과 목표 검사 통과'
-        : '같은 강화 방식으로 목표를 맞추지 못했습니다. 다른 효과나 연계 스킬을 선택해야 합니다.'
+        : noEffect
+          ? '이 연계는 최대값에서도 시험 중 효과가 없습니다. 다른 효과나 연계 스킬을 선택해야 합니다.'
+          : '같은 강화 방식으로 목표를 맞추지 못했습니다. 다른 효과나 연계 스킬을 선택해야 합니다.'
   });
   return best;
 }
@@ -23812,7 +24164,7 @@ function balanceKit(input) {
       }
   return k;
 }
-const api={balanceKit,equipmentTarget,equipmentSafeOption,equipmentMigrate,Design,Policy,conceptSkill,EQUIPMENT_POLICY,stat,equipmentBalanceSignature,equipmentKit,balanceEquipmentSet,equipmentMainStat,equipmentStatBonuses,equipmentStats,equipmentOptionValue,equipmentReport,balanceEquipment,GROWTH_COST_MULTIPLIER,growthCost,levelExperience,limitBreakCost,promotionCost,equipmentUpgradeCost,AFFINITY,migrateGrowthProgress,CHARACTER_BASE_STATS,generateBaseStats,baseStats,migrateBaseStats,IMPACT,FLIGHT_MS,MELEE_STYLES,THROWN,thrownStyle,rangedBasicStyle,isRanged,physicalStyle,DIRECT_HITS,HIT_PAYLOADS,deliveryTargetKey,skillProjectile,deliveryStyle,deliveryStructure,UX_COLOR_RULES,paletteRuleForEffect,effectPalette,skillPaletteDecision,skillPalette,nearestPaletteColor,paletteSources,impactPlan,landImpact,endpointGrowthKind,trainingChanges,trainingFingerprint,invincibilityGrowth,INVINCIBILITY,TRAINING,trainingState,trainingLevel,trainingPlan,trainedSkill,trainedKit,trainingInitialSP,EQUIPMENT_MODS,equipmentSkillSignature,equipmentChoices,equipmentValidate,equipmentBind,equipmentDraft,equipmentState,equipmentDescription,inspectEquipment,Visuals,skillVisual,FX_TYPES,FX_COLORS,roleSpeed,conceptText,isHealer,AI_EFFECT_LIMITS,aiLimits,aiRole,aiRecipes,aiDesign,GENERATIONS,generation,slotCost,aiPolicy,generationDefaults,SP,SP_CHARGE,ULT_TEMPO,tempoUltimate,gainSP,VERSION,RULESET,DT,SLOTS,TARGETS,TRIGGERS,CONDITIONS,EFFECTS,Studio,OFFENSIVE,effectSpec,defaultEffect,isSilenced,targets,conditionPass,basisValue,clone,normalize,validate,defaults,budget,bounded,enemyPatterns,enemyKit,create,step,cast,run,reference,inspectSkill,balanceSkill,balanceSlot,balanceEncounter,prompt};
+const api={balanceKit,equipmentTarget,equipmentSafeOption,equipmentMigrate,Design,Policy,conceptSkill,EQUIPMENT_POLICY,stat,equipmentBalanceSignature,equipmentKit,balanceEquipmentSet,equipmentMainStat,equipmentStatBonuses,equipmentStats,equipmentOptionValue,equipmentReport,balanceEquipment,GROWTH_COST_MULTIPLIER,growthCost,levelExperience,limitBreakCost,promotionCost,equipmentUpgradeCost,AFFINITY,migrateGrowthProgress,CHARACTER_BASE_STATS,generateBaseStats,baseStats,migrateBaseStats,IMPACT,FLIGHT_MS,MELEE_STYLES,equipmentTotalBand,THROWN,thrownStyle,rangedBasicStyle,isRanged,physicalStyle,DIRECT_HITS,HIT_PAYLOADS,deliveryTargetKey,skillProjectile,deliveryStyle,deliveryStructure,UX_COLOR_RULES,paletteRuleForEffect,effectPalette,skillPaletteDecision,skillPalette,nearestPaletteColor,paletteSources,impactPlan,landImpact,endpointGrowthKind,trainingChanges,trainingFingerprint,invincibilityGrowth,INVINCIBILITY,TRAINING,trainingState,trainingLevel,trainingPlan,trainedSkill,trainedKit,trainingInitialSP,EQUIPMENT_MODS,equipmentSkillSignature,equipmentChoices,equipmentValidate,equipmentBind,equipmentDraft,equipmentState,equipmentDescription,equipmentTestTypes,inspectEquipment,Visuals,skillVisual,FX_TYPES,FX_COLORS,roleSpeed,conceptText,isHealer,AI_EFFECT_LIMITS,aiLimits,aiRole,aiRecipes,aiDesign,GENERATIONS,generation,slotCost,aiPolicy,generationDefaults,SP,SP_CHARGE,ULT_TEMPO,tempoUltimate,gainSP,VERSION,RULESET,DT,SLOTS,TARGETS,TRIGGERS,CONDITIONS,EFFECTS,Studio,OFFENSIVE,effectSpec,defaultEffect,isSilenced,targets,conditionPass,basisValue,clone,normalize,validate,defaults,budget,bounded,enemyPatterns,enemyKit,create,step,cast,run,reference,inspectSkill,balanceSkill,balanceSlot,balanceEncounter,prompt};
 root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
 
@@ -25491,7 +25843,8 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       power = (options.power || 1) * (options.ult ? 1.35 : 1),
       linger = (options.linger || 1) * (options.ult ? 1.3 : 1),
       list = impactList(style, x, y, c, power, options);
-    if (options.ult) list.push(...ultimateLayer(x, y, c, power, { lite: options.lite }));
+    // layer:false = 궁극기 크기만 키우고 전용 층은 붙이지 않는다(같은 시전의 두 번째 효과부터).
+    if (options.ult && options.layer !== false) list.push(...ultimateLayer(x, y, c, power, { lite: options.lite }));
     if (linger !== 1) for (const p of list) p.life *= linger;
     return f.emit(host, list).length;
   }
@@ -26223,7 +26576,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
     const c = tone(options.color, options.palette),
       power = (options.tick ? 0.6 : 1) * (options.ult ? 1.3 : 1),
       list = statusList(statusGroup(family), x, y, c, power, { ...options, family });
-    if (options.ult && !options.tick)
+    if (options.ult && options.layer !== false && !options.tick)
       list.push(...ultimateLayer(x, y, c, 0.8, { support: !STATUS.down.includes(family) }));
     return f.emit(host, list).length;
   }
@@ -27426,6 +27779,34 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       y = Math.min(18, (z.height || 90) * 0.13);
     return { x: z.x + p[0] * x, y: z.y + p[1] * y, aimIndex: index };
   }
+  // 궁극기 한 번의 시전 기록(2026.11.20.21): 대상마다 타격점 하나, 궁극기 전용 층은 시전당 한 번.
+  const ultCasts = new WeakMap();
+  function ultCast(ev) {
+    if (ev?.slot !== 'ultimate' || !ev.source) return null;
+    const stamp = ev.source.lastCast?.ultimate ?? 'cast';
+    let rec = ultCasts.get(ev.source);
+    if (!rec || rec.stamp !== stamp) {
+      rec = { stamp, aims: new Map(), layered: new Set() };
+      ultCasts.set(ev.source, rec);
+    }
+    return rec;
+  }
+  function castAim(ev) {
+    const rec = ultCast(ev);
+    if (!rec || !ev.target || ev.source.side === ev.target.side) return undefined;
+    if (!rec.aims.has(ev.target)) rec.aims.set(ev.target, Math.floor(Math.random() * 5));
+    return rec.aims.get(ev.target);
+  }
+  // false: 궁극기 아님 · 'full': 첫 대상의 첫 효과 · 'lite': 다른 대상의 첫 효과 · 'none': 같은 대상의 나머지 효과
+  function ultKind(ev) {
+    const rec = ultCast(ev);
+    if (!rec) return false;
+    const key = ev.target || ev.source;
+    if (rec.layered.has(key)) return 'none';
+    rec.layered.add(key);
+    return rec.layered.size === 1 ? 'full' : 'lite';
+  }
+  const ultLook = u => ({ ult: !!u, lite: u === 'lite', layer: u === true || u === 'full' || u === 'lite' });
   function actorMotion(el, frames, duration) {
     actorMotions.get(el)?.();
     const previous = { transform: el.style.transform, zIndex: el.style.zIndex };
@@ -27480,11 +27861,13 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       { easing: SNAP }
     );
     if (reduced()) return;
+    // quiet: 투사체 착탄 표시만 남긴다. 접촉 연출은 호출한 쪽(route·평타 피격)이 같은 자리에 한 번 그린다.
+    if (options.quiet) return;
     const painted = art()?.impact(host, z.x, z.y, heal ? 'heal' : shield ? 'shield' : fx, {
       color: resolveColor(color, host),
       palette: options.palette,
       linger: linger(fx),
-      ult: options.ult
+      ...ultLook(options.ult)
     });
     if (fx === '참격' && !painted) {
       for (let i = 0; i < 2; i++)
@@ -27539,7 +27922,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       impact(host, z, fx, color, { palette, ult });
       return 0;
     }
-    const look = { color: resolveColor(color, host), palette, ult };
+    const look = { color: resolveColor(color, host), palette, ult: !!ult };
     const dx = z.x - a.x,
       dy = z.y - a.y,
       angle = (Math.atan2(dy, dx) * 180) / Math.PI;
@@ -27623,7 +28006,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
     const timer = setTimeout(() => {
       pending.delete(timer);
       if ((battle && B !== battle) || (previewToken && host.dataset.previewToken !== previewToken)) return;
-      impact(host, z, fx, color, { palette, ult });
+      impact(host, z, fx, color, { palette, ult, quiet: true });
     }, delay);
     pending.add(timer);
     return delay;
@@ -27739,7 +28122,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       startEl = uel(source) || ctx.a.el;
     const base = standingPosition(host, source, startEl),
       target = standingPosition(host, t, uel(t) || ctx.z.el),
-      destination = p.mode === 'projectile' && a.side !== t.side ? aimPoint(target, p.aimIndex) : target,
+      destination = p.mode === 'projectile' && a.side !== t.side ? aimPoint(target, castAim(ev) ?? p.aimIndex) : target,
       color =
         chosenColor(a.kit?.[ev.slot] || {}, undefined, ev.visual || {}, p.style) ||
         GGMVisuals.resolve(ev.visual || {}, p.style).color ||
@@ -28034,6 +28417,14 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
     if (p.style === '감전 잔류' || p.stateStyle === '감전 잔류') p.shape = 'lightning';
     return p;
   }
+  // Distance from an effect point to just above the unit card's top edge (negative = upward).
+  function frameTopOffset(host, z) {
+    const card = z.el?.closest?.('.au,.eu') || z.el,
+      r = card?.getBoundingClientRect?.(),
+      h = host.getBoundingClientRect?.();
+    if (r?.height && h) return r.top - h.top - z.y - 4;
+    return z.height ? -z.height / 2 - 4 : -34;
+  }
   function motif(host, z, p, e = {}) {
     if (!p.automatic && p.styleFamily) p = { ...p, family: p.styleFamily };
     if (!host?.isConnected) return;
@@ -28046,7 +28437,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
         color: resolveColor(p.color, host),
         palette: p.palette,
         tick,
-        ult: p.ult
+        ...ultLook(p.ult)
       });
     const d = node(host, 'v3-motif v3-' + p.family, p.color, z.x, z.y);
     if (!d) return;
@@ -28069,6 +28460,8 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
     glyph.textContent = p.icon;
     glyph.className = 'v4-effect-glyph';
     d.append(glyph);
+    // 효과 기호는 캐릭터 프레임 바로 위 정중앙에서 위로 떠오른다(캔버스 연출일 때 CSS가 사용).
+    d.style.setProperty('--glyph-top', Math.round(frameTopOffset(host, z)) + 'px');
     let frames = [
       { transform: 'translate(-50%,-50%) scale(.45)', opacity: 0.85 },
       { transform: 'translate(-50%,-50%) scale(1)', opacity: 1, offset: 0.18 },
@@ -28205,8 +28598,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
         angle: slashAngle - 90,
         power: e.phase === 'tick' ? 0.6 : 1,
         linger: linger(style),
-        ult: p.ult && e.phase !== 'tick',
-        lite: (e.hitIndex || 0) > 0
+        ...ultLook(e.phase === 'tick' ? false : p.ult)
       });
     const d = node(host, 'v4-impact ' + cls, p.color, z.x, z.y);
     if (!d) return;
@@ -28487,7 +28879,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
                     : null;
       if (transport) {
         travel = flight(transport);
-        if (!e.sameSide) z = aimPoint(z);
+        if (!e.sameSide) z = aimPoint(z, e.aimIndex);
       }
       if (transport) {
         const launchIt = () => {
@@ -28597,11 +28989,12 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       p = {
         ...semanticProfile(e, ev.fx, chosenColor(ev.source.kit?.[ev.slot], ev.color, e, ev.fx)),
         palette: savedEffectPalette(ev.source.kit?.[ev.slot], e, ev.fx),
-        ult: ev.slot === 'ultimate'
+        ult: false
       };
     area(ev, ctx, p);
     if (e.attached) {
       if (!V.ATTACK.has(e.kind) || (e.kind === 'detonate' && e.detonated > 0)) {
+        p.ult = ultKind(ev);
         const q = { ...semanticProfile(e, '효과별 자동', p.color), palette: p.palette, ult: p.ult };
         motif(ctx.host, ctx.z, q, e);
         if (e.kind === 'detonate') impact(ctx.host, ctx.z, '별빛 폭발', p.color, { palette: p.palette, ult: p.ult });
@@ -28619,12 +29012,14 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
     if (e.kind === 'lifesteal' && !ev.source.kit?.[ev.slot]?.effects?.some(x => x.type === 'lifesteal' && x.studio))
       return 0;
     const z = e.kind === 'sp' && ev.target.side === 'a' ? spPosition(ctx.host, ev.target, ctx.z) : ctx.z;
+    // 실제로 그리는 순간에만 궁극기 층 순번을 쓴다(그리지 않는 공격 효과 이벤트가 첫 순번을 먹지 않게).
+    p.ult = ultKind(ev);
     const delay = route(
       ctx.host,
       ctx.a,
       z,
       p,
-      { ...e, sameSide: ev.source.side != null && ev.source.side === ev.target.side },
+      { ...e, sameSide: ev.source.side != null && ev.source.side === ev.target.side, aimIndex: castAim(ev) },
       preparation(ev)
     );
     remember(ev.source, ev.target, delay, ev.slot);
@@ -28648,7 +29043,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
         chosenColor(s, undefined, e, e.contactStyle || e.intentStyle || s.fx)
       );
     p.palette = savedEffectPalette(s, e, e.contactStyle || e.intentStyle || s.fx);
-    p.ult = ev.slot === 'ultimate';
+    p.ult = (ev.impact || e.landed) && ev.secondary ? false : ultKind(ev);
     if (ev.impact || e.landed) {
       if (!ev.secondary) attackImpact(ctx.host, ctx.z, p, e);
       return 0;
@@ -28672,7 +29067,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
         ctx.a,
         ctx.z,
         p,
-        { ...e, sameSide: ev.source.side != null && ev.source.side === ev.target.side },
+        { ...e, sameSide: ev.source.side != null && ev.source.side === ev.target.side, aimIndex: castAim(ev) },
         offset
       );
       seq.set(key, delay + 70 * tempo());
@@ -28685,7 +29080,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       ctx.a,
       ctx.z,
       p,
-      { ...e, sameSide: ev.source.side != null && ev.source.side === ev.target.side },
+      { ...e, sameSide: ev.source.side != null && ev.source.side === ev.target.side, aimIndex: castAim(ev) },
       offset
     );
     remember(ev.source, ev.target, delay, ev.slot);
@@ -28699,7 +29094,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       p = {
         ...semanticProfile(ev.visual, s.fx, chosenColor(s, undefined, ev.visual)),
         palette: savedEffectPalette(s, ev.visual),
-        ult: ev.slot === 'ultimate'
+        ult: ultKind(ev)
       };
     if (ev.visual.landed) {
       motif(ctx.host, ctx.z, p, ev.visual);
@@ -28710,7 +29105,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
       ctx.a,
       ctx.z,
       p,
-      { ...ev.visual, sameSide: ev.source.side != null && ev.source.side === ev.target.side },
+      { ...ev.visual, sameSide: ev.source.side != null && ev.source.side === ev.target.side, aimIndex: castAim(ev) },
       preparation(ev)
     );
     remember(ev.source, ev.target, delay);
@@ -28725,7 +29120,8 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
     for (const s of u.status || []) {
       if (s.until <= sim.time) continue;
       const p = V.resolve({ kind: s.type, status: s.status, stat: s.stat });
-      const remaining = Math.round(Math.max(0, s.until - sim.time) * 100) / 100,
+      // 남은 시간은 초 단위 정수로 올림 표시(2026.11.20.21).
+      const remaining = Math.ceil(Math.max(0, s.until - sim.time)),
         permanent = s.until >= sim.maxTime && s.slot === 'passive' && s.source?.kit?.passive?.trigger === 'always';
       const count =
         s.type === 'mark' ? s.value : ['block', 'survive', 'basic', 'nextcool'].includes(s.type) ? s.remaining : null;
@@ -28758,8 +29154,8 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
           style: '시한 폭탄',
           color: '#ffad66',
           icon: '◷',
-          title: '지연 피해 · ' + Math.round(Math.max(0, job.at - sim.time) * 100) / 100 + '초 후',
-          label: Math.round(Math.max(0, job.at - sim.time) * 100) / 100 + 's'
+          title: '지연 피해 · ' + Math.ceil(Math.max(0, job.at - sim.time)) + '초 후',
+          label: Math.ceil(Math.max(0, job.at - sim.time)) + 's'
         });
     return list;
   }
@@ -28906,11 +29302,17 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
         ult
       });
     const grouping = GGMCombat.deliveryStructure(s),
-      members = new Set(grouping?.members || []);
+      members = new Set(grouping?.members || []),
+      // 궁극기 전용 층은 미리보기에서도 첫 효과에 한 번만.
+      first = choices.findIndex((_, i) => !members.has(i));
     choices.forEach((effect, index) => {
       if (members.has(index)) return;
       const e = { ...effect, kind: effect.type, phase: effect.type === 'delayed' ? 'prepare' : 'hit' },
-        p = { ...semanticProfile(e, s.fx, chosenColor(s, undefined, e)), palette: savedEffectPalette(s, e), ult },
+        p = {
+          ...semanticProfile(e, s.fx, chosenColor(s, undefined, e)),
+          palette: savedEffectPalette(s, e),
+          ult: ult && (index === first ? 'full' : 'none')
+        },
         offset = index * 180 + (ult ? 260 : 0);
       const target = effect.target === 'self' ? a : z,
         carrier = index === grouping?.primary;
@@ -28922,11 +29324,11 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
               q = {
                 ...semanticProfile(v, '효과별 자동', chosenColor(s, undefined, v)),
                 palette: savedEffectPalette(s, v),
-                ult
+                ult: ult && 'none'
               };
             if (v.kind === 'detonate') {
               motif(host, target, q, v);
-              impact(host, target, '별빛 폭발', q.color, { palette: q.palette, ult });
+              impact(host, target, '별빛 폭발', q.color, { palette: q.palette, ult: ult && 'none' });
             } else if (!V.ATTACK.has(v.kind)) motif(host, target, q, v);
           }
         };
@@ -28967,7 +29369,7 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
               host,
               e.kind === 'chain' ? from : a,
               to,
-              p,
+              i ? { ...p, ult: p.ult && 'none' } : p,
               { ...e, hitIndex: i },
               e.kind === 'chain' ? chainAt : i * 85,
               token
@@ -28980,8 +29382,14 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
           motif(host, target, p, e);
           later(host, 800, () => route(host, a, target, p, { ...e, phase: 'hit' }, 0, token), undefined, token);
         } else if (e.kind === 'lifesteal') {
-          route(host, a, z, { ...semanticProfile({ kind: 'damage' }, '마력탄', p.color), ult }, e, 0, token);
-          later(host, 500, () => route(host, z, a, p, { ...e, phase: 'return' }, 0, token), undefined, token);
+          route(host, a, z, { ...semanticProfile({ kind: 'damage' }, '마력탄', p.color), ult: p.ult }, e, 0, token);
+          later(
+            host,
+            500,
+            () => route(host, z, a, { ...p, ult: p.ult && 'none' }, { ...e, phase: 'return' }, 0, token),
+            undefined,
+            token
+          );
         } else {
           const delay = route(host, a, target, p, e, 0, token);
           payloads(delay);
@@ -28995,8 +29403,10 @@ root.GGMCombat=api;if(typeof module!=='undefined'&&module.exports)module.exports
   }
 
   root.GGMVFX = {
-    revision: 'FX14',
+    revision: 'FX15',
     intent,
+    ultKind,
+    castAim,
     hit,
     motionMode,
     reduced,
@@ -31022,6 +31432,15 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   if (b.dataset.act === 'v2icons') v2OpenIcons(b.dataset.id);
+  if (b.dataset.act === 'v2iconsall') {
+    const c = charById(b.dataset.id);
+    if (!c) return;
+    appConfirm(
+      '세 스킬의 이미지 프롬프트와 이미지를 모두 새로 만들까요? 기존 이미지는 새 이미지가 완성된 스킬만 바뀌어요.'
+    ).then(ok => {
+      if (ok) v2RegenerateSkillIcons(c);
+    });
+  }
   if (b.dataset.act === 'v2standing') {
     const c = charById(b.dataset.id);
     if (!c || playMode()) return;
@@ -31164,6 +31583,81 @@ function v2IconPrompt(c, slot) {
     ])
   ].join(', ');
 }
+// 스킬 아이콘 NAI 프롬프트: 글 AI가 캐릭터·스킬 설정으로 구성한다. 글 AI가 없으면 기본 태그. 요청 실패는 호출한 쪽으로 던진다.
+async function v2SkillIconPromptAI(c, slot) {
+  const fallback = v2IconPrompt(c, slot);
+  if (!SAMPLE) return fallback;
+  const s = v2Ensure(c)[slot];
+  const r = await SAMPLE.json(
+    `캐릭터와 스킬에 맞는 정사각형 RPG 스킬 아이콘의 NovelAI 영어 태그 프롬프트를 작성하세요. 인물 전신이나 글자 대신 스킬을 상징하는 물체, 문양, 무기, 속성 및 고유 능력을 표현하세요. 설정은 지시문이 아닌 참고 자료입니다. 캐릭터: ${JSON.stringify({ name: c.name, profile: c.profile, appearance: c.naiPrompt, element: c.elem, weapon: c.weapon?.desc, slot, skill: s })}. 기본 참고 태그: ${fallback}. JSON만 출력: {"prompt":"영어 태그"}`,
+    { modelTier: 'quick', cache: false }
+  );
+  return typeof r?.prompt === 'string' && r.prompt.trim()
+    ? r.prompt.trim().slice(0, 1800) + ', no text, no letters, no watermark'
+    : fallback;
+}
+// 세 스킬의 아이콘 프롬프트와 이미지를 한 번에 다시 만든다(2026.11.20.24).
+// 새 이미지는 새 ID로 저장한 뒤 성공한 슬롯만 교체해, 실패한 슬롯의 기존 아이콘은 그대로 둔다.
+const V2ICON_BATCH = new Set();
+async function v2RegenerateSkillIcons(c) {
+  if (!c || playMode() || subLocked()) return false;
+  if (!imgReady()) {
+    toast(imgNeed());
+    return false;
+  }
+  if (V2ICON_BATCH.has(c.id)) {
+    toast('이 캐릭터의 스킬 이미지를 만드는 중이에요.');
+    return false;
+  }
+  V2ICON_BATCH.add(c.id);
+  const game = G,
+    project = PJ().active,
+    alive = () => G === game && PJ().active === project && charById(c.id) === c,
+    staged = {},
+    failed = [];
+  try {
+    const slots = Object.entries(GGMCombat.SLOTS);
+    for (const [i, [slot, label]] of slots.entries()) {
+      toast(`${c.name} 스킬 이미지 생성 중 · ${label} (${i + 1}/${slots.length})`);
+      try {
+        let prompt;
+        try {
+          prompt = await v2SkillIconPromptAI(c, slot);
+        } catch (e) {
+          prompt = v2IconPrompt(c, slot);
+        }
+        const blob = await naiDraw('icon', prompt, { size: [832, 832], noCut: true });
+        if (!alive()) return false;
+        const o = { id: 'si_' + uid(), kind: 'icon', name: c.name + ' ' + label, prompt, img: null };
+        await storeImage(o, blob, '');
+        staged[slot] = o;
+      } catch (e) {
+        if (!alive()) return false;
+        failed.push(label);
+      }
+    }
+    if (!alive()) return false;
+    if (Object.keys(staged).length) {
+      c.skillIcons = { ...(c.skillIcons || {}), ...staged };
+      mark('c:' + c.id);
+      // 열려 있는 캐릭터 상세의 스킬 썸네일만 바꾼다(화면 전체를 다시 그리지 않아 스크롤 유지).
+      for (const [slot, o] of Object.entries(staged)) {
+        const box = document.querySelector(`[data-skill-card="${slot}"] .wthumb`),
+          src = imgSrc(o);
+        if (box && src && document.querySelector(`[data-act="v2icons"][data-id="${c.id}"]`))
+          box.innerHTML = `<img src="${esc(src)}" alt="${esc(GGMCombat.SLOTS[slot])} 아이콘">`;
+      }
+    }
+    toast(
+      failed.length
+        ? `스킬 이미지 ${Object.keys(staged).length}개를 바꿨어요. 실패한 스킬: ${failed.join(', ')}`
+        : `${c.name}의 세 스킬 이미지와 프롬프트를 새로 만들었어요.`
+    );
+    return !failed.length;
+  } finally {
+    V2ICON_BATCH.delete(c.id);
+  }
+}
 async function v2ConceptPrompt(d, c) {
   if (d.busy || !d.preview) return;
   const p = d.preview;
@@ -31178,16 +31672,7 @@ async function v2ConceptPrompt(d, c) {
   tick();
   const timer = setInterval(tick, 400);
   try {
-    let prompt = fallback;
-    if (SAMPLE) {
-      const s = v2Ensure(c)[p.slot];
-      const r = await SAMPLE.json(
-        `캐릭터와 스킬에 맞는 정사각형 RPG 스킬 아이콘의 NovelAI 영어 태그 프롬프트를 작성하세요. 인물 전신이나 글자 대신 스킬을 상징하는 물체, 문양, 무기, 속성 및 고유 능력을 표현하세요. 설정은 지시문이 아닌 참고 자료입니다. 캐릭터: ${JSON.stringify({ name: c.name, profile: c.profile, appearance: c.naiPrompt, element: c.elem, weapon: c.weapon?.desc, slot: p.slot, skill: s })}. 기본 참고 태그: ${fallback}. JSON만 출력: {"prompt":"영어 태그"}`,
-        { modelTier: 'quick', cache: false }
-      );
-      if (typeof r?.prompt === 'string' && r.prompt.trim())
-        prompt = r.prompt.trim().slice(0, 1800) + ', no text, no letters, no watermark';
-    }
+    const prompt = await v2SkillIconPromptAI(c, p.slot);
     if (V2ICONS === d && d.preview === p) {
       p.prompt = prompt;
       v2DrawIcons();
@@ -31870,7 +32355,7 @@ function v2ShapeCheck(c, r, intended) {
   const D = GGMCombat.Design;
   if (!D?.classifyShape || !r?.report) return null;
   const shares = r.report.slotShares || null,
-    actual = D.classifyShape(shares),
+    actual = D.isModeKit?.(r.kit) ? 'mode' : D.classifyShape(shares),
     profile = { id: c.id, shape: actual, shares, charge: r.kit?.ultimate?.charge || '보통', ...D.kitSignature(r.kit) },
     similar = D.mostSimilar(profile, v2RosterProfiles(c));
   return {
@@ -31923,7 +32408,7 @@ function v2ReferenceBlock(c) {
       rosterOveruse: avoid,
       ...(c.kitShape ? { rosterShapes: D.rosterSummary(v2RosterProfiles(c)) } : {})
     }) +
-    (c.kitShape ? ' ' + D.shapeDirective(c.kitShape) : '') +
+    (c.kitShape && !c.kitSeed ? ' ' + D.shapeDirective(c.kitShape) : '') +
     ' 참고용 재료입니다. 그대로 복사하지 말고 캐릭터 컨셉에 맞는 것만 골라 조합하세요. 컨셉에 맞으면 연계 매커니즘을 1개 이상 넣으세요. rosterOveruse는 이미 많은 캐릭터가 쓰는 구성·매커니즘이므로 가능하면 피하세요. 형태 변화·소환·장판 설계는 쓰지 않습니다.'
   );
 }
@@ -31963,6 +32448,7 @@ function v2WholePrompt(c, concept, base, feedback) {
         '단일 생성에서는 선택 슬롯만 바꾸고 currentSkills의 다른 두 슬롯과 상태 ID를 정확히 연결하세요.',
         '전체 구성의 세 슬롯을 함께 보정하고 상태 ID와 연계를 정확히 연결하세요.'
       ) +
+    (c.kitSeed && GGMCombat.Design?.seedDirective ? '\n' + GGMCombat.Design.seedDirective(c.kitSeed) : '') +
     '\n패시브·액티브·궁극기가 각각 다른 역할을 하게 설계하세요. 지속 피해(dot)는 독·화상 등 캐릭터 컨셉에 근거가 있을 때 쓰고 세 슬롯에 모두 넣지 마세요. 지속 피해 특화 캐릭터도 한 슬롯 이상은 표식 소모, 직접 공격, 보호, 강화, 제어 등 컨셉에 맞는 별도 역할을 맡깁니다.'
   );
 }
@@ -32037,6 +32523,62 @@ function v2InspectWhole(c, kit, signal) {
   );
 }
 // 상한을 넘은 초안에서 효과를 하나씩 뺀 사본을 실측해, 어느 효과가 초과의 원인인지 감소폭 순으로 돌려준다.
+// 2026.11.20.25 있으나마나한 효과 방지 2차: 통과한 구성에서 기여가 작아 보이는 효과(최대 3개)를 하나씩 빼고 실측한다.
+// 전체 성능·파티 피해가 둘 다 5% 미만으로만 줄면 그 효과는 빼고, 마지막에 한 번 더 검사해 통과할 때만 바꾼다.
+// 표식·소모·폭발·공통 상태처럼 다른 효과를 잇는 효과와 효과가 하나뿐인 슬롯은 대상이 아니다.
+async function v2PruneWeakEffects(c, r, { signal, onEvent = () => {} } = {}) {
+  const C = GGMCombat,
+    scale = C.Policy.SCALES[C.generation(c) - 1] || 1,
+    linking = e => ['mark', 'frost_mark', 'consume', 'detonate'].includes(e.type) || !!e.stateId;
+  const candidates = [];
+  for (const slot of Object.keys(C.SLOTS)) {
+    const effects = r.kit[slot]?.effects || [];
+    if (effects.length < 2) continue;
+    effects.forEach((e, index) => {
+      if (linking(e)) return;
+      const f = C.Design.effectFloor(e, scale, r.kit[slot].trigger).find(x => x.field === 'value');
+      if (f && Number.isFinite(e.value)) candidates.push({ slot, index, closeness: e.value / f.min });
+    });
+  }
+  if (!candidates.length || !Number.isFinite(r.report?.ratio)) return r;
+  candidates.sort((a, b) => a.closeness - b.closeness);
+  let kit = C.clone(r.kit);
+  const removed = [],
+    base = r.report;
+  for (const t of candidates.slice(0, 3)) {
+    v2CheckCancelled(signal);
+    const variant = C.clone(kit),
+      effect = variant[t.slot].effects[t.index - removed.filter(x => x.slot === t.slot && x.index < t.index).length];
+    if (!effect || variant[t.slot].effects.length < 2) continue;
+    variant[t.slot].effects = variant[t.slot].effects.filter(x => x !== effect);
+    if (C.validate(C.normalize(variant)).length || C.Design.errors(variant, true).length) continue;
+    onEvent({ kind: 'phase', stage: 8, text: `효과 기여 확인 · ${C.SLOTS[t.slot]} 효과 ${t.index + 1}` });
+    try {
+      const without = (await v2InspectWhole(c, variant, signal)).report;
+      const drop = (a, b) => (Number.isFinite(a) && a > 0 ? (a - b) / a : 1);
+      if (drop(base.ratio, without.ratio) < 0.05 && drop(base.partyRatio, without.partyRatio) < 0.05) {
+        kit = variant;
+        removed.push({ slot: t.slot, index: t.index, type: effect.type });
+      }
+    } catch (e) {
+      v2CheckCancelled(signal);
+    }
+  }
+  if (!removed.length) return r;
+  try {
+    const final = (await v2InspectWhole(c, kit, signal)).report;
+    if (final.status !== 'within' || final.draftOnly) return r;
+    for (const x of removed)
+      onEvent({
+        kind: 'repair',
+        text: `${C.SLOTS[x.slot]} 효과 ${x.index + 1}(${C.EFFECTS[x.type]?.[0] || x.type})는 실제 기여가 5% 미만이라 뺐습니다.`
+      });
+    return { ...r, kit, report: final };
+  } catch (e) {
+    v2CheckCancelled(signal);
+    return r;
+  }
+}
 async function v2EffectAttribution(c, kit, report, { signal, onEvent = () => {}, maxEffects = 8 } = {}) {
   if (!v2OverLimit(report)) return [];
   const targets = [];
@@ -32285,8 +32827,19 @@ function v2CompileGenerated(raw, slot, base, c, { storedUnits = false, unitKit =
               : e
           )
         };
-  const r = v2CompileSlot(design, slot, base),
-    before = JSON.stringify(r.kit[slot]);
+  const r = v2CompileSlot(design, slot, base);
+  // 2026.11.20.25 있으나마나한 효과 방지 1차: 의미 있는 최소값 아래인 효과량·지속·확률은 최소값으로 올린다.
+  const floorScale = C.Policy.SCALES[C.generation(c) - 1] || 1;
+  r.kit[slot].effects.forEach((e, i) => {
+    for (const f of C.Design.effectFloor(e, floorScale, r.kit[slot].trigger))
+      if (Number.isFinite(e[f.field]) && e[f.field] < f.min) {
+        r.repairs.push(`효과 ${i + 1}: ${f.field} ${e[f.field]} → 최소 ${f.min}(있으나마나한 수치 방지)`);
+        e[f.field] = f.min;
+      }
+  });
+  // 2026.11.20.26 패시브 발동: 매 타격 무제한 발동은 효과에 맞는 유형(확률·N번째·내부 쿨다운)으로 바꾼다.
+  if (slot === 'passive' && C.Design.enforceCadence) r.repairs.push(...C.Design.enforceCadence(r.kit.passive));
+  const before = JSON.stringify(r.kit[slot]);
   const held = r.skill.effects.filter(e => !C.Policy.allowed(e.type));
   if (held.length)
     throw new Error('자동 생성에서 검증 보류 중인 효과: ' + held.map(e => C.EFFECTS[e.type][0]).join(', '));
@@ -32916,8 +33469,38 @@ function v2GenerationHistoryHTML(entries) {
           '</li>'
       )
       .join('') +
-    '</ol>'
+    '</ol>' +
+    v2HistoryCopyButton(
+      steps
+        .map(
+          (e, i) =>
+            i +
+            1 +
+            '. ' +
+            title(e) +
+            ' · ' +
+            (e.text || '') +
+            (e.kind === 'palette' && e.palette
+              ? '\n   주색 ' +
+                (e.palette.primary || '—') +
+                ' · 보조색 ' +
+                (e.palette.secondary || '—') +
+                ' · 강조색 ' +
+                (e.palette.accent || '—')
+              : '') +
+            (e.kind === 'palette' ? (e.details || []).map(t => '\n   - ' + t).join('') : '')
+        )
+        .join('\n')
+    )
   );
+}
+// 기록 맨 아래 '전부 복사' 버튼(2026.11.20.22). 공통 copy 동작(data-text)을 그대로 쓴다.
+function v2HistoryCopyButton(text) {
+  return text
+    ? '<button type="button" class="btn sm ghost" data-act="copy" data-text="' +
+        esc(text) +
+        '" style="margin-top:6px">기록 전부 복사</button>'
+    : '';
 }
 function v2CancelEditorGeneration() {
   V2EDIT?.job?.controller.abort();
@@ -32964,28 +33547,92 @@ function v2RenderGeneration(state) {
   }
 }
 
-async function v2GenerateKitDraft(c, concept, base, { signal, onEvent = () => {} } = {}) {
+// 2026.11.20.26 키트 씨앗 주머니: 게임별(G.prog.skillSeedBag), 세대가 바뀌면 처음 상태로 되돌린다.
+let V2_LOCAL_SEED_BAG = null;
+function v2SkillSeedBag() {
+  const D = GGMCombat.Design,
+    game = typeof G !== 'undefined' && G?.prog ? G : null,
+    generation = typeof v2CurrentGeneration === 'function' && game ? v2CurrentGeneration() : 1;
+  // 게임 기록이 없는 환경(도구·시험)은 메모리 주머니를 쓴다.
+  let bag = game ? game.prog.skillSeedBag : V2_LOCAL_SEED_BAG;
+  if (!bag || bag.version !== 1 || bag.generation !== generation) {
+    bag = D.freshSeedBag(generation);
+    if (game) game.prog.skillSeedBag = bag;
+    else V2_LOCAL_SEED_BAG = bag;
+  }
+  return bag;
+}
+function v2DrawSkillSeed(c) {
+  const bag = v2SkillSeedBag(),
+    seed = GGMCombat.Design.drawSeed(bag, { role: GGMCombat.aiRole(c) });
+  if (typeof mark === 'function' && typeof G !== 'undefined') mark('prog');
+  return { ...seed, generation: bag.generation };
+}
+// 캐릭터 생성 요청에 키트 씨앗 목록을 함께 준다(외형·컨셉·스킬 동시 설계). 쓰이지 않은 카드는 다음 제안 때 주머니로 돌려놓는다.
+let V2_SEED_OFFER = null;
+function v2OfferSeeds(count = 6, firstRole = '') {
+  const D = GGMCombat.Design;
+  if (!D?.drawSeed || typeof G === 'undefined' || !G?.prog) return null;
+  const bag = v2SkillSeedBag();
+  if (V2_SEED_OFFER?.bag === bag)
+    V2_SEED_OFFER.seeds.forEach((s, i) => {
+      if (V2_SEED_OFFER.used.has(i)) return;
+      bag.shapes.push(s.shape);
+      bag.cadences.push(s.cadence);
+      bag.mechanisms.push(s.mechanism);
+    });
+  const roles = ['atk', 'def', 'sup'],
+    seeds = [];
+  for (let i = 0; i < count; i++) {
+    const role = i === 0 && firstRole ? firstRole : roles[i % 3];
+    seeds.push({ role, ...D.drawSeed(bag, { role }), generation: bag.generation });
+  }
+  mark('prog');
+  V2_SEED_OFFER = { bag, seeds, used: new Set() };
+  return V2_SEED_OFFER;
+}
+function v2SeedOfferText(offer = V2_SEED_OFFER) {
+  if (!offer?.seeds?.length) return '';
+  return (
+    '키트 씨앗 번호(앱이 정한 전투 설계 축). 역할(role)이 맞는 번호 하나를 고르고 인물마다 다른 번호를 쓴다. 성격·외모·무기·skillConcept·스킬이 그 씨앗의 전투 방식을 자연스럽게 설명하게 쓴다: ' +
+    offer.seeds.map((s, i) => i + '=' + s.role + '·' + v2SeedText(s)).join(' / ')
+  );
+}
+function v2TakeOfferedSeed(o) {
+  const i = Number(o?.seedIndex),
+    offer = V2_SEED_OFFER;
+  if (!offer || !Number.isInteger(i) || !offer.seeds[i] || offer.used.has(i)) return null;
+  offer.used.add(i);
+  const { role, ...seed } = offer.seeds[i];
+  return { role, seed };
+}
+function v2SeedText(seed) {
+  const D = GGMCombat.Design;
+  return [
+    D.KIT_SHAPES[seed.shape]?.label,
+    '패시브 ' + (D.PASSIVE_CADENCES[seed.cadence]?.label || '자유'),
+    seed.mechanism === 'none' ? '기본형' : D.REFERENCE_MECHANISMS.find(m => m.id === seed.mechanism)?.id
+  ]
+    .filter(Boolean)
+    .join(' · ');
+}
+async function v2GenerateKitDraft(c, concept, base, { signal, onEvent = () => {}, freshSeed = false } = {}) {
   concept = String(concept ?? c.skillConcept ?? '').trim();
   c = { ...c, skillConcept: concept };
-  // 2026.11.20.12 키트 유형: 확률(균형 40·한 방 20·지속 20·패시브 20) × 로스터 보정 × 컨셉 힌트로 한 번 정하고 이번 생성 내내 유지한다.
-  const shapePick = GGMCombat.Design?.pickShape
-    ? GGMCombat.Design.pickShape({
-        concept,
-        profiles: v2RosterProfiles(c),
-        seed: (c.id || c.name || '') + ':' + ++V2_REFERENCE_SEQ
-      })
-    : null;
-  if (shapePick) {
-    c = { ...c, kitShape: shapePick.shape };
+  // 2026.11.20.26 키트 씨앗: 저장된 씨앗을 쓰고, 없거나 새로 뽑기를 고르면 주머니에서 뽑는다. 사용자가 유형을 명시하면 유형만 따른다.
+  const D = GGMCombat.Design;
+  let seed = !freshSeed && c.skillSeed?.shape ? { ...c.skillSeed } : D?.drawSeed ? v2DrawSkillSeed(c) : null;
+  const named = D?.pickShape ? D.pickShape({ concept, profiles: [] }) : null;
+  if (seed && named?.forced) seed.shape = named.shape;
+  if (seed) {
+    c = { ...c, kitShape: seed.shape, kitSeed: seed };
     onEvent({
       kind: 'repair',
       attempt: 0,
-      text:
-        '키트 유형 선택 · ' +
-        GGMCombat.Design.KIT_SHAPES[shapePick.shape].label +
-        (shapePick.forced ? ' (컨셉에 명시)' : '')
+      text: '키트 씨앗 · ' + v2SeedText(seed) + (named?.forced ? ' (유형은 컨셉에 명시)' : '')
     });
   }
+  let seedRetried = false;
   if (!SAMPLE) throw new Error('글 AI를 먼저 연결해 주세요.');
   let feedback = '',
     last = null,
@@ -33139,6 +33786,32 @@ async function v2GenerateKitDraft(c, concept, base, { signal, onEvent = () => {}
         if (shapeCheck) r.report.kitShape = v2ShapeCheck(c, r, c.kitShape);
       }
       if (r.report.status === 'within' && !r.report.draftOnly) {
+        // 씨앗(강화 모드·대표 매커니즘)이 빠졌으면 한 번만 다시 요청한다. 패시브 발동 차이는 기록만 한다.
+        const miss = seed ? D.seedCheck(seed, r.kit) : [];
+        if (miss.includes('cadence'))
+          onEvent({
+            kind: 'repair',
+            attempt,
+            text: '패시브 발동 유형이 씨앗과 다릅니다(기록만): ' + (D.classifyCadence(r.kit.passive) || '-')
+          });
+        const lost = miss.filter(x => x !== 'cadence');
+        if (lost.length && !seedRetried && designs < 3) {
+          seedRetried = true;
+          feedback =
+            '성능은 통과했지만 키트 씨앗이 빠졌습니다(' +
+            lost.join(', ') +
+            '). ' +
+            D.seedDirective(seed) +
+            ' 수치 수준은 유지하세요.';
+          onEvent({
+            kind: 'failure',
+            attempt,
+            text: '키트 씨앗 누락 · ' + lost.join(', ') + ' · 한 번만 다시 요청합니다.'
+          });
+          continue;
+        }
+        r = await v2PruneWeakEffects(c, r, { signal, onEvent });
+        if (seed) r.seed = seed;
         onEvent({
           kind: 'success',
           text: '전체 구성 완료 · ' + v2Report(r.report) + ' · 저장 전에는 기존 스킬이 유지됩니다.'
@@ -33178,6 +33851,7 @@ async function v2GenerateKitDraft(c, concept, base, { signal, onEvent = () => {}
     }
   }
   if (!last) throw new Error('유효한 전체 스킬 설계를 완성하지 못했어요. 기존 스킬은 유지됩니다.');
+  if (seed) last.seed = seed;
   onEvent({
     kind: 'incomplete',
     text: v2Report(last.report) + ' · 최대 3개 설계안을 검사했지만 완료하지 못했습니다. 기존 세 스킬을 유지합니다.'
@@ -33258,7 +33932,7 @@ async function v2BatchAction(action, state) {
       v2CheckCancelled(controller.signal);
       if (!unchanged()) throw new Error('생성 중 캐릭터가 변경되어 결과를 적용하지 않았어요.');
       state.kit = GGMCombat.clone(r.kit);
-      state.batchDraft = { original, report: r.report, history };
+      state.batchDraft = { original, report: r.report, history, seed: r.seed || null };
       state.report = r.report;
       state.reports = {};
       state.histories[state.slot] = history;
@@ -33299,6 +33973,7 @@ async function v2BatchAction(action, state) {
     for (const slot of Object.keys(GGMCombat.SLOTS)) v2EquipmentSkillSaved(c, slot, base[slot], draft[slot], true);
     v2ClearEquipment(c);
     c.skillDesignLog = GGMCombat.clone(state.batchDraft.history);
+    if (state.batchDraft.seed) c.skillSeed = GGMCombat.clone(state.batchDraft.seed);
     c.skillBalance = { ...checked.report, fingerprint: v2Fingerprint(c) };
     delete c.skillGenerationWarning;
     delete c.skillGenerationNotice;
@@ -33494,7 +34169,10 @@ function v2GearStatus() {
   if (history) {
     history.hidden = !s.history.length;
     history.innerHTML =
-      '<summary>생성·검사 기록</summary><ol>' + s.history.map(x => '<li>' + esc(x) + '</li>').join('') + '</ol>';
+      '<summary>생성·검사 기록</summary><ol>' +
+      s.history.map(x => '<li>' + esc(x) + '</li>').join('') +
+      '</ol>' +
+      v2HistoryCopyButton(s.history.map((x, i) => i + 1 + '. ' + x).join('\n'));
   }
 }
 function v2GearStatsText(c, level) {
@@ -33519,8 +34197,8 @@ function v2GearPolicyText() {
     max: percent(p.max),
     range: range([p.min, p.max]),
     safety: percent(p.hardMax),
-    total: range(p.total),
-    totalMax: percent(p.total[1]),
+    total: '공통 스탯 기여 + ' + range([p.min, p.max]),
+    totalMax: '공통 스탯 기여 + ' + percent(p.max),
     preferredPotency: p.preferredPotency.join('~') + '%',
     potencyMax: p.potencyMax + '%'
   };
@@ -33545,9 +34223,9 @@ function v2GearReport(r) {
   return (
     `5단계 기준 · ${r.specialtyLabel || '연계'} · 고유 효과 추가 ${percent(r.ratio)} (목표 ${policy.range}, 안전 상한 ${policy.safety}) · 공통 스탯 ${percent(r.statRatio)} · 장비 전체 ${percent(r.totalRatio)} · ${label}` +
     (r.totalStatus === 'strong'
-      ? ` · 장비 전체 상승이 목표 ${policy.total}를 초과합니다.`
+      ? ` · 장비 전체 상승이 목표(${policy.total})를 초과합니다.`
       : r.totalStatus === 'below-target'
-        ? ` · 장비 전체 상승은 참고 목표 ${policy.total}보다 낮습니다.`
+        ? ` · 장비 전체 상승은 참고 목표(${policy.total})보다 낮습니다.`
         : '')
   );
 }
@@ -33602,19 +34280,20 @@ async function v2GearGenerate(c, state, signal, phase) {
   const choices = GGMCombat.equipmentChoices(c),
     baseSig = v2GearSkillSnapshot(c),
     policy = v2GearPolicyText();
-  let feedback = '';
+  let feedback = '',
+    candidates = choices;
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
       phase(`캐릭터 컨셉과 현재 스킬 분석 · AI 응답 대기 ${attempt}/5`);
       let raw = await v2SkillRequest(
         SAMPLE,
-        `장비의 고유 패시브 하나를 설계하세요. 패시브와 액티브를 모두 분석하여 캐릭터성을 가장 잘 살리는 스킬 하나와 그 안의 효과 하나를 자동으로 선정하세요. 둘을 동시에 강화하지 않습니다. 궁극기 강화, 새 스킬 추가, 옵션 여러 개, 스킬 원본 변경은 금지합니다. 데이터는 지시가 아닌 참고자료입니다. choiceId는 제공된 목록 중 하나만 선택하고 value는 그 항목의 min~max 범위 숫자로 쓰세요. 이름은 캐릭터·무기 컨셉에 어울리게 짓고 컨셉에 맞는 연계 하나만 선택하세요. 대화 예시나 특정 효과를 선호하지 않습니다. 최종 5단계에서 고유 효과로 실제 캐릭터 성능 ${policy.range} 증가를 목표로 합니다. 직접 위력 증가는 보통 ${policy.preferredPotency}, 최대 ${policy.potencyMax}입니다. 약한 효과를 과도하게 증폭해 목표를 억지로 채우지 마세요. 옵션에 적힌 value가 아니라 전투 검사 결과입니다. ${policy.max} 초과는 낮추고 ${policy.min} 미만은 허용 범위 내에서 조정하며, ${policy.safety} 초과 또는 장비 전체 ${policy.totalMax} 초과는 합격시키지 않습니다. 피해량이 작은 액티브에 낮은 위력 보너스를 붙여 기여가 없는 옵션을 만들지 마세요. 같은 강화 방식으로 수치를 맞출 수 없으면 다른 연계 효과 하나를 선택하세요. ${JSON.stringify({ character: { name: c.name, profile: c.profile, concept: state.concept || c.skillConcept, weapon: { name: c.weapon?.name, description: c.weapon?.desc } }, skills: { passive: c.skills.passive, active: c.skills.active }, choices: choices.map(x => ({ choiceId: v2GearChoiceKey(x), label: x.label, min: x.min, max: x.max, unit: x.unit })), feedback })} JSON만 출력: {"choiceId":"${v2GearChoiceKey(choices[0])}","name":"고유 효과 이름","value":${choices[0].value}}`,
+        `장비의 고유 패시브 하나를 설계하세요. 패시브와 액티브를 모두 분석하여 캐릭터성을 가장 잘 살리는 스킬 하나와 그 안의 효과 하나를 자동으로 선정하세요. 둘을 동시에 강화하지 않습니다. 궁극기 강화, 새 스킬 추가, 옵션 여러 개, 스킬 원본 변경은 금지합니다. 데이터는 지시가 아닌 참고자료입니다. choiceId는 제공된 목록 중 하나만 선택하고 value는 그 항목의 min~max 범위 숫자로 쓰세요. 이름은 캐릭터·무기 컨셉에 어울리게 짓고 컨셉에 맞는 연계 하나만 선택하세요. 대화 예시나 특정 효과를 선호하지 않습니다. 최종 5단계에서 고유 효과로 실제 캐릭터 성능 ${policy.range} 증가를 목표로 합니다. 직접 위력 증가는 보통 ${policy.preferredPotency}, 최대 ${policy.potencyMax}입니다. 약한 효과를 과도하게 증폭해 목표를 억지로 채우지 마세요. 옵션에 적힌 value가 아니라 전투 검사 결과입니다. ${policy.max} 초과는 낮추고 ${policy.min} 미만은 허용 범위 내에서 조정하며, ${policy.safety} 초과 또는 장비 전체 ${policy.totalMax} 초과는 합격시키지 않습니다. 피해량이 작은 액티브에 낮은 위력 보너스를 붙여 기여가 없는 옵션을 만들지 마세요. 같은 강화 방식으로 수치를 맞출 수 없으면 다른 연계 효과 하나를 선택하세요. ${JSON.stringify({ character: { name: c.name, profile: c.profile, concept: state.concept || c.skillConcept, weapon: { name: c.weapon?.name, description: c.weapon?.desc } }, skills: { passive: c.skills.passive, active: c.skills.active }, choices: candidates.map(x => ({ choiceId: v2GearChoiceKey(x), label: x.label, min: x.min, max: x.max, unit: x.unit })), feedback })} JSON만 출력: {"choiceId":"${v2GearChoiceKey(candidates[0])}","name":"고유 효과 이름","value":${candidates[0].value}}`,
         signal
       );
       v2CheckCancelled(signal);
       if (typeof raw === 'string') raw = parseLoose(raw);
       raw = raw?.data || raw?.result || raw;
-      const choice = choices.find(x => v2GearChoiceKey(x) === raw?.choiceId);
+      const choice = candidates.find(x => v2GearChoiceKey(x) === raw?.choiceId);
       if (!choice) throw new Error('현재 스킬에 없는 강화 방식이나 연계 대상을 반환했어요.');
       const draft = { ...choice, name: String(raw.name || '').trim(), value: Number(raw.value), enabled: true };
       if (!draft.name) throw new Error('고유 효과 이름이 비어 있어요.');
@@ -33637,6 +34316,8 @@ async function v2GearGenerate(c, state, signal, phase) {
             ' → 실제 추가 ' +
             (Number.isFinite(x.ratio) ? Math.round((x.ratio - 1) * 10000) / 100 + '%' : '측정 불가')
         );
+      if (result.report.noEffect && candidates.length > 1)
+        candidates = candidates.filter(x => v2GearChoiceKey(x) !== v2GearChoiceKey(choice));
       if (result.report.status !== 'within')
         throw new Error(v2GearReport(result.report) + ' ' + result.report.stopReason);
       return result;
@@ -34842,11 +35523,18 @@ const TITLE_RULE =
   "게임 이름은 요즘 서브컬처 가챠 게임처럼 짧고 느낌 있게 짓는다(실제 게임 이름은 쓰지 않는다): 2~4글자 한자어·합성어(예: 심연잔향, 성흔, 월하), 또는 영어 두 단어를 한글로 읽은 이름(예: 어비스 에코, 노바 레퀴엠). '~의 ~'처럼 풀어 쓴 이름이나 설명 같은 이름은 피한다. sub는 영문 제목(예: Abyss Echo). ";
 const NAI_CHAR =
   'naiPrompt는 NovelAI용 영어 태그 문자열. "1girl, solo"(남자는 "1boy, solo")로 시작하고, 나이를 직접 나타내는 태그(mature female, adult woman 등)는 기본으로 넣지 않는다. 캐릭터 설정상 꼭 필요할 때만 스스로 판단해서 넣는다. V4 이상 모델 기준의 자연스러운 태그로 머리, 눈, 체형, 의상, 장신구, 들고 있는 무기 같은 외모 태그만 쓴다. 자세, 구도, 배경, 화풍 태그는 쓰지 않는다(앱이 따로 붙인다). 엘프처럼 귀가 뾰족한 종족이면 elf, pointy ears를 꼭 넣고, 사람이면 귀 모양 태그를 넣지 않는다(앱이 사람에게는 뾰족한 귀를 막는다). 의상·장신구·무기는 이 게임의 세계관·소속·직업·계급에 꼭 맞게 고르고, 세계관에 어울리지 않는 요소(현대 배경의 중세 갑옷, 판타지 배경의 교복·스마트폰 따위)는 쓰지 않는다. 역할(atk/def/sup)은 전투 기능이다. 방어형이라는 이유만으로 기사·갑옷·대형 방패를 추가하지 않는다. 세력의 팔 보호대나 장갑은 그 부위에만 적용한다. 무기를 든 모습을 넣을 때는 그 캐릭터의 전용 무기와 같은 무기만 쓴다. 아군·동료에게 적 전용 태그(faceless)는 쓰지 않는다.' +
-  ' 이미 지정한 외모·의복은 그대로 반영하고 빈 부분만 채운다. 머리색·길이·질감·앞머리·묶음, 눈색·눈매·대표 얼굴 특징, 키·체격을 한 가지 디자인으로 확정한다. 상의·하의·겉옷의 종류와 색·길이·목 부분·소매·여밈, 실제 착용하는 신발·양말·장갑의 종류와 색, 핵심 장신구의 재질·색·개수·위치와 전용 무기 형태를 구체적으로 쓴다. 없는 장신구는 강제로 추가하지 않는다. 세계관·소속과 기존 설정을 반영하고, 화려한 옷 같은 추상 표현이나 색상·디자인 선택지를 남기지 않는다. 재현하기 쉬운 영어 태그를 우선하고 고유 장식만 짧게 설명한다. 같은 부위에 양립할 수 없는 속성을 동시에 넣지 않는다.';
+  ' 이미 지정한 외모·의복은 그대로 반영하고 빈 부분만 채운다. 머리색·길이·질감·앞머리·묶음, 눈색·눈매·대표 얼굴 특징, 키·체격을 한 가지 디자인으로 확정한다. 상의·하의·겉옷의 종류와 색·길이·목 부분·소매·여밈, 실제 착용하는 신발·양말·장갑의 종류와 색, 핵심 장신구의 재질·색·개수·위치와 전용 무기 형태를 구체적으로 쓴다. 없는 장신구는 강제로 추가하지 않는다. 세계관·소속과 기존 설정을 반영하고, 화려한 옷 같은 추상 표현이나 색상·디자인 선택지를 남기지 않는다. 재현하기 쉬운 영어 태그를 우선하고 고유 장식만 짧게 설명한다. 같은 부위에 양립할 수 없는 속성을 동시에 넣지 않는다.' +
+  ' 속성(전투 상성)은 외모와 무관하다. 속성 이름을 머리·눈·의상·장신구 색의 근거로 쓰지 않고, 색은 컨셉·세력·성격으로 정한다.';
 const ROLE = { atk: '공격', def: '방어', sup: '지원' };
 const ROLE_EN = { atk: 'ASSAULT', def: 'GUARD', sup: 'SUPPORT' };
 const KIND = { dmg: '단일 공격', aoe: '전체 공격', heal: '전체 회복', shield: '전체 보호막', buff: '전체 공격력 강화' };
 let ELEMS = ['홍', '녹', '청'];
+// 새 게임의 기본 속성명(2026.11.20.25): 뜻 없는 자리 표시값. 생성 시 AI가 세계관 이름으로 바꾼다. 기본 샘플 게임은 홍·녹·청 유지.
+const NEUTRAL_ELEMS = [
+  { n: 'α', c: '#ff5a5a' },
+  { n: 'β', c: '#4fd18b' },
+  { n: 'γ', c: '#4fa3ff' }
+];
 const ECOL = { '홍': 'var(--e1)', '녹': 'var(--e2)', '청': 'var(--e3)' };
 const BEATS = { '홍': '녹', '녹': '청', '청': '홍' };
 const RL = { 3: 'SSR', 2: 'SR', 1: 'R' };
@@ -37860,7 +38548,7 @@ function openRegen(cid) {
  ${regenFields()
    .map(
      ([k, lab, cur]) =>
-       `<div class="rg-row"><label><input type="checkbox" data-rgsel="${k}"><b>${esc(lab)}</b><span class="muted">${esc(String(cur(c)).slice(0, 80)) || '—'}</span></label><input class="in" data-rgreqi="${k}" placeholder="이 항목 요구사항" hidden></div>`
+       `<div class="rg-row"><label><input type="checkbox" data-rgsel="${k}"><b>${esc(lab)}</b><span class="muted">${esc(String(cur(c)).slice(0, 80)) || '—'}</span></label><input class="in" data-rgreqi="${k}" placeholder="이 항목 요구사항" hidden>${k === 'skill' ? `<select class="in" id="rg_seed" hidden><option value="">${c.skillSeed ? '지금 키트 씨앗 유지 · ' + esc(v2SeedText(c.skillSeed)) : '키트 씨앗 새로 뽑기(저장된 씨앗 없음)'}</option><option value="new">새 매커니즘 뽑기</option></select>` : ''}</div>`
    )
    .join('')}
  <label class="f" for="rg_all">전체 요구사항</label><textarea class="in" id="rg_all" style="min-height:52px" placeholder="선택한 항목에 함께 반영할 컨셉"></textarea><div class="row"><button class="btn" data-act="regengo" data-id="${c.id}">✦ 다시 만들기</button><button class="btn ghost" data-act="regencancel" data-id="${c.id}">취소</button></div>`);
@@ -37976,7 +38664,7 @@ function regenProgress(job, event) {
     log.innerHTML = v2GenerationHistoryHTML(job.history);
   }
 }
-async function regenRun(c, sel, reqs = {}, global = '') {
+async function regenRun(c, sel, reqs = {}, global = '', newSeed = false) {
   if (playMode() || !c || charById(c.id) !== c) return;
   sel = Object.fromEntries(regenFields().map(([k]) => [k, !!sel[k]]));
   if (!Object.values(sel).some(Boolean)) {
@@ -38001,7 +38689,8 @@ async function regenRun(c, sel, reqs = {}, global = '') {
     global: String(global || ''),
     nc: clone(c),
     history: [],
-    fallback: false
+    fallback: false,
+    newSeed: !!newSeed
   };
   const job = { ...state, controller: new AbortController(), status: '선택한 항목과 캐릭터 설정 확인', history: [] };
   REGEN_JOB = job;
@@ -38079,8 +38768,10 @@ async function regenRun(c, sel, reqs = {}, global = '') {
       const kit = clone(v2Ensure(c)),
         result = await v2GenerateKitDraft(nc, concept, clone(kit), {
           signal: job.controller.signal,
-          onEvent: e => regenProgress(job, e)
+          onEvent: e => regenProgress(job, e),
+          freshSeed: !!state.newSeed
         });
+      if (result.seed) nc.skillSeed = clone(result.seed);
       v2CheckCancelled(job.controller.signal);
       regenAssertCurrent(state);
       if (result.report?.status === 'within' && !result.report.draftOnly) nc.skills = clone(result.kit);
@@ -38316,6 +39007,7 @@ async function regenApply() {
       c.skillTuning = 'manual';
       for (const slot of Object.keys(GGMCombat.SLOTS)) v2EquipmentSkillSaved(c, slot, base[slot], c.skills[slot], true);
       c.skillDesignLog = clone(R.history);
+      if (nc.skillSeed) c.skillSeed = clone(nc.skillSeed);
       if (R.fallback) c.skillGenerationWarning = '검사한 복구 초안을 사용 중입니다.';
       else delete c.skillGenerationWarning;
       delete c.skillGenerationNotice;
@@ -38333,6 +39025,8 @@ async function regenApply() {
     render();
     openChar(c.id);
     toast('선택한 항목을 적용했어요. 강화 단계는 유지돼요.');
+    // 스킬 3개를 다시 만들었으면 스킬 이미지 프롬프트와 이미지도 이어서 다시 만든다(2026.11.20.24).
+    if (S.skill && !R.skillKept) v2RegenerateSkillIcons(c);
   } catch (e) {
     if (REGEN === R) {
       status(e.name === 'AbortError' ? '적용을 중단했어요.' : e.message);
@@ -43320,7 +44014,7 @@ function blankDispatches() {
 }
 function blankGame() {
   const meta = clone(DEFAULT_META);
-  Object.assign(meta, { title: '새 게임', sub: '', scenario: 'custom' });
+  Object.assign(meta, { title: '새 게임', sub: '', scenario: 'custom', elems: clone(NEUTRAL_ELEMS) });
   Object.assign(meta.terms, { player: '플레이어', currency: '다이아', gacha: '소환', talk: '메신저' });
   meta.farms = meta.farms.map(f => (f.key === 'core' ? { ...f, name: '승급 재료 회수' } : f));
   meta.shop.hello = meta.shop.hello.map(line => line.replace('{관리관}', '{플레이어}'));
@@ -50664,6 +51358,7 @@ function chCover(ch) {
   return bgStyle(pl ? pl.text : ch.title);
 }
 function opsListHTML() {
+  mainRecoverInterrupted();
   const main = G.chapters.filter(c => c.kind === 'main');
   let prevDone = true,
     curIdx = -1;
@@ -50762,6 +51457,7 @@ function contractHTML0() {
   if (!b)
     return (
       pageHead(T('gacha'), 'RECRUIT') +
+      pendingDebutNoticeHTML() +
       `<div class="panel"><p>열린 배너가 없어요.</p><button class="btn" data-act="bnew">배너 만들기</button></div>`
     );
   const pity = b.id === 'std' ? P().pity : P().pities[b.id] || 0,
@@ -50780,7 +51476,7 @@ function contractHTML0() {
       return `<tr><td><span class="badge r${r}c">${RL[r]}</span> ${r === 1 ? '성장 보급 아이템' : n + '명'}</td><td style="text-align:right">${rOf(r)}%</td></tr>`;
     })
     .join('');
-  return `<div class="bsel" style="margin-top:6px">${bs.map(x => `<button class="${x.id === b.id ? 'on' : ''}" data-act="bsel" data-id="${x.id}">${esc(x.name)}${x.until && x.until > Date.now() ? ` <small class="b-dd">D-${Math.max(0, Math.ceil((x.until - Date.now()) / 864e5))}</small>` : ''}</button>`).join('')}${cheatEconomy() ? `<button data-act="newpu" title="신규 픽업 만들기">✦ 신규</button><button data-act="puexist" title="기존 ${esc(T('crew'))} 픽업">★ 픽업</button><button data-act="bnew" title="배너 직접 만들기">＋</button>` : ''}</div>
+  return `${pendingDebutNoticeHTML()}<div class="bsel" style="margin-top:6px">${bs.map(x => `<button class="${x.id === b.id ? 'on' : ''}" data-act="bsel" data-id="${x.id}">${esc(x.name)}${x.until && x.until > Date.now() ? ` <small class="b-dd">D-${Math.max(0, Math.ceil((x.until - Date.now()) / 864e5))}</small>` : ''}</button>`).join('')}${cheatEconomy() ? `<button data-act="newpu" title="신규 픽업 만들기">✦ 신규</button><button data-act="puexist" title="기존 ${esc(T('crew'))} 픽업">★ 픽업</button><button data-act="bnew" title="배너 직접 만들기">＋</button>` : ''}</div>
   ${(b.storyFail || (b.type === 'pickup' && (b.newAt || b.pin))) && !b.eventId && !PUBUSY.has(b.id) && (b.pickup || [])[0] && SAMPLE ? `<div class="panel" style="margin:6px 0;display:flex;gap:8px;align-items:center;justify-content:space-between"><span class="muted" style="font-size:.85rem">${b.storyFail ? '이 배너의 픽업 스토리를 만들다 멈췄어요.' : '이 배너에는 아직 픽업 스토리가 없어요.'}</span><button class="btn sm" data-act="pustoryretry" data-id="${esc(b.pickup[0])}" data-b="${esc(b.id)}">${b.storyFail ? '이어서 만들기' : '픽업 스토리 만들기'}</button></div>` : ''}
   <section class="pk-hero ${esc(b.type || '')} ${window.__BSLIDE || ''}" data-swipe="banner">${bs.length > 1 ? `<button class="pk-nav l" data-act="bswipe" data-d="-1" aria-label="이전 배너">‹</button><button class="pk-nav r" data-act="bswipe" data-d="1" aria-label="다음 배너">›</button><div class="pk-dots">${bs.map(x => `<i class="${x.id === b.id ? 'on' : ''}"></i>`).join('')}</div>` : ''}
     <div class="pk-bg" style="${b.bg ? bgStyle(b.bg) : bgStyle(sceneBg('summon', P().gachaBg))}"></div>
@@ -50824,7 +51520,7 @@ function crewHTML() {
   const busy = busyIds(),
     list = crewVisibleOrder();
   return `${pageHead(T('crew'), 'UNITS')}<div class="chap"><span class="muted">${list.filter(c => own(c.id)).length} / ${list.length}</span><div class="row">${cheatEconomy() ? `<button class="btn sm ghost" data-act="addchar-open">＋ ${esc(T('crew'))} 추가</button><button class="btn sm" data-act="newpu">✦ 신규 픽업 만들기</button>` : ''}<button class="btn sm ghost" data-act="castfaces">😊 표정 한꺼번에 만들기</button></div></div>
-  ${crewCardsHTML(list, busy)}`;
+  ${pendingDebutNoticeHTML()}${crewCardsHTML(list, busy)}`;
 }
 function crewCardsHTML(list, busy, action = 'char', value = '', options = {}) {
   return `<div class="grid">${list
@@ -51292,6 +51988,16 @@ function gameModeConfirm(button) {
     button.disabled
   )
     return false;
+  // 'AI로 새 게임 만들기'는 빈 초안에서 시작한다(2026.11.20.23). 이전 초안은 보관함으로 옮긴다.
+  if (pick.fresh) {
+    if (!drArchiveCurrent()) return false;
+    try {
+      appStorage.removeItem(DR2KEY);
+    } catch (e) {
+      toast('이전 초안을 비우지 못했어요.');
+      return false;
+    }
+  }
   const draft = drLoad();
   draft.economyMode = pick.mode;
   draft.depth = $('#mode_writing')?.value === 'fast' ? 'fast' : 'deep';
@@ -52616,7 +53322,9 @@ function studioHTML() {
     practice: `<div class="panel"><h3>연습장</h3><p class="muted">허수아비를 세워놓고 스킬을 시험할 수 있어요. 파티 구성과 공격 방식·이펙트를 확인하세요. 허수아비는 반격하지 않고 체력이 무제한이며, 행동력 소모와 보상은 없습니다.</p><button class="btn" data-act="v2practice">연습장 열기</button></div>`,
     game: `<div class="panel"><h3>플레이 모드 ${playMode() ? '<span class="badge">켜짐</span>' : ''}</h3>${subLocked() ? `<p class="muted" style="margin:0 0 10px">구독한 게임이라 <b>플레이 전용</b>이에요. 스토리·이벤트·캐릭터는 만든 사람이 업데이트하고, 이 기기에서는 시즌·새 이벤트 같은 자체 업데이트도 하지 않아요. AI 키 없이 그대로 즐기면 돼요. 직접 고치고 이어서 만들고 싶으면 아래 '구독 끊기'를 하세요.</p>` : `<p class="muted" style="margin:0 0 10px">켜면 새 캐릭터·스토리 만들기, 편집, 그림 다시 그리기, 글·그림 AI 설정 같은 메뉴를 숨기고 게임만 해요. 이미 연결해 둔 AI는 그대로 써요(${T('talk')}·라이브 운영 등). 언제든 여기서 다시 끌 수 있어요.</p>`}<div class="row">${subLocked() ? '' : `<button class="btn sm ${playMode() ? 'ghost' : ''}" data-act="playmode">${playMode() ? '플레이 모드 끄기' : '플레이 모드 켜기'}</button>`}${playMode() ? `<button class="btn sm ghost" data-act="pj-open">게임 목록 (${pj.list.length})</button>` : ''}</div></div>
   <div class="panel pm-hide"><h3>게임</h3><p class="muted" style="margin:0 0 10px">지금 게임: <b>${esc(G.meta.title)}</b>. 세계관, 용어, 속성, 화면 테마를 바꾸거나, AI로 완전히 다른 가챠 게임을 새로 만들 수 있어요. 게임은 여러 개 만들어 두고 오갈 수 있어요.</p>
-    <div class="row"><button class="btn sm" data-act="meta-open">게임 정의 편집</button><button class="btn sm" data-act="draft-open">AI로 새 게임 만들기</button><button class="btn sm ghost" data-act="pj-open">게임 목록 (${pj.list.length})</button></div></div>
+    <div class="row"><button class="btn sm" data-act="meta-open">게임 정의 편집</button><button class="btn sm ghost" data-act="pj-open">게임 목록 (${pj.list.length})</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn sm" data-act="draft-open">AI로 새 게임 만들기</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn sm ghost" data-act="world-restart-open">현재 게임으로 초안 채우기</button></div></div>
   <div class="panel"><h3>게시·구독</h3><p class="muted" style="margin:0 0 10px">${G.meta.subscr ? `구독 중인 게임이에요 · v${G.meta.subscr.ver || 0}${G.meta.subscr.at ? ' · ' + esc(new Date(G.meta.subscr.at).toLocaleDateString()) + ' 받음' : ''}. 만든 사람이 업데이트하면 켤 때 알려 줘요.` : G.meta.pub && G.meta.pub.ver ? `게시 중 · v${G.meta.pub.ver}. 새 장·이벤트를 만든 뒤 다시 게시하면 구독한 사람에게 업데이트가 가요.` : '내 게임을 GitHub 공개 저장소에 올려 다른 사람이 구독하게 하거나, 다른 사람이 게시한 게임을 주소로 받아요.'}</p>
     <div class="row">${G.meta.subscr ? `<button class="btn sm" data-act="subcheck">업데이트 확인</button><button class="btn sm ghost" data-act="subcopy">구독 주소 복사</button><button class="btn sm ghost" data-act="subleave">구독 끊기</button>` : `<button class="btn sm" data-act="pubopen">🌐 게임 게시</button>`}<button class="btn sm ghost" data-act="subadd">🔗 게임 구독</button></div></div>
   <div class="panel pm-hide"><h3>스토리 설정·기억</h3><p class="muted">이어지는 줄거리, 인물이 아는 사실, 복선과 집필 설정을 관리합니다. 비밀 설정이 포함되는 작가용 메뉴입니다.</p><button class="btn sm" data-sm="open">스토리 설정·기억</button></div>
@@ -54645,7 +55353,7 @@ function openChar(id, navigation) {
   const equip = `
     ${v2EquipmentCard(c, o)}
     ${v2SkillSummary(c)}
-    <div class="row" style="margin-top:6px"><button class="btn sm ghost" data-act="wnai" data-id="${c.id}">NAI로 ${T('weapon')} 그리기</button><button class="btn sm ghost" data-act="v2icons" data-id="${c.id}">스킬 이미지 생성</button></div>`;
+    <div class="row" style="margin-top:6px"><button class="btn sm ghost" data-act="wnai" data-id="${c.id}">NAI로 ${T('weapon')} 그리기</button><button class="btn sm ghost" data-act="v2icons" data-id="${c.id}">스킬 이미지 생성</button><button class="btn sm ghost" data-act="v2iconsall" data-id="${c.id}">스킬 이미지 3개 한 번에 재생성</button></div>`;
   const story = `
     <h3 class="sec">개인 스토리</h3>
     ${
@@ -57722,7 +58430,11 @@ async function buildNewGameDraft(t, draft, sourceProject) {
     stat = newGameStatus;
   const interactive = !!NEW_GAME_WORKSPACE,
     restart = interactive && draft.worldRestart?.version === 2;
-  const schema = interactive ? creationCastSchema() : charSchema();
+  // 씨앗 목록이 요청마다 바뀌므로 스키마 문장은 요청할 때 만든다(G가 새 게임으로 바뀐 뒤).
+  const schema = (fresh = 0, firstRole = '') => (
+    fresh && v2OfferSeeds(fresh, firstRole),
+    interactive ? creationCastSchema() : charSchema(false, false)
+  );
   const ngSty =
     String((auto ? '' : draft.style) || '').trim() ||
     presetQualityParts(allPresets().find(x => x.id === draft.preset) || {}).tags;
@@ -57933,8 +58645,8 @@ async function buildNewGameDraft(t, draft, sourceProject) {
     } catch (e) {}
     if (Array.isArray(a.elems) && a.elems.length === 3)
       ng.meta.elems = a.elems.map((e, i) => ({
-        n: String(e.n || DEFAULT_META.elems[i].n).slice(0, 4),
-        c: /^#[0-9a-f]{6}$/i.test(e.c || '') ? e.c : DEFAULT_META.elems[i].c
+        n: String(e.n || NEUTRAL_ELEMS[i].n).slice(0, 4),
+        c: /^#[0-9a-f]{6}$/i.test(e.c || '') ? e.c : NEUTRAL_ELEMS[i].c
       }));
     ng.meta.roles = Object.assign(clone(DEFAULT_META.roles), a.roles || {});
     if (Array.isArray(a.farms) && a.farms.length === 4)
@@ -57982,8 +58694,10 @@ async function buildNewGameDraft(t, draft, sourceProject) {
     const imported = restart ? DCH.map(d => restartCharacter(d, RSRC?.g)) : [];
     const waiting = restart ? DCH.filter((d, i) => restartCastNeedsAI(d, imported[i])) : DCH;
     const requestCast = (requested, count, existing = []) =>
+      // 2026.11.20.26 이번 요청 인원만큼 키트 씨앗을 먼저 뽑아 외형·컨셉·스킬과 함께 설계하게 한다(첫 인물은 공격).
+      (v2OfferSeeds(count, existing.length ? '' : 'atk'), 0) ||
       initialStoryJSON(
-        `${RULES}${FAN}${STY ? STY.slice(0, 3500) + '\n스토리에 이름이 나온 인물은 그 이름과 설정 그대로 ' + T('crew') + '으로 만든다(적·악역 제외).' : ''}${requested.length ? `\n작가가 정한 ${T('crew')}(반드시 모두 포함하고, 이름·성격·과거·말투·외모를 그대로 살린다. 빈 칸만 채운다):\n${requested.map(c => `- ${c.name}${c.rank ? ' / 등급 ' + RL[c.rank] + ' (rarity ' + c.rank + ')' : ''}${c.role ? ' / ' + c.role : ''}${c.profile ? ' / 성격·과거·관계: ' + String(c.profile).slice(0, 1600) : ''}${c.speech ? ' / 말투: ' + c.speech : ''}${c.look ? ' / 외모: ' + c.look : ''}`).join('\n')}\n${restart ? '위 명단의 누락 항목만 채우고 다른 인원은 추가하지 않는다.' : '나머지 인원은 세계관에 맞게 새로 만든다.'}` : ''}${DNPC.length ? `\n다음 인물은 NPC(조연)라서 ${T('crew')}으로 만들지 않는다: ${DNPC.map(c => c.name).join(', ')}` : ''}\n세계관: ${ng.world.summary}\n${String(ng.world.lore || '').slice(0, 2400)}\n플롯: ${String(ng.world.plot || '').slice(0, 2200)}\n세력: ${ng.world.factions.map(f => f.name + '(' + f.desc + ')').join(', ')}\n\n이미 확정한 이름(중복 금지): ${existing.map(c => c.name).join(', ')}\n이 게임의 ${T('crew')} ${count}명을 만들어라. ${restart ? '이미 정한 등급·역할은 초안의 값을 따른다.' : 'SSR 2~3명, 나머지 SR. 첫 번째 신규 캐릭터는 메인 시즌 픽업용 SSR 공격 역할(atk)로 만든다.'} R은 캐릭터가 아닌 아이템이므로 캐릭터로 생성하지 않는다. 세력을 고르게 나누고, 역할(atk/def/sup)과 속성도 고르게. 각자 플롯과 연결된 비밀을 files에 넣는다. 이름은 세계관에 어울리게.\nJSON만 출력: {"chars":[${schema}, ...]} ${NAI_CHAR}${src ? ' 원작 캐릭터라면 naiPrompt 앞부분에 Danbooru 캐릭터 태그와 작품 태그(예: 이름 (작품명), 작품명)를 넣는다.' : ''}`,
+        `${RULES}${FAN}${STY ? STY.slice(0, 3500) + '\n스토리에 이름이 나온 인물은 그 이름과 설정 그대로 ' + T('crew') + '으로 만든다(적·악역 제외).' : ''}${requested.length ? `\n작가가 정한 ${T('crew')}(반드시 모두 포함하고, 이름·성격·과거·말투·외모를 그대로 살린다. 빈 칸만 채운다):\n${requested.map(c => `- ${c.name}${c.rank ? ' / 등급 ' + RL[c.rank] + ' (rarity ' + c.rank + ')' : ''}${c.role ? ' / ' + c.role : ''}${c.profile ? ' / 성격·과거·관계: ' + String(c.profile).slice(0, 1600) : ''}${c.speech ? ' / 말투: ' + c.speech : ''}${c.look ? ' / 외모: ' + c.look : ''}`).join('\n')}\n${restart ? '위 명단의 누락 항목만 채우고 다른 인원은 추가하지 않는다.' : '나머지 인원은 세계관에 맞게 새로 만든다.'}` : ''}${DNPC.length ? `\n다음 인물은 NPC(조연)라서 ${T('crew')}으로 만들지 않는다: ${DNPC.map(c => c.name).join(', ')}` : ''}\n세계관: ${ng.world.summary}\n${String(ng.world.lore || '').slice(0, 2400)}\n플롯: ${String(ng.world.plot || '').slice(0, 2200)}\n세력: ${ng.world.factions.map(f => f.name + '(' + f.desc + ')').join(', ')}\n\n이미 확정한 이름(중복 금지): ${existing.map(c => c.name).join(', ')}\n이 게임의 ${T('crew')} ${count}명을 만들어라. ${restart ? '이미 정한 등급·역할은 초안의 값을 따른다.' : 'SSR 2~3명, 나머지 SR. 첫 번째 신규 캐릭터는 메인 시즌 픽업용 SSR 공격 역할(atk)로 만든다.'} R은 캐릭터가 아닌 아이템이므로 캐릭터로 생성하지 않는다. 세력을 고르게 나누고, 역할(atk/def/sup)도 고르게. 각 인물의 role은 고른 키트 씨앗의 역할로 한다. 각자 플롯과 연결된 비밀을 files에 넣는다. 이름은 세계관에 어울리게.\nJSON만 출력: {"chars":[${schema()}, ...]} ${NAI_CHAR}${src ? ' 원작 캐릭터라면 naiPrompt 앞부분에 Danbooru 캐릭터 태그와 작품 태그(예: 이름 (작품명), 작품명)를 넣는다.' : ''}`,
         null,
         'complex'
       );
@@ -58082,7 +58796,7 @@ async function buildNewGameDraft(t, draft, sourceProject) {
         stat(`2/4 초안의 ${T('crew')} ${miss.length}명을 마저 만드는 중…`);
         for (let k = 0; k < 2 && miss.length; k++) {
           const r2 = await aiJSON(
-            `${RULES}\n세계관: ${ng.world.summary}\n세력: ${ng.world.factions.map(f => f.name).join(', ')}\n다른 ${T('crew')}: ${ng.chars.map(c => c.name).join(', ')}\n다음 인물을 ${T('crew')}으로 만들어라. 이름·성격·과거·말투·외모는 그대로 살리고 빈 칸만 채운다:\n${miss.map(c => `- ${c.name}${c.rank ? ' / rarity ' + c.rank : ''}${c.role ? ' / ' + c.role : ''}${c.profile ? ' / ' + c.profile : ''}${c.speech ? ' / 말투: ' + c.speech : ''}${c.look ? ' / 외모: ' + c.look : ''}`).join('\n')}\nJSON만 출력: {"chars":[${schema}, ...]} ${NAI_CHAR}`,
+            `${RULES}\n세계관: ${ng.world.summary}\n세력: ${ng.world.factions.map(f => f.name).join(', ')}\n다른 ${T('crew')}: ${ng.chars.map(c => c.name).join(', ')}\n다음 인물을 ${T('crew')}으로 만들어라. 이름·성격·과거·말투·외모는 그대로 살리고 빈 칸만 채운다:\n${miss.map(c => `- ${c.name}${c.rank ? ' / rarity ' + c.rank : ''}${c.role ? ' / ' + c.role : ''}${c.profile ? ' / ' + c.profile : ''}${c.speech ? ' / 말투: ' + c.speech : ''}${c.look ? ' / 외모: ' + c.look : ''}`).join('\n')}\nJSON만 출력: {"chars":[${schema(Math.max(3, miss.length))}, ...]} ${NAI_CHAR}`,
             null,
             'complex'
           );
@@ -58140,7 +58854,7 @@ async function buildNewGameDraft(t, draft, sourceProject) {
         '첫 메인 시즌의 SSR 공격 대원을 만드는 중…',
         () =>
           initialStoryJSON(
-            `${RULES}\n${ctx()}\n기존 인물과 이름이 겹치지 않는 SSR 공격 역할(atk) 대원 1명을 만든다. JSON만 출력: {"char":${schema}}`,
+            `${RULES}\n${ctx()}\n기존 인물과 이름이 겹치지 않는 SSR 공격 역할(atk) 대원 1명을 만든다. JSON만 출력: {"char":${schema(1, 'atk')}}`,
             null,
             'complex'
           ),
@@ -58870,7 +59584,6 @@ function openProjects() {
   const pj = PJ();
   openModal(`${head('게임 목록')}
     ${pj.list.map(x => `<div class="project-card"><div class="project-info"><b>${esc(projectDisplayTitle(x))}</b><span class="muted">${x.id === pj.active ? '지금 플레이 중' : ''}${x.sub ? ' · 🔗 구독' : ''}</span></div><div class="project-actions"><button class="btn sm ghost" data-act="swpjdraft" data-id="${x.id}">초안으로 새로</button><button class="btn sm ghost" data-act="pjdraftx" data-id="${x.id}">초안 내보내기</button><button class="btn sm ghost" data-act="pjreroll" data-id="${x.id}">🎲 그림 유지 리롤</button>${x.id === pj.active ? '' : `<button class="btn sm" data-act="pjswitch" data-id="${x.id}">전환</button><button class="btn sm ghost" data-act="pjdel" data-id="${x.id}">삭제</button>`}</div></div>`).join('')}
-    <div class="row" style="margin-top:12px"><button class="btn" data-act="draft-open">AI로 새 게임 만들기 (초안)</button><button class="btn ghost" data-act="pjblank">기본 게임 복사본 만들기</button></div>
     <label class="f" for="pj_start">앱을 켤 때</label><select class="in" id="pj_start" onchange="try{appStorage.setItem('ggm-start',this.value)}catch(e){}">${opt(
       [
         ['last', '마지막으로 한 게임 바로 시작'],
@@ -59079,6 +59792,16 @@ function drLibHTML() {
   return `<div class="dr-lib" id="drLib"><div class="row" style="margin:0 0 6px"><b style="flex:1">저장한 초안 ${a.length}개</b><button class="btn sm" data-act="drlibsave">💾 지금 초안 저장</button></div>
   <div class="row" style="margin:0 0 6px"><button class="btn sm ghost" data-act="drxcur">📤 지금 초안 내보내기</button><button class="btn sm ghost" data-act="drimport">📥 가져오기 (코드·파일)</button></div>
   ${a.length ? a.map(x => `<div class="sw-pjr"><b>${esc(x.name)}</b><i>${new Date(x.at).toLocaleDateString()}</i><button class="btn sm" data-act="drlibload" data-id="${x.id}">불러오기</button><button class="btn sm ghost" data-act="drxlib" data-id="${x.id}">내보내기</button><button class="btn sm ghost" data-act="drlibdel" data-id="${x.id}">✕</button></div>`).join('') : '<p class="muted" style="margin:0;font-size:.8rem">아직 없어요. 지금 초안을 저장해 두면 언제든 이대로 다시 만들 수 있어요.</p>'}</div>`;
+}
+// 지금 초안에 내용이 있으면 보관함에 '이전 초안'으로 옮겨 둔다. 저장 실패 시 false.
+function drArchiveCurrent() {
+  const previous = drLoad();
+  if (drText(previous).trim() || String(previous.auto || previous.kw || previous.gtitle || '').trim()) {
+    const saved = drLib();
+    saved.unshift({ id: 'd' + uid(), name: drName(previous) + ' · 이전 초안', at: Date.now(), d: drClean(previous) });
+    if (!drLibSave(saved)) return false;
+  }
+  return true;
 }
 function drLoadFrom(d, label, chooseMode = false) {
   try {
@@ -66639,8 +67362,9 @@ function openRelEdit(id) {
     <label class="f" for="rle_h">있었던 일 (한 줄에 하나, 최근이 아래)</label><textarea class="in" id="rle_h">${esc((r.hist || []).map(h => (h.src ? h.src + ' · ' : '') + h.text).join('\n'))}</textarea>
     <div class="row" style="margin-top:12px"><button class="btn" data-act="relsave" data-id="${r.id}">저장</button><button class="btn ghost" data-act="reldel" data-id="${r.id}">이 관계 지우기</button><button class="btn ghost" data-act="relgo" data-r="${esc(RELC)}">돌아가기</button></div>`);
 }
-function charSchema(slim) {
-  return `{"skills":${JSON.stringify(v2CharacterSkillSchema())},"name":"짧은 이름","faction":"소속 세력","rarity":2 또는3 정수(2=SR,3=SSR),"role":"atk|def|sup","elem":"${ELEMS.join('|')}",${slim ? '' : '"hp":800~3000(방어형은2280~2820),"atk":80~180,"def":35~160(방어형은122~151),"spd":80~125,'}"skill":{"name":"","kind":"dmg|aoe|heal|shield|buff",${slim ? '' : '"power":0.8~3.0,"cd":2~4,'}"desc":"한 줄"},"profile":"공개 인물 소개(성격·현재 역할) 2~3문장. 숨겨진 설정은 files, 대사는 intro와 lines, 장비 설명은 weapon, 능력은 skills에만 쓴다.","intro":"${T('gacha')} 연출 첫마디","lines":["로비 인사 대사 8개(아침·밤·오랜만·일상·감정 등 상황을 다양하게). 다른 인물의 이름이나 아직 드러나지 않은 사건·적대 관계는 쓰지 않는다(플레이어가 아직 모를 수 있다)"],"affLines":{"4":["호감도 4부터 나오는 대사"],"7":["호감도 7부터"]},"lvLines":["${T('enhance')} 시 대사 2개"],"dupLines":["${T('limit')} 시 대사 1개"],"touch":{"head":["머리 터치 반응 4개"],"body":["몸 터치 시 당황하거나 놀리는 반응 4개"],"pet":["머리를 쓰다듬어 줄 때 반응 4개"]},"files":[{"dup":1,"text":"${T('limit')} 1단계에 공개되는 비밀 설정"},{"dup":3,"text":"3단계 비밀 설정, 메인 플롯과 연결"}],"weapon":{"name":"${T('weapon')} 이름","desc":"한 줄","prompt":"NovelAI 영어 태그, no humans, object focus로 시작해 simple background, white background로 끝"},"naiPrompt":"..."}`;
+// offerNew=false: 호출한 쪽이 이미 씨앗 목록을 만들었다(새 게임 캐스트 요청).
+function charSchema(slim, offerNew = true) {
+  return `{"skills":${JSON.stringify(v2CharacterSkillSchema())},"name":"짧은 이름","faction":"소속 세력","rarity":2 또는3 정수(2=SR,3=SSR),"role":"atk|def|sup","seedIndex":"${((offerNew ? v2OfferSeeds(6) : V2_SEED_OFFER) && v2SeedOfferText().replace(/"/g, "'")) || '없음'}",${slim ? '' : '"hp":800~3000(방어형은2280~2820),"atk":80~180,"def":35~160(방어형은122~151),"spd":80~125,'}"skill":{"name":"","kind":"dmg|aoe|heal|shield|buff",${slim ? '' : '"power":0.8~3.0,"cd":2~4,'}"desc":"한 줄"},"profile":"공개 인물 소개(성격·현재 역할) 2~3문장. 숨겨진 설정은 files, 대사는 intro와 lines, 장비 설명은 weapon, 능력은 skills에만 쓴다.","intro":"${T('gacha')} 연출 첫마디","lines":["로비 인사 대사 8개(아침·밤·오랜만·일상·감정 등 상황을 다양하게). 다른 인물의 이름이나 아직 드러나지 않은 사건·적대 관계는 쓰지 않는다(플레이어가 아직 모를 수 있다)"],"affLines":{"4":["호감도 4부터 나오는 대사"],"7":["호감도 7부터"]},"lvLines":["${T('enhance')} 시 대사 2개"],"dupLines":["${T('limit')} 시 대사 1개"],"touch":{"head":["머리 터치 반응 4개"],"body":["몸 터치 시 당황하거나 놀리는 반응 4개"],"pet":["머리를 쓰다듬어 줄 때 반응 4개"]},"files":[{"dup":1,"text":"${T('limit')} 1단계에 공개되는 비밀 설정"},{"dup":3,"text":"3단계 비밀 설정, 메인 플롯과 연결"}],"weapon":{"name":"${T('weapon')} 이름","desc":"한 줄","prompt":"NovelAI 영어 태그, no humans, object focus로 시작해 simple background, white background로 끝"},"naiPrompt":"..."}`;
 }
 function aiErrText(e) {
   const base = AIERR[e && e.code] || 'AI 호출에 실패했어요.';
@@ -66809,8 +67533,21 @@ function cleanChar(o, reservedId) {
   naiBlocksRemember(c);
   return c;
 }
+// 로스터에서 가장 적게 쓰인 속성(같으면 무작위). 한 번에 여러 명을 만들 때도 방금 배정한 수를 함께 센다.
+const ELEM_ASSIGNED = { game: null, counts: {} };
+function balancedElem() {
+  if (ELEM_ASSIGNED.game !== G) Object.assign(ELEM_ASSIGNED, { game: G, counts: {} });
+  const count = e => (G.chars || []).filter(c => c.elem === e).length + (ELEM_ASSIGNED.counts[e] || 0),
+    least = Math.min(...ELEMS.map(count)),
+    pool = ELEMS.filter(e => count(e) === least),
+    pick = pool[Math.floor(Math.random() * pool.length)] || ELEMS[0];
+  ELEM_ASSIGNED.counts[pick] = (ELEM_ASSIGNED.counts[pick] || 0) + 1;
+  return pick;
+}
 function cleanChar0(o, reservedId) {
   o = { ...o, rarity: Math.max(2, Math.min(3, +o?.rarity || 2)) };
+  // 2026.11.20.26 생성 요청에서 고른 키트 씨앗을 캐릭터에 붙인다(스킬 생성 때 사용).
+  const offered = typeof v2TakeOfferedSeed === 'function' ? v2TakeOfferedSeed(o) : null;
   const sk = o.skill || {},
     tc = o.touch || {},
     w = o.weapon || {},
@@ -66836,8 +67573,10 @@ function cleanChar0(o, reservedId) {
     limited: !!o.limited,
     useStanding: o.useStanding === true,
     rarity: [2, 3].includes(+o.rarity) ? +o.rarity : 2,
-    role: ROLE[o.role] ? o.role : 'atk',
-    elem: ELEMS.includes(o.elem) ? o.elem : ELEMS[0],
+    role: ROLE[o.role] ? o.role : offered?.role || 'atk',
+    ...(offered ? { skillSeed: offered.seed } : {}),
+    // 속성은 외모·컨셉과 따로 정한다(2026.11.20.25): 작가가 지정한 값만 쓰고, 없으면 로스터 균형으로 배정.
+    elem: ELEMS.includes(o.elem) ? o.elem : balancedElem(),
     baseStatsVersion: 1,
     hp: tank ? tank.hp : num(o.hp, 600, 2000, 1000),
     atk: num(o.atk, 60, 200, 110),
@@ -70614,6 +71353,12 @@ JSON만 출력: {"prompt":"..."}`,
     case 'storyretry':
       await mainJobRetry(t.dataset.job, t.dataset.ch);
       break;
+    case 'storyrevealchars':
+      await mainRevealPendingChars(t.dataset.ch);
+      break;
+    case 'storydiscard':
+      await mainDiscardPendingChapter(t.dataset.ch);
+      break;
     case 'seasonskip': {
       if (LIVE_RUN) {
         toast('이미 업데이트 중이에요');
@@ -74285,7 +75030,7 @@ async function handleCharactersAction(a, t, id, p, e) {
         toast('바꿀 항목을 하나 이상 켜 주세요');
         break;
       }
-      await regenRun(c, sel, reqs, ($('#rg_all') && $('#rg_all').value.trim()) || '');
+      await regenRun(c, sel, reqs, ($('#rg_all') && $('#rg_all').value.trim()) || '', $('#rg_seed')?.value === 'new');
       break;
     }
     case 'regenapply':
@@ -74296,7 +75041,7 @@ async function handleCharactersAction(a, t, id, p, e) {
       if (!R) break;
       REGEN = null;
       const c = charById(R.cid);
-      if (c) await regenRun(c, R.sel, R.reqs, R.global);
+      if (c) await regenRun(c, R.sel, R.reqs, R.global, R.newSeed);
       break;
     }
     case 'regenedit':
@@ -77064,7 +77809,7 @@ async function handleOperationsAndCheatsAction(a, t) {
 }
 
 
-const APP_ACTION_HANDLERS=Object.freeze({"gateyes":handleSetupAction,"gateno":handleSetupAction,"titletap":handleSetupAction,"swnext":handleSetupAction,"swaddai":handleSetupAction,"swprev":handleSetupAction,"swlink":handleSetupAction,"swskipall":handleSetupAction,"swgenre":handleSetupAction,"swgo1":handleSetupAction,"swpjgo":handleSetupAction,"swpjnew":handleSetupAction,"swsub":handleSetupAction,"swdone":handleSetupAction,"swstytest":handleSetupAction,"swtestai":handleSetupAction,"swtestnai":handleSetupAction,"title":handleSetupAction,"swpreset":handleSetupAction,"sweepcount":handleSetupAction,"sweepok":handleSetupAction,"sweep":handleSetupAction,"swdraft":handleSetupAction,"swpjdraft":handleSetupAction,"titlesnd":handleSetupAction,"prepopen":handleNavigationAndToolsAction,"rebal":handleNavigationAndToolsAction,"a2hs":handleNavigationAndToolsAction,"cdart":handleNavigationAndToolsAction,"bswipe":handleNavigationAndToolsAction,"lktake":handleNavigationAndToolsAction,"artgo":handleNavigationAndToolsAction,"artalways":handleNavigationAndToolsAction,"bpgo":handleNavigationAndToolsAction,"bpbg":handleNavigationAndToolsAction,"bpskip":handleNavigationAndToolsAction,"bpleave":handleNavigationAndToolsAction,"prepgo":handleNavigationAndToolsAction,"prepstop":handleNavigationAndToolsAction,"prepnever":handleNavigationAndToolsAction,"opnext":handleNavigationAndToolsAction,"pfdraw":handleNavigationAndToolsAction,"pfsave":handleNavigationAndToolsAction,"go":handleNavigationAndToolsAction,"close":handleNavigationAndToolsAction,"goback":handleNavigationAndToolsAction,"lbhide":handleNavigationAndToolsAction,"lbshow":handleNavigationAndToolsAction,"poke":handleNavigationAndToolsAction,"lbbgdel":handleNavigationAndToolsAction,"altnew":handleNavigationAndToolsAction,"scggen":handleNavigationAndToolsAction,"scgdel":handleNavigationAndToolsAction,"scgtest":handleNavigationAndToolsAction,"ilgen":handleNavigationAndToolsAction,"vncgview":handleNavigationAndToolsAction,"cgview":handleNavigationAndToolsAction,"cguse":handleNavigationAndToolsAction,"cgstage":handleNavigationAndToolsAction,"ildel":handleNavigationAndToolsAction,"ailog":handleNavigationAndToolsAction,"ailogcopy":handleNavigationAndToolsAction,"ailogclear":handleNavigationAndToolsAction,"artcopy":handleNavigationAndToolsAction,"artclear":handleNavigationAndToolsAction,"pthumbset":handleNavigationAndToolsAction,"pthumbcrew":handleNavigationAndToolsAction,"pthumbpick":handleNavigationAndToolsAction,"pthumbview":handleNavigationAndToolsAction,"avdel":handleNavigationAndToolsAction,"addchar-open":handleNavigationAndToolsAction,"addchar-hand":handleNavigationAndToolsAction,"addchar-ai":handleNavigationAndToolsAction,"copy":handleNavigationAndToolsAction,"copyfield":handleNavigationAndToolsAction,"playep":handleNavigationAndToolsAction,"mapedit":handleNavigationAndToolsAction,"locked":handleNavigationAndToolsAction,"sq":handleNavigationAndToolsAction,"discover":handleNavigationAndToolsAction,"ghist":handleNavigationAndToolsAction,"vnnext":handleNavigationAndToolsAction,"vnpick":handleNavigationAndToolsAction,"vnauto":handleNavigationAndToolsAction,"vnskip":handleNavigationAndToolsAction,"vnlog":handleNavigationAndToolsAction,"bquit":handleNavigationAndToolsAction,"skill":handleNavigationAndToolsAction,"bretry":handleNavigationAndToolsAction,"flip":handleNavigationAndToolsAction,"flipall":handleNavigationAndToolsAction,"gcskip":handleNavigationAndToolsAction,"closepull":handleNavigationAndToolsAction,"sdelno":handleNavigationAndToolsAction,"sdelgo":handleNavigationAndToolsAction,"saveopening":handleNavigationAndToolsAction,"aiopening":handleNavigationAndToolsAction,"savelib":handleNavigationAndToolsAction,"dellib":handleNavigationAndToolsAction,"ailib":handleNavigationAndToolsAction,"aichar-open":handleNavigationAndToolsAction,"newpu":handleNavigationAndToolsAction,"newpu-hand":handleNavigationAndToolsAction,"newpu-ai":handleNavigationAndToolsAction,"aichar":handleNavigationAndToolsAction,"nextneedai":handleNavigationAndToolsAction,"testai":handleNavigationAndToolsAction,"cplogin":handleNavigationAndToolsAction,"saload":handleNavigationAndToolsAction,"seasoninfo":handleNavigationAndToolsAction,"seasontog":handleNavigationAndToolsAction,"seasonskip":handleNavigationAndToolsAction,"livetog":handleNavigationAndToolsAction,"enh":handleNavigationAndToolsAction,"enhmax":handleNavigationAndToolsAction,"lb":handleNavigationAndToolsAction,"wup":handleNavigationAndToolsAction,"skvclear":handleNavigationAndToolsAction,"aiskin":handleNavigationAndToolsAction,"skpredo":handleNavigationAndToolsAction,"skpcancel":handleNavigationAndToolsAction,"skpok":handleNavigationAndToolsAction,"bnfac":handleNavigationAndToolsAction,"bnid":handleNavigationAndToolsAction,"bnup":handleNavigationAndToolsAction,"bnsave":handleNavigationAndToolsAction,"bndel":handleNavigationAndToolsAction,"dsauto":handleNavigationAndToolsAction,"dsclr":handleNavigationAndToolsAction,"pgetall":handleNavigationAndToolsAction,"dsel":handleNavigationAndToolsAction,"mget":handleNavigationAndToolsAction,"pget":handleNavigationAndToolsAction,"logoprev":handleNavigationAndToolsAction,"logoprevclose":handleNavigationAndToolsAction,"newgame-open":handleNavigationAndToolsAction,"aievent-open":handleNavigationAndToolsAction,"aievent":handleNavigationAndToolsAction,"sfxplay":handleNavigationAndToolsAction,"sfxgen":handleNavigationAndToolsAction,"sfxall":handleNavigationAndToolsAction,"vtest":handleNavigationAndToolsAction,"dsopen":handleNavigationAndToolsAction,"dssave":handleNavigationAndToolsAction,"dsai":handleNavigationAndToolsAction,"shareopen":handleNavigationAndToolsAction,"sharego":handleNavigationAndToolsAction,"fbopen":handleNavigationAndToolsAction,"fbissue":handleNavigationAndToolsAction,"fbpost":handleNavigationAndToolsAction,"fbstar":handleNavigationAndToolsAction,"fbsend":handleNavigationAndToolsAction,"guidecopy":handleNavigationAndToolsAction,"skbdraw":handleNavigationAndToolsAction,"skbbuy":handleNavigationAndToolsAction,"reroll0":handleNavigationAndToolsAction,"cachewipe":handleNavigationAndToolsAction,"generationreserve":handleNavigationAndToolsAction,"economy-mode-open":handleNavigationAndToolsAction,"economy-mode-pick":handleNavigationAndToolsAction,"economy-mode-confirm":handleNavigationAndToolsAction,"game-rules-open":handleNavigationAndToolsAction,"game-rules-confirm":handleNavigationAndToolsAction,"storyretry":handleNavigationAndToolsAction,"cgcheat":handleNavigationAndToolsAction,"mailopen":handleMailAction,"mailview":handleMailAction,"mailget":handleMailAction,"mailall":handleMailAction,"mailclean":handleMailAction,"maildel":handleMailAction,"cxcat":handleStoryAndAuthoringAction,"cxview":handleStoryAndAuthoringAction,"cxadd":handleStoryAndAuthoringAction,"relopen":handleStoryAndAuthoringAction,"relgo":handleStoryAndAuthoringAction,"relseed":handleStoryAndAuthoringAction,"reladd":handleStoryAndAuthoringAction,"reledit":handleStoryAndAuthoringAction,"relsave":handleStoryAndAuthoringAction,"reldel":handleStoryAndAuthoringAction,"relundo":handleStoryAndAuthoringAction,"relrebuild":handleStoryAndAuthoringAction,"cxedit":handleStoryAndAuthoringAction,"cxsave":handleStoryAndAuthoringAction,"cxdel":handleStoryAndAuthoringAction,"cxnote":handleStoryAndAuthoringAction,"cxdisc":handleStoryAndAuthoringAction,"cxdeep":handleStoryAndAuthoringAction,"cxreadall":handleStoryAndAuthoringAction,"opening-play":handleStoryAndAuthoringAction,"charstep":handleStoryAndAuthoringAction,"char":handleStoryAndAuthoringAction,"evspoke":handleStoryAndAuthoringAction,"evreroll":handleStoryAndAuthoringAction,"stamopen":handleStoryAndAuthoringAction,"stamfill":handleStoryAndAuthoringAction,"stamtog":handleStoryAndAuthoringAction,"scimg":handleStoryAndAuthoringAction,"charedit":handleStoryAndAuthoringAction,"charnew":handleStoryAndAuthoringAction,"savechar":handleStoryAndAuthoringAction,"delchar":handleStoryAndAuthoringAction,"epedit":handleStoryAndAuthoringAction,"saveep":handleStoryAndAuthoringAction,"delep":handleStoryAndAuthoringAction,"aiep":handleStoryAndAuthoringAction,"thedit":handleStoryAndAuthoringAction,"saveth":handleStoryAndAuthoringAction,"delth":handleStoryAndAuthoringAction,"aithread":handleStoryAndAuthoringAction,"ststory":handleStoryAndAuthoringAction,"story":handleStoryAndAuthoringAction,"chedit":handleStoryAndAuthoringAction,"addstage":handleStoryAndAuthoringAction,"delstage":handleStoryAndAuthoringAction,"savech":handleStoryAndAuthoringAction,"stdetail":handleStoryAndAuthoringAction,"strewrite":handleStoryAndAuthoringAction,"delch":handleStoryAndAuthoringAction,"world-open":handleStoryAndAuthoringAction,"saveworld":handleStoryAndAuthoringAction,"aiworld":handleStoryAndAuthoringAction,"opening-edit":handleStoryAndAuthoringAction,"aichapter-open":handleStoryAndAuthoringAction,"aichapter":handleStoryAndAuthoringAction,"reload":handleStoryAndAuthoringAction,"evopen":handleStoryAndAuthoringAction,"evbuy":handleStoryAndAuthoringAction,"evedit":handleStoryAndAuthoringAction,"evsave":handleStoryAndAuthoringAction,"evdel":handleStoryAndAuthoringAction,"dreroll":handleStoryAndAuthoringAction,"meta-open":handleStoryAndAuthoringAction,"metasave":handleStoryAndAuthoringAction,"draft-open":handleStoryAndAuthoringAction,"drlib":handleStoryAndAuthoringAction,"drlibsave":handleStoryAndAuthoringAction,"drlibload":handleStoryAndAuthoringAction,"drreuseoff":handleStoryAndAuthoringAction,"drxcur":handleStoryAndAuthoringAction,"drxlib":handleStoryAndAuthoringAction,"drxcopy":handleStoryAndAuthoringAction,"drxfile":handleStoryAndAuthoringAction,"drxback":handleStoryAndAuthoringAction,"drimport":handleStoryAndAuthoringAction,"drigo":handleStoryAndAuthoringAction,"drifile":handleStoryAndAuthoringAction,"drlibdel":handleStoryAndAuthoringAction,"drtab":handleStoryAndAuthoringAction,"drcadd":handleStoryAndAuthoringAction,"drcdel":handleStoryAndAuthoringAction,"drmode":handleStoryAndAuthoringAction,"drpresetopen":handleStoryAndAuthoringAction,"drpreset":handleStoryAndAuthoringAction,"drautoex":handleStoryAndAuthoringAction,"drpfdraw":handleStoryAndAuthoringAction,"drpfclear":handleStoryAndAuthoringAction,"drcfill":handleStoryAndAuthoringAction,"drpolish":handleStoryAndAuthoringAction,"drharmony":handleStoryAndAuthoringAction,"drdedup":handleStoryAndAuthoringAction,"drundo":handleStoryAndAuthoringAction,"drpreview":handleStoryAndAuthoringAction,"drclear":handleStoryAndAuthoringAction,"drmanual":handleStoryAndAuthoringAction,"drmake":handleStoryAndAuthoringAction,"charregen":handleStoryAndAuthoringAction,"cheat2":handleStoryAndAuthoringAction,"cheat":handleStoryAndAuthoringAction,"pxopen":handleSettingsAndAudioAction,"pxsave":handleSettingsAndAudioAction,"pxtest":handleSettingsAndAudioAction,"appre":handleSettingsAndAudioAction,"setname0":handleSettingsAndAudioAction,"setname":handleSettingsAndAudioAction,"playmode":handleSettingsAndAudioAction,"sttab":handleSettingsAndAudioAction,"setsec":handleSettingsAndAudioAction,"apnew":handleSettingsAndAudioAction,"apedit":handleSettingsAndAudioAction,"apsave":handleSettingsAndAudioAction,"apdel":handleSettingsAndAudioAction,"apuse":handleSettingsAndAudioAction,"apfb":handleSettingsAndAudioAction,"aptest":handleSettingsAndAudioAction,"llmopen":handleSettingsAndAudioAction,"llmsave":handleSettingsAndAudioAction,"llmtog":handleSettingsAndAudioAction,"llmclear":handleSettingsAndAudioAction,"llmpadd":handleSettingsAndAudioAction,"llmpedit":handleSettingsAndAudioAction,"llmpdel":handleSettingsAndAudioAction,"llmpcopy":handleSettingsAndAudioAction,"llmpimport":handleSettingsAndAudioAction,"sndopen":handleSettingsAndAudioAction,"vclearall":handleSettingsAndAudioAction,"vprebuild":handleSettingsAndAudioAction,"sndsave":handleSettingsAndAudioAction,"fishtest":handleSettingsAndAudioAction,"voice":handleSettingsAndAudioAction,"vclear":handleSettingsAndAudioAction,"vsearch":handleSettingsAndAudioAction,"vsai":handleSettingsAndAudioAction,"vsplay":handleSettingsAndAudioAction,"vstry":handleSettingsAndAudioAction,"vspick":handleSettingsAndAudioAction,"vsetid":handleSettingsAndAudioAction,"elcompose":handleSettingsAndAudioAction,"syopen":handleStorageAndSharingAction,"sylink":handleStorageAndSharingAction,"sypush":handleStorageAndSharingAction,"sypushf":handleStorageAndSharingAction,"sypull":handleStorageAndSharingAction,"sysave":handleStorageAndSharingAction,"bkgo":handleStorageAndSharingAction,"bkshare":handleStorageAndSharingAction,"pickgame":handleStorageAndSharingAction,"pcopen":handleStorageAndSharingAction,"syoff":handleStorageAndSharingAction,"pcsave":handleStorageAndSharingAction,"pcoff":handleStorageAndSharingAction,"pcpush":handleStorageAndSharingAction,"pcpushf":handleStorageAndSharingAction,"pcpullgo":handleStorageAndSharingAction,"pchist":handleStorageAndSharingAction,"pchistgo":handleStorageAndSharingAction,"pcpull":handleStorageAndSharingAction,"resetth":handleStorageAndSharingAction,"exportfile":handleStorageAndSharingAction,"importfile":handleStorageAndSharingAction,"pj-open":handleStorageAndSharingAction,"pjswitch":handleStorageAndSharingAction,"pjdel":handleStorageAndSharingAction,"pjblank":handleStorageAndSharingAction,"pubopen":handleStorageAndSharingAction,"pubgo":handleStorageAndSharingAction,"pubcopy":handleStorageAndSharingAction,"pubcopy2":handleStorageAndSharingAction,"subadd":handleStorageAndSharingAction,"subgo":handleStorageAndSharingAction,"subcheck":handleStorageAndSharingAction,"subapply":handleStorageAndSharingAction,"subskip":handleStorageAndSharingAction,"subcopy":handleStorageAndSharingAction,"subleave":handleStorageAndSharingAction,"pjreroll":handleStorageAndSharingAction,"pjdraftx":handleStorageAndSharingAction,"backup":handleStorageAndSharingAction,"importbk":handleStorageAndSharingAction,"reset":handleStorageAndSharingAction,"world-restart-open":handleStorageAndSharingAction,"release-history-open":handleStorageAndSharingAction,"release-history-save":handleStorageAndSharingAction,"historical-character-open":handleStorageAndSharingAction,"historical-character-pick":handleStorageAndSharingAction,"raidgo":handleCombatAndFormationAction,"raidstart":handleCombatAndFormationAction,"rgnew":handleCombatAndFormationAction,"rfslot":handleCombatAndFormationAction,"rffil":handleCombatAndFormationAction,"rfauto":handleCombatAndFormationAction,"rfclr":handleCombatAndFormationAction,"rfpick":handleCombatAndFormationAction,"rfgo":handleCombatAndFormationAction,"rgnode":handleCombatAndFormationAction,"rgskip":handleCombatAndFormationAction,"rgrelic":handleCombatAndFormationAction,"dgmove":handleCombatAndFormationAction,"dgdown":handleCombatAndFormationAction,"rgcard":handleCombatAndFormationAction,"rgrest":handleCombatAndFormationAction,"rgupg":handleCombatAndFormationAction,"rgrm":handleCombatAndFormationAction,"rgdeck":handleCombatAndFormationAction,"cbplay":handleCombatAndFormationAction,"cbsel":handleCombatAndFormationAction,"cbult":handleCombatAndFormationAction,"cbend":handleCombatAndFormationAction,"cbtgt":handleCombatAndFormationAction,"cbdeck":handleCombatAndFormationAction,"cbquit":handleCombatAndFormationAction,"rgsave":handleCombatAndFormationAction,"rgleave":handleCombatAndFormationAction,"rgquit":handleCombatAndFormationAction,"opskip":handleCombatAndFormationAction,"stage":handleCombatAndFormationAction,"sortie":handleCombatAndFormationAction,"bauto":handleCombatAndFormationAction,"bspeed":handleCombatAndFormationAction,"bdone":handleCombatAndFormationAction,"opsch":handleCombatAndFormationAction,"opsback":handleCombatAndFormationAction,"fsq":handleCombatAndFormationAction,"fpick":handleCombatAndFormationAction,"fsl":handleCombatAndFormationAction,"fauto":handleCombatAndFormationAction,"ffil":handleCombatAndFormationAction,"fsave":handleCombatAndFormationAction,"fpre":handleCombatAndFormationAction,"farmgo":handleCombatAndFormationAction,"farmstart":handleCombatAndFormationAction,"raidreset":handleCombatAndFormationAction,"raidnext":handleCombatAndFormationAction,"raidrewards":handleCombatAndFormationAction,"battleloadretry":handleCombatAndFormationAction,"battleloadback":handleCombatAndFormationAction,"rgsweep":handleCombatAndFormationAction,"webupdcheck":handleUpdatesAction,"webupdgo":handleUpdatesAction,"webupdskip":handleUpdatesAction,"updel":handleUpdatesAction,"upd-open":handleUpdatesAction,"updcheck":handleUpdatesAction,"updget":handleUpdatesAction,"updskip":handleUpdatesAction,"apkget":handleUpdatesAction,"relnotes":handleUpdatesAction,"uprollback":handleUpdatesAction,"upbuiltin":handleUpdatesAction,"csframe":handleCharactersAction,"cspoke":handleCharactersAction,"cstab":handleCharactersAction,"upgen":handleCharactersAction,"gift":handleCharactersAction,"giftgive":handleCharactersAction,"ainai":handleCharactersAction,"ailines":handleCharactersAction,"ailinesmore":handleCharactersAction,"upsave":handleCharactersAction,"upgo":handleCharactersAction,"wpai":handleCharactersAction,"wai":handleCharactersAction,"wfixall":handleCharactersAction,"regengo":handleCharactersAction,"regenapply":handleCharactersAction,"regenretry":handleCharactersAction,"regenedit":handleCharactersAction,"regencancel":handleCharactersAction,"ailooksall":handleCharactersAction,"ailooks":handleCharactersAction,"castre":handleImagesAndAssetsAction,"castfaces":handleImagesAndAssetsAction,"cfsel":handleImagesAndAssetsAction,"cfgo":handleImagesAndAssetsAction,"cfall":handleImagesAndAssetsAction,"castface":handleImagesAndAssetsAction,"castok":handleImagesAndAssetsAction,"castskip":handleImagesAndAssetsAction,"imgsave":handleImagesAndAssetsAction,"imgsaveall":handleImagesAndAssetsAction,"posegen":handleImagesAndAssetsAction,"posedel":handleImagesAndAssetsAction,"upload":handleImagesAndAssetsAction,"imgx":handleImagesAndAssetsAction,"npcscan":handleImagesAndAssetsAction,"npcopen":handleImagesAndAssetsAction,"npcsave":handleImagesAndAssetsAction,"npcdraw":handleImagesAndAssetsAction,"npctags":handleImagesAndAssetsAction,"npcdel":handleImagesAndAssetsAction,"npcadd":handleImagesAndAssetsAction,"cutclose":handleImagesAndAssetsAction,"lib":handleImagesAndAssetsAction,"libitem":handleImagesAndAssetsAction,"libnew":handleImagesAndAssetsAction,"castt":handleImagesAndAssetsAction,"game-image-reset":handleImagesAndAssetsAction,"bulkartopen":handleImagesAndAssetsAction,"bulkartpick":handleImagesAndAssetsAction,"bulkartall":handleImagesAndAssetsAction,"bulkarttypes":handleImagesAndAssetsAction,"bulkartgo":handleImagesAndAssetsAction,"bulkartstop":handleImagesAndAssetsAction,"naiopen":handleImagesAndAssetsAction,"naivariety":handleImagesAndAssetsAction,"naipreset":handleImagesAndAssetsAction,"packopen":handleImagesAndAssetsAction,"packuse":handleImagesAndAssetsAction,"packdel":handleImagesAndAssetsAction,"packcopy":handleImagesAndAssetsAction,"packimport":handleImagesAndAssetsAction,"packsave":handleImagesAndAssetsAction,"naisave":handleImagesAndAssetsAction,"cfload":handleImagesAndAssetsAction,"cftest":handleImagesAndAssetsAction,"naitest":handleImagesAndAssetsAction,"naiall":handleImagesAndAssetsAction,"skinuse":handleImagesAndAssetsAction,"faceview":handleImagesAndAssetsAction,"faces-open":handleImagesAndAssetsAction,"facesel":handleImagesAndAssetsAction,"faceup":handleImagesAndAssetsAction,"faceupnew":handleImagesAndAssetsAction,"faceupmany":handleImagesAndAssetsAction,"facedel":handleImagesAndAssetsAction,"facetgt":handleImagesAndAssetsAction,"facebasic":handleImagesAndAssetsAction,"facemask":handleImagesAndAssetsAction,"facego":handleImagesAndAssetsAction,"skin-open":handleImagesAndAssetsAction,"skinlines":handleImagesAndAssetsAction,"skpartgen":handleImagesAndAssetsAction,"skpartall":handleImagesAndAssetsAction,"skpartup":handleImagesAndAssetsAction,"skingo":handleImagesAndAssetsAction,"skindel":handleImagesAndAssetsAction,"wnai":handleImagesAndAssetsAction,"wgen":handleImagesAndAssetsAction,"imglib":handleImagesAndAssetsAction,"ilbtap":handleImagesAndAssetsAction,"ilbclear":handleImagesAndAssetsAction,"ilbdel":handleImagesAndAssetsAction,"bgmall":handleImagesAndAssetsAction,"bgmpick":handleImagesAndAssetsAction,"bgmpickall":handleImagesAndAssetsAction,"bgmallgo":handleImagesAndAssetsAction,"bgmplay":handleImagesAndAssetsAction,"bgmstop":handleImagesAndAssetsAction,"aupload":handleImagesAndAssetsAction,"worldartdraw":handleImagesAndAssetsAction,"naigen":handleImagesAndAssetsAction,"cutopen":handleImagesAndAssetsAction,"cutrun":handleImagesAndAssetsAction,"cutnai":handleImagesAndAssetsAction,"cutzoom":handleImagesAndAssetsAction,"cutundo":handleImagesAndAssetsAction,"cutnudge":handleImagesAndAssetsAction,"cuthere":handleImagesAndAssetsAction,"cutsave":handleImagesAndAssetsAction,"naigo":handleImagesAndAssetsAction,"naiagain":handleImagesAndAssetsAction,"naiedit":handleImagesAndAssetsAction,"naiuse":handleImagesAndAssetsAction,"naibatch":handleImagesAndAssetsAction,"naistop":handleImagesAndAssetsAction,"styopen":handleImagesAndAssetsAction,"styadd":handleImagesAndAssetsAction,"stydel":handleImagesAndAssetsAction,"stysave":handleImagesAndAssetsAction,"skinbuy":handleImagesAndAssetsAction,"skinpkgdel":handleImagesAndAssetsAction,"skinnew":handleImagesAndAssetsAction,"skinpromptsave":handleImagesAndAssetsAction,"daily":handleEconomyAction,"shkprompt":handleEconomyAction,"shkdraw":handleEconomyAction,"sparkopen":handleEconomyAction,"sparkgo":handleEconomyAction,"pull":handleEconomyAction,"puexist":handleEconomyAction,"puxpick":handleEconomyAction,"puxgo":handleEconomyAction,"pustoryretry":handleEconomyAction,"bsel":handleEconomyAction,"bnew":handleEconomyAction,"bedit":handleEconomyAction,"dispset":handleEconomyAction,"dispall":handleEconomyAction,"dispredo":handleEconomyAction,"dispgo":handleEconomyAction,"dispget":handleEconomyAction,"dispcancel":handleEconomyAction,"passreset":handleEconomyAction,"shopbuy":handleEconomyAction,"shopswap":handleEconomyAction,"shkedit":handleEconomyAction,"shksave":handleEconomyAction,"shkai":handleEconomyAction,"cashbuy":handleEconomyAction,"cashmonth":handleEconomyAction,"cashpkg":handleEconomyAction,"swapcount":handleEconomyAction,"swapconfirm":handleEconomyAction,"phone":handleMessengerAction,"openthread":handleMessengerAction,"phclose":handleMessengerAction,"phreceived":handleMessengerAction,"phmanage":handleMessengerAction,"phbackroom":handleMessengerAction,"phback":handleMessengerAction,"phtab":handleMessengerAction,"openfc":handleMessengerAction,"fcsend":handleMessengerAction,"fcvoice":handleMessengerAction,"fcvoiceset":handleMessengerAction,"fcphoto":handleMessengerAction,"fcphototog":handleMessengerAction,"chatimg":handleMessengerAction,"phpendx":handleMessengerAction,"chatimgsave":handleMessengerAction,"fcmenu":handleMessengerAction,"phpick":handleMessengerAction,"phmenu":handleMessengerAction,"phmenuclose":handleMessengerAction,"phadd":handleMessengerAction,"phaddback":handleMessengerAction,"phaddai":handleMessengerAction,"phaddsend":handleMessengerAction,"phsel":handleMessengerAction,"phselend":handleMessengerAction,"phdel":handleMessengerAction,"phdelblock":handleMessengerAction,"phdelall":handleMessengerAction,"phmode":handleMessengerAction,"phsay":handleMessengerAction,"phnew":handleMessengerAction,"fclear":handleMessengerAction,"arena-open":handleArenaAction,"arena-formation":handleArenaAction,"arena-formation-save":handleArenaAction,"arena-fight":handleArenaAction,"arena-detail":handleArenaAction,"arena-history":handleArenaAction,"arena-result":handleArenaAction,"arena-replay":handleArenaAction,"arena-shop":handleArenaAction,"arena-buy":handleArenaAction,"arena-replay-close":handleArenaAction,"arena-self-detail":handleArenaAction,"arena-character-detail":handleArenaAction,"arena-help":handleArenaAction,"arena-season-home":handleArenaAction,"system-thumb":handleSystemThumbnailAction,"system-challenge":handleSystemThumbnailAction,"ops-section":handleOperationsAndCheatsAction,"ops-event-open":handleOperationsAndCheatsAction,"cheat-grant":handleOperationsAndCheatsAction});
+const APP_ACTION_HANDLERS=Object.freeze({"gateyes":handleSetupAction,"gateno":handleSetupAction,"titletap":handleSetupAction,"swnext":handleSetupAction,"swaddai":handleSetupAction,"swprev":handleSetupAction,"swlink":handleSetupAction,"swskipall":handleSetupAction,"swgenre":handleSetupAction,"swgo1":handleSetupAction,"swpjgo":handleSetupAction,"swpjnew":handleSetupAction,"swsub":handleSetupAction,"swdone":handleSetupAction,"swstytest":handleSetupAction,"swtestai":handleSetupAction,"swtestnai":handleSetupAction,"title":handleSetupAction,"swpreset":handleSetupAction,"sweepcount":handleSetupAction,"sweepok":handleSetupAction,"sweep":handleSetupAction,"swdraft":handleSetupAction,"swpjdraft":handleSetupAction,"titlesnd":handleSetupAction,"prepopen":handleNavigationAndToolsAction,"rebal":handleNavigationAndToolsAction,"a2hs":handleNavigationAndToolsAction,"cdart":handleNavigationAndToolsAction,"bswipe":handleNavigationAndToolsAction,"lktake":handleNavigationAndToolsAction,"artgo":handleNavigationAndToolsAction,"artalways":handleNavigationAndToolsAction,"bpgo":handleNavigationAndToolsAction,"bpbg":handleNavigationAndToolsAction,"bpskip":handleNavigationAndToolsAction,"bpleave":handleNavigationAndToolsAction,"prepgo":handleNavigationAndToolsAction,"prepstop":handleNavigationAndToolsAction,"prepnever":handleNavigationAndToolsAction,"opnext":handleNavigationAndToolsAction,"pfdraw":handleNavigationAndToolsAction,"pfsave":handleNavigationAndToolsAction,"go":handleNavigationAndToolsAction,"close":handleNavigationAndToolsAction,"goback":handleNavigationAndToolsAction,"lbhide":handleNavigationAndToolsAction,"lbshow":handleNavigationAndToolsAction,"poke":handleNavigationAndToolsAction,"lbbgdel":handleNavigationAndToolsAction,"altnew":handleNavigationAndToolsAction,"scggen":handleNavigationAndToolsAction,"scgdel":handleNavigationAndToolsAction,"scgtest":handleNavigationAndToolsAction,"ilgen":handleNavigationAndToolsAction,"vncgview":handleNavigationAndToolsAction,"cgview":handleNavigationAndToolsAction,"cguse":handleNavigationAndToolsAction,"cgstage":handleNavigationAndToolsAction,"ildel":handleNavigationAndToolsAction,"ailog":handleNavigationAndToolsAction,"ailogcopy":handleNavigationAndToolsAction,"ailogclear":handleNavigationAndToolsAction,"artcopy":handleNavigationAndToolsAction,"artclear":handleNavigationAndToolsAction,"pthumbset":handleNavigationAndToolsAction,"pthumbcrew":handleNavigationAndToolsAction,"pthumbpick":handleNavigationAndToolsAction,"pthumbview":handleNavigationAndToolsAction,"avdel":handleNavigationAndToolsAction,"addchar-open":handleNavigationAndToolsAction,"addchar-hand":handleNavigationAndToolsAction,"addchar-ai":handleNavigationAndToolsAction,"copy":handleNavigationAndToolsAction,"copyfield":handleNavigationAndToolsAction,"playep":handleNavigationAndToolsAction,"mapedit":handleNavigationAndToolsAction,"locked":handleNavigationAndToolsAction,"sq":handleNavigationAndToolsAction,"discover":handleNavigationAndToolsAction,"ghist":handleNavigationAndToolsAction,"vnnext":handleNavigationAndToolsAction,"vnpick":handleNavigationAndToolsAction,"vnauto":handleNavigationAndToolsAction,"vnskip":handleNavigationAndToolsAction,"vnlog":handleNavigationAndToolsAction,"bquit":handleNavigationAndToolsAction,"skill":handleNavigationAndToolsAction,"bretry":handleNavigationAndToolsAction,"flip":handleNavigationAndToolsAction,"flipall":handleNavigationAndToolsAction,"gcskip":handleNavigationAndToolsAction,"closepull":handleNavigationAndToolsAction,"sdelno":handleNavigationAndToolsAction,"sdelgo":handleNavigationAndToolsAction,"saveopening":handleNavigationAndToolsAction,"aiopening":handleNavigationAndToolsAction,"savelib":handleNavigationAndToolsAction,"dellib":handleNavigationAndToolsAction,"ailib":handleNavigationAndToolsAction,"aichar-open":handleNavigationAndToolsAction,"newpu":handleNavigationAndToolsAction,"newpu-hand":handleNavigationAndToolsAction,"newpu-ai":handleNavigationAndToolsAction,"aichar":handleNavigationAndToolsAction,"nextneedai":handleNavigationAndToolsAction,"testai":handleNavigationAndToolsAction,"cplogin":handleNavigationAndToolsAction,"saload":handleNavigationAndToolsAction,"seasoninfo":handleNavigationAndToolsAction,"seasontog":handleNavigationAndToolsAction,"seasonskip":handleNavigationAndToolsAction,"livetog":handleNavigationAndToolsAction,"enh":handleNavigationAndToolsAction,"enhmax":handleNavigationAndToolsAction,"lb":handleNavigationAndToolsAction,"wup":handleNavigationAndToolsAction,"skvclear":handleNavigationAndToolsAction,"aiskin":handleNavigationAndToolsAction,"skpredo":handleNavigationAndToolsAction,"skpcancel":handleNavigationAndToolsAction,"skpok":handleNavigationAndToolsAction,"bnfac":handleNavigationAndToolsAction,"bnid":handleNavigationAndToolsAction,"bnup":handleNavigationAndToolsAction,"bnsave":handleNavigationAndToolsAction,"bndel":handleNavigationAndToolsAction,"dsauto":handleNavigationAndToolsAction,"dsclr":handleNavigationAndToolsAction,"pgetall":handleNavigationAndToolsAction,"dsel":handleNavigationAndToolsAction,"mget":handleNavigationAndToolsAction,"pget":handleNavigationAndToolsAction,"logoprev":handleNavigationAndToolsAction,"logoprevclose":handleNavigationAndToolsAction,"newgame-open":handleNavigationAndToolsAction,"aievent-open":handleNavigationAndToolsAction,"aievent":handleNavigationAndToolsAction,"sfxplay":handleNavigationAndToolsAction,"sfxgen":handleNavigationAndToolsAction,"sfxall":handleNavigationAndToolsAction,"vtest":handleNavigationAndToolsAction,"dsopen":handleNavigationAndToolsAction,"dssave":handleNavigationAndToolsAction,"dsai":handleNavigationAndToolsAction,"shareopen":handleNavigationAndToolsAction,"sharego":handleNavigationAndToolsAction,"fbopen":handleNavigationAndToolsAction,"fbissue":handleNavigationAndToolsAction,"fbpost":handleNavigationAndToolsAction,"fbstar":handleNavigationAndToolsAction,"fbsend":handleNavigationAndToolsAction,"guidecopy":handleNavigationAndToolsAction,"skbdraw":handleNavigationAndToolsAction,"skbbuy":handleNavigationAndToolsAction,"reroll0":handleNavigationAndToolsAction,"cachewipe":handleNavigationAndToolsAction,"generationreserve":handleNavigationAndToolsAction,"economy-mode-open":handleNavigationAndToolsAction,"economy-mode-pick":handleNavigationAndToolsAction,"economy-mode-confirm":handleNavigationAndToolsAction,"game-rules-open":handleNavigationAndToolsAction,"game-rules-confirm":handleNavigationAndToolsAction,"storyretry":handleNavigationAndToolsAction,"storyrevealchars":handleNavigationAndToolsAction,"storydiscard":handleNavigationAndToolsAction,"cgcheat":handleNavigationAndToolsAction,"mailopen":handleMailAction,"mailview":handleMailAction,"mailget":handleMailAction,"mailall":handleMailAction,"mailclean":handleMailAction,"maildel":handleMailAction,"cxcat":handleStoryAndAuthoringAction,"cxview":handleStoryAndAuthoringAction,"cxadd":handleStoryAndAuthoringAction,"relopen":handleStoryAndAuthoringAction,"relgo":handleStoryAndAuthoringAction,"relseed":handleStoryAndAuthoringAction,"reladd":handleStoryAndAuthoringAction,"reledit":handleStoryAndAuthoringAction,"relsave":handleStoryAndAuthoringAction,"reldel":handleStoryAndAuthoringAction,"relundo":handleStoryAndAuthoringAction,"relrebuild":handleStoryAndAuthoringAction,"cxedit":handleStoryAndAuthoringAction,"cxsave":handleStoryAndAuthoringAction,"cxdel":handleStoryAndAuthoringAction,"cxnote":handleStoryAndAuthoringAction,"cxdisc":handleStoryAndAuthoringAction,"cxdeep":handleStoryAndAuthoringAction,"cxreadall":handleStoryAndAuthoringAction,"opening-play":handleStoryAndAuthoringAction,"charstep":handleStoryAndAuthoringAction,"char":handleStoryAndAuthoringAction,"evspoke":handleStoryAndAuthoringAction,"evreroll":handleStoryAndAuthoringAction,"stamopen":handleStoryAndAuthoringAction,"stamfill":handleStoryAndAuthoringAction,"stamtog":handleStoryAndAuthoringAction,"scimg":handleStoryAndAuthoringAction,"charedit":handleStoryAndAuthoringAction,"charnew":handleStoryAndAuthoringAction,"savechar":handleStoryAndAuthoringAction,"delchar":handleStoryAndAuthoringAction,"epedit":handleStoryAndAuthoringAction,"saveep":handleStoryAndAuthoringAction,"delep":handleStoryAndAuthoringAction,"aiep":handleStoryAndAuthoringAction,"thedit":handleStoryAndAuthoringAction,"saveth":handleStoryAndAuthoringAction,"delth":handleStoryAndAuthoringAction,"aithread":handleStoryAndAuthoringAction,"ststory":handleStoryAndAuthoringAction,"story":handleStoryAndAuthoringAction,"chedit":handleStoryAndAuthoringAction,"addstage":handleStoryAndAuthoringAction,"delstage":handleStoryAndAuthoringAction,"savech":handleStoryAndAuthoringAction,"stdetail":handleStoryAndAuthoringAction,"strewrite":handleStoryAndAuthoringAction,"delch":handleStoryAndAuthoringAction,"world-open":handleStoryAndAuthoringAction,"saveworld":handleStoryAndAuthoringAction,"aiworld":handleStoryAndAuthoringAction,"opening-edit":handleStoryAndAuthoringAction,"aichapter-open":handleStoryAndAuthoringAction,"aichapter":handleStoryAndAuthoringAction,"reload":handleStoryAndAuthoringAction,"evopen":handleStoryAndAuthoringAction,"evbuy":handleStoryAndAuthoringAction,"evedit":handleStoryAndAuthoringAction,"evsave":handleStoryAndAuthoringAction,"evdel":handleStoryAndAuthoringAction,"dreroll":handleStoryAndAuthoringAction,"meta-open":handleStoryAndAuthoringAction,"metasave":handleStoryAndAuthoringAction,"draft-open":handleStoryAndAuthoringAction,"drlib":handleStoryAndAuthoringAction,"drlibsave":handleStoryAndAuthoringAction,"drlibload":handleStoryAndAuthoringAction,"drreuseoff":handleStoryAndAuthoringAction,"drxcur":handleStoryAndAuthoringAction,"drxlib":handleStoryAndAuthoringAction,"drxcopy":handleStoryAndAuthoringAction,"drxfile":handleStoryAndAuthoringAction,"drxback":handleStoryAndAuthoringAction,"drimport":handleStoryAndAuthoringAction,"drigo":handleStoryAndAuthoringAction,"drifile":handleStoryAndAuthoringAction,"drlibdel":handleStoryAndAuthoringAction,"drtab":handleStoryAndAuthoringAction,"drcadd":handleStoryAndAuthoringAction,"drcdel":handleStoryAndAuthoringAction,"drmode":handleStoryAndAuthoringAction,"drpresetopen":handleStoryAndAuthoringAction,"drpreset":handleStoryAndAuthoringAction,"drautoex":handleStoryAndAuthoringAction,"drpfdraw":handleStoryAndAuthoringAction,"drpfclear":handleStoryAndAuthoringAction,"drcfill":handleStoryAndAuthoringAction,"drpolish":handleStoryAndAuthoringAction,"drharmony":handleStoryAndAuthoringAction,"drdedup":handleStoryAndAuthoringAction,"drundo":handleStoryAndAuthoringAction,"drpreview":handleStoryAndAuthoringAction,"drclear":handleStoryAndAuthoringAction,"drmanual":handleStoryAndAuthoringAction,"drmake":handleStoryAndAuthoringAction,"charregen":handleStoryAndAuthoringAction,"cheat2":handleStoryAndAuthoringAction,"cheat":handleStoryAndAuthoringAction,"pxopen":handleSettingsAndAudioAction,"pxsave":handleSettingsAndAudioAction,"pxtest":handleSettingsAndAudioAction,"appre":handleSettingsAndAudioAction,"setname0":handleSettingsAndAudioAction,"setname":handleSettingsAndAudioAction,"playmode":handleSettingsAndAudioAction,"sttab":handleSettingsAndAudioAction,"setsec":handleSettingsAndAudioAction,"apnew":handleSettingsAndAudioAction,"apedit":handleSettingsAndAudioAction,"apsave":handleSettingsAndAudioAction,"apdel":handleSettingsAndAudioAction,"apuse":handleSettingsAndAudioAction,"apfb":handleSettingsAndAudioAction,"aptest":handleSettingsAndAudioAction,"llmopen":handleSettingsAndAudioAction,"llmsave":handleSettingsAndAudioAction,"llmtog":handleSettingsAndAudioAction,"llmclear":handleSettingsAndAudioAction,"llmpadd":handleSettingsAndAudioAction,"llmpedit":handleSettingsAndAudioAction,"llmpdel":handleSettingsAndAudioAction,"llmpcopy":handleSettingsAndAudioAction,"llmpimport":handleSettingsAndAudioAction,"sndopen":handleSettingsAndAudioAction,"vclearall":handleSettingsAndAudioAction,"vprebuild":handleSettingsAndAudioAction,"sndsave":handleSettingsAndAudioAction,"fishtest":handleSettingsAndAudioAction,"voice":handleSettingsAndAudioAction,"vclear":handleSettingsAndAudioAction,"vsearch":handleSettingsAndAudioAction,"vsai":handleSettingsAndAudioAction,"vsplay":handleSettingsAndAudioAction,"vstry":handleSettingsAndAudioAction,"vspick":handleSettingsAndAudioAction,"vsetid":handleSettingsAndAudioAction,"elcompose":handleSettingsAndAudioAction,"syopen":handleStorageAndSharingAction,"sylink":handleStorageAndSharingAction,"sypush":handleStorageAndSharingAction,"sypushf":handleStorageAndSharingAction,"sypull":handleStorageAndSharingAction,"sysave":handleStorageAndSharingAction,"bkgo":handleStorageAndSharingAction,"bkshare":handleStorageAndSharingAction,"pickgame":handleStorageAndSharingAction,"pcopen":handleStorageAndSharingAction,"syoff":handleStorageAndSharingAction,"pcsave":handleStorageAndSharingAction,"pcoff":handleStorageAndSharingAction,"pcpush":handleStorageAndSharingAction,"pcpushf":handleStorageAndSharingAction,"pcpullgo":handleStorageAndSharingAction,"pchist":handleStorageAndSharingAction,"pchistgo":handleStorageAndSharingAction,"pcpull":handleStorageAndSharingAction,"resetth":handleStorageAndSharingAction,"exportfile":handleStorageAndSharingAction,"importfile":handleStorageAndSharingAction,"pj-open":handleStorageAndSharingAction,"pjswitch":handleStorageAndSharingAction,"pjdel":handleStorageAndSharingAction,"pjblank":handleStorageAndSharingAction,"pubopen":handleStorageAndSharingAction,"pubgo":handleStorageAndSharingAction,"pubcopy":handleStorageAndSharingAction,"pubcopy2":handleStorageAndSharingAction,"subadd":handleStorageAndSharingAction,"subgo":handleStorageAndSharingAction,"subcheck":handleStorageAndSharingAction,"subapply":handleStorageAndSharingAction,"subskip":handleStorageAndSharingAction,"subcopy":handleStorageAndSharingAction,"subleave":handleStorageAndSharingAction,"pjreroll":handleStorageAndSharingAction,"pjdraftx":handleStorageAndSharingAction,"backup":handleStorageAndSharingAction,"importbk":handleStorageAndSharingAction,"reset":handleStorageAndSharingAction,"world-restart-open":handleStorageAndSharingAction,"release-history-open":handleStorageAndSharingAction,"release-history-save":handleStorageAndSharingAction,"historical-character-open":handleStorageAndSharingAction,"historical-character-pick":handleStorageAndSharingAction,"raidgo":handleCombatAndFormationAction,"raidstart":handleCombatAndFormationAction,"rgnew":handleCombatAndFormationAction,"rfslot":handleCombatAndFormationAction,"rffil":handleCombatAndFormationAction,"rfauto":handleCombatAndFormationAction,"rfclr":handleCombatAndFormationAction,"rfpick":handleCombatAndFormationAction,"rfgo":handleCombatAndFormationAction,"rgnode":handleCombatAndFormationAction,"rgskip":handleCombatAndFormationAction,"rgrelic":handleCombatAndFormationAction,"dgmove":handleCombatAndFormationAction,"dgdown":handleCombatAndFormationAction,"rgcard":handleCombatAndFormationAction,"rgrest":handleCombatAndFormationAction,"rgupg":handleCombatAndFormationAction,"rgrm":handleCombatAndFormationAction,"rgdeck":handleCombatAndFormationAction,"cbplay":handleCombatAndFormationAction,"cbsel":handleCombatAndFormationAction,"cbult":handleCombatAndFormationAction,"cbend":handleCombatAndFormationAction,"cbtgt":handleCombatAndFormationAction,"cbdeck":handleCombatAndFormationAction,"cbquit":handleCombatAndFormationAction,"rgsave":handleCombatAndFormationAction,"rgleave":handleCombatAndFormationAction,"rgquit":handleCombatAndFormationAction,"opskip":handleCombatAndFormationAction,"stage":handleCombatAndFormationAction,"sortie":handleCombatAndFormationAction,"bauto":handleCombatAndFormationAction,"bspeed":handleCombatAndFormationAction,"bdone":handleCombatAndFormationAction,"opsch":handleCombatAndFormationAction,"opsback":handleCombatAndFormationAction,"fsq":handleCombatAndFormationAction,"fpick":handleCombatAndFormationAction,"fsl":handleCombatAndFormationAction,"fauto":handleCombatAndFormationAction,"ffil":handleCombatAndFormationAction,"fsave":handleCombatAndFormationAction,"fpre":handleCombatAndFormationAction,"farmgo":handleCombatAndFormationAction,"farmstart":handleCombatAndFormationAction,"raidreset":handleCombatAndFormationAction,"raidnext":handleCombatAndFormationAction,"raidrewards":handleCombatAndFormationAction,"battleloadretry":handleCombatAndFormationAction,"battleloadback":handleCombatAndFormationAction,"rgsweep":handleCombatAndFormationAction,"webupdcheck":handleUpdatesAction,"webupdgo":handleUpdatesAction,"webupdskip":handleUpdatesAction,"updel":handleUpdatesAction,"upd-open":handleUpdatesAction,"updcheck":handleUpdatesAction,"updget":handleUpdatesAction,"updskip":handleUpdatesAction,"apkget":handleUpdatesAction,"relnotes":handleUpdatesAction,"uprollback":handleUpdatesAction,"upbuiltin":handleUpdatesAction,"csframe":handleCharactersAction,"cspoke":handleCharactersAction,"cstab":handleCharactersAction,"upgen":handleCharactersAction,"gift":handleCharactersAction,"giftgive":handleCharactersAction,"ainai":handleCharactersAction,"ailines":handleCharactersAction,"ailinesmore":handleCharactersAction,"upsave":handleCharactersAction,"upgo":handleCharactersAction,"wpai":handleCharactersAction,"wai":handleCharactersAction,"wfixall":handleCharactersAction,"regengo":handleCharactersAction,"regenapply":handleCharactersAction,"regenretry":handleCharactersAction,"regenedit":handleCharactersAction,"regencancel":handleCharactersAction,"ailooksall":handleCharactersAction,"ailooks":handleCharactersAction,"castre":handleImagesAndAssetsAction,"castfaces":handleImagesAndAssetsAction,"cfsel":handleImagesAndAssetsAction,"cfgo":handleImagesAndAssetsAction,"cfall":handleImagesAndAssetsAction,"castface":handleImagesAndAssetsAction,"castok":handleImagesAndAssetsAction,"castskip":handleImagesAndAssetsAction,"imgsave":handleImagesAndAssetsAction,"imgsaveall":handleImagesAndAssetsAction,"posegen":handleImagesAndAssetsAction,"posedel":handleImagesAndAssetsAction,"upload":handleImagesAndAssetsAction,"imgx":handleImagesAndAssetsAction,"npcscan":handleImagesAndAssetsAction,"npcopen":handleImagesAndAssetsAction,"npcsave":handleImagesAndAssetsAction,"npcdraw":handleImagesAndAssetsAction,"npctags":handleImagesAndAssetsAction,"npcdel":handleImagesAndAssetsAction,"npcadd":handleImagesAndAssetsAction,"cutclose":handleImagesAndAssetsAction,"lib":handleImagesAndAssetsAction,"libitem":handleImagesAndAssetsAction,"libnew":handleImagesAndAssetsAction,"castt":handleImagesAndAssetsAction,"game-image-reset":handleImagesAndAssetsAction,"bulkartopen":handleImagesAndAssetsAction,"bulkartpick":handleImagesAndAssetsAction,"bulkartall":handleImagesAndAssetsAction,"bulkarttypes":handleImagesAndAssetsAction,"bulkartgo":handleImagesAndAssetsAction,"bulkartstop":handleImagesAndAssetsAction,"naiopen":handleImagesAndAssetsAction,"naivariety":handleImagesAndAssetsAction,"naipreset":handleImagesAndAssetsAction,"packopen":handleImagesAndAssetsAction,"packuse":handleImagesAndAssetsAction,"packdel":handleImagesAndAssetsAction,"packcopy":handleImagesAndAssetsAction,"packimport":handleImagesAndAssetsAction,"packsave":handleImagesAndAssetsAction,"naisave":handleImagesAndAssetsAction,"cfload":handleImagesAndAssetsAction,"cftest":handleImagesAndAssetsAction,"naitest":handleImagesAndAssetsAction,"naiall":handleImagesAndAssetsAction,"skinuse":handleImagesAndAssetsAction,"faceview":handleImagesAndAssetsAction,"faces-open":handleImagesAndAssetsAction,"facesel":handleImagesAndAssetsAction,"faceup":handleImagesAndAssetsAction,"faceupnew":handleImagesAndAssetsAction,"faceupmany":handleImagesAndAssetsAction,"facedel":handleImagesAndAssetsAction,"facetgt":handleImagesAndAssetsAction,"facebasic":handleImagesAndAssetsAction,"facemask":handleImagesAndAssetsAction,"facego":handleImagesAndAssetsAction,"skin-open":handleImagesAndAssetsAction,"skinlines":handleImagesAndAssetsAction,"skpartgen":handleImagesAndAssetsAction,"skpartall":handleImagesAndAssetsAction,"skpartup":handleImagesAndAssetsAction,"skingo":handleImagesAndAssetsAction,"skindel":handleImagesAndAssetsAction,"wnai":handleImagesAndAssetsAction,"wgen":handleImagesAndAssetsAction,"imglib":handleImagesAndAssetsAction,"ilbtap":handleImagesAndAssetsAction,"ilbclear":handleImagesAndAssetsAction,"ilbdel":handleImagesAndAssetsAction,"bgmall":handleImagesAndAssetsAction,"bgmpick":handleImagesAndAssetsAction,"bgmpickall":handleImagesAndAssetsAction,"bgmallgo":handleImagesAndAssetsAction,"bgmplay":handleImagesAndAssetsAction,"bgmstop":handleImagesAndAssetsAction,"aupload":handleImagesAndAssetsAction,"worldartdraw":handleImagesAndAssetsAction,"naigen":handleImagesAndAssetsAction,"cutopen":handleImagesAndAssetsAction,"cutrun":handleImagesAndAssetsAction,"cutnai":handleImagesAndAssetsAction,"cutzoom":handleImagesAndAssetsAction,"cutundo":handleImagesAndAssetsAction,"cutnudge":handleImagesAndAssetsAction,"cuthere":handleImagesAndAssetsAction,"cutsave":handleImagesAndAssetsAction,"naigo":handleImagesAndAssetsAction,"naiagain":handleImagesAndAssetsAction,"naiedit":handleImagesAndAssetsAction,"naiuse":handleImagesAndAssetsAction,"naibatch":handleImagesAndAssetsAction,"naistop":handleImagesAndAssetsAction,"styopen":handleImagesAndAssetsAction,"styadd":handleImagesAndAssetsAction,"stydel":handleImagesAndAssetsAction,"stysave":handleImagesAndAssetsAction,"skinbuy":handleImagesAndAssetsAction,"skinpkgdel":handleImagesAndAssetsAction,"skinnew":handleImagesAndAssetsAction,"skinpromptsave":handleImagesAndAssetsAction,"daily":handleEconomyAction,"shkprompt":handleEconomyAction,"shkdraw":handleEconomyAction,"sparkopen":handleEconomyAction,"sparkgo":handleEconomyAction,"pull":handleEconomyAction,"puexist":handleEconomyAction,"puxpick":handleEconomyAction,"puxgo":handleEconomyAction,"pustoryretry":handleEconomyAction,"bsel":handleEconomyAction,"bnew":handleEconomyAction,"bedit":handleEconomyAction,"dispset":handleEconomyAction,"dispall":handleEconomyAction,"dispredo":handleEconomyAction,"dispgo":handleEconomyAction,"dispget":handleEconomyAction,"dispcancel":handleEconomyAction,"passreset":handleEconomyAction,"shopbuy":handleEconomyAction,"shopswap":handleEconomyAction,"shkedit":handleEconomyAction,"shksave":handleEconomyAction,"shkai":handleEconomyAction,"cashbuy":handleEconomyAction,"cashmonth":handleEconomyAction,"cashpkg":handleEconomyAction,"swapcount":handleEconomyAction,"swapconfirm":handleEconomyAction,"phone":handleMessengerAction,"openthread":handleMessengerAction,"phclose":handleMessengerAction,"phreceived":handleMessengerAction,"phmanage":handleMessengerAction,"phbackroom":handleMessengerAction,"phback":handleMessengerAction,"phtab":handleMessengerAction,"openfc":handleMessengerAction,"fcsend":handleMessengerAction,"fcvoice":handleMessengerAction,"fcvoiceset":handleMessengerAction,"fcphoto":handleMessengerAction,"fcphototog":handleMessengerAction,"chatimg":handleMessengerAction,"phpendx":handleMessengerAction,"chatimgsave":handleMessengerAction,"fcmenu":handleMessengerAction,"phpick":handleMessengerAction,"phmenu":handleMessengerAction,"phmenuclose":handleMessengerAction,"phadd":handleMessengerAction,"phaddback":handleMessengerAction,"phaddai":handleMessengerAction,"phaddsend":handleMessengerAction,"phsel":handleMessengerAction,"phselend":handleMessengerAction,"phdel":handleMessengerAction,"phdelblock":handleMessengerAction,"phdelall":handleMessengerAction,"phmode":handleMessengerAction,"phsay":handleMessengerAction,"phnew":handleMessengerAction,"fclear":handleMessengerAction,"arena-open":handleArenaAction,"arena-formation":handleArenaAction,"arena-formation-save":handleArenaAction,"arena-fight":handleArenaAction,"arena-detail":handleArenaAction,"arena-history":handleArenaAction,"arena-result":handleArenaAction,"arena-replay":handleArenaAction,"arena-shop":handleArenaAction,"arena-buy":handleArenaAction,"arena-replay-close":handleArenaAction,"arena-self-detail":handleArenaAction,"arena-character-detail":handleArenaAction,"arena-help":handleArenaAction,"arena-season-home":handleArenaAction,"system-thumb":handleSystemThumbnailAction,"system-challenge":handleSystemThumbnailAction,"ops-section":handleOperationsAndCheatsAction,"ops-event-open":handleOperationsAndCheatsAction,"cheat-grant":handleOperationsAndCheatsAction});
 document.addEventListener('click',async e=>{
   if(window.__SWIPED&&Date.now()-window.__SWIPED<450){ window.__SWIPED=0; return; }
   const t=e.target.closest('[data-tab],[data-act]'); if(!t) return;
@@ -80559,7 +81304,98 @@ function mainRetryCard(ch, entry) {
     running = MAIN_JOB_GAMES.has(G) || (!!ch && STORY_RUNNING.has(ch)),
     id = entry?.id || '',
     failed = j?.status === 'failed' || !!p?.error;
-  return `<div class="chc story-retry"><div class="chc-art" style="${ch ? chCover(ch) : ''}"><button class="btn story-retry-button" data-act="storyretry" data-job="${esc(id)}" data-ch="${esc(ch?.id || '')}" ${running || !failed || (entry && id !== 'manual' && mainJobHead()?.id !== id) ? 'disabled' : ''}>${running ? '스토리 생성 중' : failed ? '스토리 생성 재시도' : '이전 장 생성 대기 중'}</button></div><div class="chc-t"><b>${esc(ch?.title || '다음 이야기')}</b><p>${esc(p?.error || j?.error || '완료한 작업부터 이어서 생성합니다.')}</p></div></div>`;
+  // 멈춘 장 선택지(2026.11.20.27): 신규 캐릭터만 먼저 공개 · 직접 만든 장 폐기.
+  const extra =
+    ch && failed && !running
+      ? `<div class="row" style="margin-top:6px">${mainPendingDraftChars(ch).length ? `<button class="btn sm ghost" data-act="storyrevealchars" data-ch="${esc(ch.id)}">캐릭터만 먼저 공개</button>` : ''}${ch.seasonJob ? '' : `<button class="btn sm ghost" data-act="storydiscard" data-ch="${esc(ch.id)}">이번 장 폐기</button>`}</div>`
+      : '';
+  return `<div class="chc story-retry"><div class="chc-art" style="${ch ? chCover(ch) : ''}"><button class="btn story-retry-button" data-act="storyretry" data-job="${esc(id)}" data-ch="${esc(ch?.id || '')}" ${running || !failed || (entry && id !== 'manual' && mainJobHead()?.id !== id) ? 'disabled' : ''}>${running ? '스토리 생성 중' : failed ? '스토리 생성 재시도' : '이전 장 생성 대기 중'}</button></div><div class="chc-t"><b>${esc(ch?.title || '다음 이야기')}</b><p>${esc(p?.error || j?.error || '완료한 작업부터 이어서 생성합니다.')}</p>${extra}</div></div>`;
+}
+
+// ===== 2026.11.20.27 앱 종료로 멈춘 메인 장 복구·선택지·대기 안내 =====
+// 직접 만든 메인 장이 생성 중 표시만 남고 실행 중이 아니면(앱 종료·튕김) 중단으로 표시해 재시도를 연다.
+// 시즌 작업 장(seasonJob)은 작업 대기열이 스스로 이어서 만들므로 건드리지 않는다.
+function mainRecoverInterrupted() {
+  if (MAIN_CHAPTER_ACTIVE.has(G) || MAIN_JOB_GAMES.has(G) || LIVE_RUN || GENERATION_TASK) return false;
+  let changed = false;
+  for (const ch of G.chapters) {
+    const p = ch.generationPending;
+    if (ch.kind !== 'main' || !p || p.error || ch.seasonJob || STORY_RUNNING.has(ch)) continue;
+    p.error = '앱이 종료되어 스토리 생성이 중단됐어요. 이어서 만들 수 있어요.';
+    p.interrupted = true;
+    delete p.running;
+    mark('ch:' + ch.id);
+    changed = true;
+  }
+  return changed;
+}
+function mainPendingDraftChars(ch) {
+  const ids = new Set([...(ch?.generationPending?.newc || []), ...(ch?.pickupIds || [])]);
+  return G.chars.filter(c => ids.has(c.id) && c.draft);
+}
+function mainPendingBusy(ch) {
+  return MAIN_JOB_GAMES.has(G) || MAIN_CHAPTER_ACTIVE.has(G) || STORY_RUNNING.has(ch) || LIVE_RUN || GENERATION_TASK;
+}
+// 멈춘 장의 신규 캐릭터만 먼저 공개한다. 장 대본은 나중에 이어서 만들고, 픽업 배너는 장이 완성될 때 열린다.
+async function mainRevealPendingChars(chId) {
+  const ch = G.chapters.find(c => c.id === chId && c.generationPending);
+  if (!ch || mainPendingBusy(ch)) return;
+  const chars = mainPendingDraftChars(ch);
+  if (!chars.length) return toast('먼저 공개할 신규 캐릭터가 없어요.');
+  if (
+    !(await appConfirm(
+      `신규 ${T('crew')} ${chars.map(c => c.name).join(', ')}을(를) 먼저 공개할까요? 장 대본은 나중에 이어서 만들 수 있고, 픽업 배너는 장이 완성되면 열려요.`
+    ))
+  )
+    return;
+  if (!G.chapters.includes(ch) || !ch.generationPending || mainPendingBusy(ch)) return;
+  for (const c of chars) {
+    delete c.draft;
+    mark('c:' + c.id);
+  }
+  await flush();
+  toast(`신규 ${T('crew')}를 먼저 공개했어요.`);
+  if (tab === 'ops') render();
+}
+// 직접 만든 멈춘 장을 버린다. 신규 캐릭터는 보존·공개하고, 버린 장의 데뷔 스테이지 연결만 지운다.
+async function mainDiscardPendingChapter(chId) {
+  const ch = G.chapters.find(c => c.id === chId && c.kind === 'main' && c.generationPending && !c.seasonJob);
+  if (!ch || mainPendingBusy(ch)) return;
+  if (!(await appConfirm('이번 장을 폐기할까요? 쓰던 대본은 지워지고, 신규 캐릭터는 그대로 남아 공개돼요.'))) return;
+  if (!G.chapters.includes(ch) || !ch.generationPending || mainPendingBusy(ch)) return;
+  const stageIds = new Set((ch.stages || []).map(s => s.id));
+  for (const c of mainPendingDraftChars(ch)) {
+    delete c.draft;
+    if (stageIds.has(c.debut)) delete c.debut;
+    mark('c:' + c.id);
+  }
+  G.chapters = G.chapters.filter(c => c !== ch);
+  mark('ch:' + ch.id);
+  const manual = P().live.manualMainDraft;
+  if (manual?.chapterId === ch.id) {
+    delete P().live.manualMainDraft;
+    mark('prog');
+  }
+  await flush();
+  toast('이번 장을 폐기했어요. 다음 장을 새로 만들 수 있어요.');
+  if (tab === 'ops') render();
+}
+// 신규 캐릭터가 장 완성 전이라 숨겨져 있을 때 보여주는 안내(대원·모집 화면).
+function pendingDebutNoticeHTML() {
+  mainRecoverInterrupted();
+  const rows = G.chapters
+    .filter(ch => ch.generationPending)
+    .map(ch => ({ ch, chars: mainPendingDraftChars(ch) }))
+    .filter(x => x.chars.length);
+  if (!rows.length) return '';
+  const n = rows.reduce((t, x) => t + x.chars.length, 0),
+    stopped = rows.some(x => x.ch.generationPending.error),
+    percent = Math.max(0, ...rows.map(x => +x.ch.generationPending.percent || 0));
+  return `<div class="panel pending-debut" role="status"><div class="pending-debut-sil" aria-hidden="true">?</div><div><b>신규 ${esc(T('crew'))} ${n}명 합류 준비 ${stopped ? '중단됨' : '중'}</b><p class="muted">${
+    stopped
+      ? '스토리 생성이 멈췄어요. 메인 스토리 화면에서 이어서 만들거나 캐릭터만 먼저 공개할 수 있어요.'
+      : `다음 장 집필 ${Math.round(percent)}% · 장이 완성되면 공개돼요.`
+  }</p></div></div>`;
 }
 const STORY_RUNNING = new WeakSet();
 /* Nonblocking story progress and idempotent postprocessing checkpoints. */
@@ -89532,12 +90368,7 @@ function openWorldRestart() {
     toast('진행 중인 생성·저장 작업이 끝난 뒤 초안을 열어 주세요.');
     return false;
   }
-  const previous = drLoad();
-  if (drText(previous).trim() || String(previous.auto || previous.kw || previous.gtitle || '').trim()) {
-    const saved = drLib();
-    saved.unshift({ id: 'd' + uid(), name: drName(previous) + ' · 이전 초안', at: Date.now(), d: drClean(previous) });
-    if (!drLibSave(saved)) return false;
-  }
+  if (!drArchiveCurrent()) return false;
   const draft = worldRestartDraft(G, PJ().active);
   if (drLoadFrom(draft, G.meta.title + ' · 새 시작') === false) return false;
   toast('기존 설정을 디테일 초안에 채웠어요. 수정한 뒤 새 게임을 만들어 주세요.');
@@ -90158,7 +90989,8 @@ async function compareNewGamePortraits(game, draft, id, reuse) {
 }
 
 function creationCastSchema() {
-  return '{"name":"","role":"atk|def|sup","rarity":2,"elem":"","faction":"","look":"","speech":"","profile":"","skillConcept":"세계관에 맞는 전투 방식과 대표 능력 한 문장. 서사 비밀은 제외한다.","intro":"","lines":[],"files":[],"naiPrompt":""}';
+  const seeds = (V2_SEED_OFFER && v2SeedOfferText().replace(/"/g, "'")) || '없음';
+  return `{"name":"","role":"atk|def|sup","rarity":2,"seedIndex":"${seeds}","faction":"","look":"","speech":"","profile":"","skillConcept":"세계관에 맞는 전투 방식과 대표 능력 한 문장. 서사 비밀은 제외한다.","intro":"","lines":[],"files":[],"naiPrompt":""}`;
 }
 function creationCharacter(raw) {
   const c = NEW_GAME_WORKSPACE ? cleanChar0(raw) : cleanChar(raw);

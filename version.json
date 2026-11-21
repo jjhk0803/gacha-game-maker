@@ -1,16 +1,14 @@
 {
-  "build": "2026.11.19.4",
-  "notes": [
-    "스토리 집필 연속성 개선 및 게임별 스토리 설정·기억 편집 추가"
-  ],
+  "build": "2026.11.20.19",
+  "notes": [],
   "notice": null,
   "html": "www/index.html",
-  "sha256": "06f3cd392cf89cd778e876c480de97aff60b1a7a2a11b57b284cb1d54530bba3",
+  "sha256": "e4494e0a63b8a5c15253893455c0fbf6bec2239f25b84cc77ab86f4bda6be3b7",
   "apk": {
     "url": "https://github.com/jjhk0803/gacha-game-maker/releases/latest",
     "build": "2026.11.19.1",
     "minShell": "2026.11.13.3"
   },
   "feedback": "",
-  "at": "2026-11-19T13:25:54.587549Z"
+  "at": "2026-11-21T01:40:45.032944Z"
 }

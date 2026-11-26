@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <script>
 (function(){
-  var BUILT='2026.11.20.48'; var REQUIRED_APK='2026.11.13.3'; window.__REQUIRED_APK__=REQUIRED_APK; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
+  var BUILT='2026.11.20.55'; var REQUIRED_APK='2026.11.13.3'; window.__REQUIRED_APK__=REQUIRED_APK; window.APP_BUILD=BUILT; window.__SHELL__=window.__SHELL__||BUILT;
   function vc(a,b){a=String(a||'').split(/\D+/).map(Number);b=String(b||'').split(/\D+/).map(Number);for(var i=0;i<Math.max(a.length,b.length);i++){var x=a[i]||0,y=b[i]||0;if(x!==y)return x<y?-1:1;}return 0;}
   if(window.__LIVE__) return;
   if(window.indexedDB){window.__STORAGE_SHELL__=BUILT;return;}
@@ -16063,6 +16063,13 @@ body.play.economy-cheat
 /* 2026.11.20.43 공용 도움말 말풍선 기준 위치 */
 [data-help-anchor] {
   position: relative;
+}
+
+/* 2026.11.20.49 상반신 목록 맨 위 세계관 정보 버튼 */
+.creation-world-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
 }
 .roster-budget-toggle {
   display: flex;
@@ -33705,6 +33712,7 @@ function v2SeedOfferText(offer = V2_SEED_OFFER) {
     (typeof designExposureText === 'function' ? designExposureText() : '') +
     (typeof designCostumeText === 'function' ? designCostumeText() : '') +
     (typeof designModeText === 'function' ? designModeText() : '') +
+    (typeof FAN_CAST_RULE !== 'undefined' && String(G?.world?.source || '').trim() ? ' ' + FAN_CAST_RULE : '') +
     ' 씨앗끼리 세계관상 불가능한 조합이면 그 항목만 세계관에 맞게 바꾸고, 드물지만 가능한 조합은 그대로 살린다: ' +
     offer.seeds
       .map(
@@ -35647,6 +35655,16 @@ Object.defineProperty(window, 'SCRIPT_FMT', { get: scriptFmt });
 Object.defineProperty(window, 'THREAD_FMT', { get: threadFmt });
 const TITLE_RULE =
   "게임 이름은 요즘 서브컬처 가챠 게임처럼 짧고 느낌 있게 짓는다(실제 게임 이름은 쓰지 않는다): 2~4글자 한자어·합성어(예: 심연잔향, 성흔, 월하), 또는 영어 두 단어를 한글로 읽은 이름(예: 어비스 에코, 노바 레퀴엠). '~의 ~'처럼 풀어 쓴 이름이나 설명 같은 이름은 피한다. sub는 영문 제목(예: Abyss Echo). ";
+// 2026.11.20.50 2차 창작: 원작 캐릭터 우선, 작가가 원작과 다른 무대를 적으면 그 무대로 옮긴다(AU). 원작 미성년 캐릭터는 노출·성적 묘사에서 제외.
+function fanSourceRule(src) {
+  const name = String(src || '').trim();
+  if (!name) return '';
+  return `2차 창작: 원작 「${name}」을(를) 바탕으로 한다. 원작 캐릭터는 원작 이름 그대로 쓰고 이름·성격·관계·말투·능력 모티프·외모를 원작대로 살린다. 작가가 적은 세계관·요청이 원작과 다른 무대(현대·학교·회사·다른 장르 등)를 정하면 원작 세계관 대신 그 무대를 쓰는 AU로 만든다: 원작 캐릭터를 그 무대에 맞는 직업·소속·나이대로 재배치하고, 원작 세력·단체는 그 무대에 있을 법한 단체로 옮기며 원작의 대립·유대 구도는 유지하고, 원작 능력은 그 무대에서 성립하는 형태(기술·특기·이능 등)로 바꿔 전투에 쓴다. 무대를 따로 정하지 않았으면 원작 세계관·세력·용어를 최대한 충실하게 쓴다. 원작 캐릭터로 모자란 자리만 그 세계관에 있을 법한 오리지널 캐릭터로 채운다.`;
+}
+// 2026.11.20.53 모든 AI 요청 공통: 미성년 캐릭터 노출·성적 묘사 금지(2차 창작 전용 문구를 대체).
+const MINOR_CONTENT_RULE = 'loli·shota 등 미성년 캐릭터는 노출·성적 묘사의 대상으로 쓰지 않는다.';
+const FAN_CAST_RULE =
+  '원작 캐릭터는 JSON에 "canon":true를 넣고 외형 씨앗(의상 원형·종족·특징)을 따르지 않는다: seedIndex는 역할에 맞는 번호를 고르되 외모·의상·naiPrompt는 원작대로(무대가 바뀌었으면 원작 외모에 그 무대의 옷차림) 쓴다. 원작에 없는 오리지널 캐릭터만 "canon":false로 외형 씨앗을 따른다.';
 // 2026.11.20.44 스킨 콘셉트(카운터사이드식): 옷은 테마대로 완전히 바꾸고 직업·성격은 이름·설정·대사·소품으로 살린다. 모든 오타쿠 감성 단계에 적용.
 const SKIN_CONCEPT_RULE =
   '스킨 옷은 테마대로 완전히 바꾸고 원래 직업 의상 요소를 남기지 않는다. 캐릭터의 직업·성격은 스킨 이름·설정·대사로 살린다(예: 잠입 요원 → 「잠입 임무: 해변 관광객」, 메이드 → 「휴가 받은 메이드장」). 소품은 스킨 테마 안에서 직업을 암시하는 것으로 고른다(예: 위장 관광객 → 소형 카메라). 평소 의상과의 대비(갭)를 살린다.';
@@ -36617,7 +36635,9 @@ async function aiOne(p, prompt, tier, imgs, options = {}) {
   const cmax = { quick: 4000, default: 16000, complex: 32000 }[tier];
   const P2 =
     prompt +
-    '\n\n다른 설명이나 코드 블록 없이 JSON만 출력한다. 문자열 값 안에서 따옴표가 필요하면 큰따옴표 대신 「」나 작은따옴표를 쓴다.';
+    '\n\n' +
+    MINOR_CONTENT_RULE +
+    '\n다른 설명이나 코드 블록 없이 JSON만 출력한다. 문자열 값 안에서 따옴표가 필요하면 큰따옴표 대신 「」나 작은따옴표를 쓴다.';
   smRecord(P2, tier);
   const CC = imgs.length
     ? [
@@ -37967,12 +37987,10 @@ function rebaseImageStyle(prompt, kind, options, config = naiCfg()) {
     style
   };
 }
-const AGE_TAGS =
-  /^(mature female|mature male|mature woman|mature man|milf|mature|adult woman|adult man|adult|older woman|old woman|aged up)$/i;
+// 2026.11.20.54 성숙 태그(mature female·adult woman 등) 강제 삭제 해제: 태그 목록 정리만 한다.
+// 나이 태그는 LLM 지시(NAI_CHAR: 기본으로 넣지 않고 설정상 필요할 때만)로 다룬다.
 function stripAge(s) {
-  return tagList(s)
-    .filter(t => !AGE_TAGS.test(tagKey(t)))
-    .join(', ');
+  return tagList(s).join(', ');
 }
 function naiIllustrationComposition(kind, saved = {}) {
   const stage = saved.limitStage ?? limitCgStage(kind);
@@ -38035,11 +38053,11 @@ function composeNai(kind, base, opt) {
       String(base || '')
     );
   if ((human || kind === 'cg') && !pointy) fneg = joinTags(fneg, 'pointy ears, elf');
-  const manual = joinTags(c.neg, st.neg, part.neg, human ? 'child, loli' : '');
+  const manual = joinTags(c.neg, st.neg, part.neg, human ? 'child' : '');
   const manualKeys = new Set(tagList(manual).map(t => imagePromptKey(tagKey(t))));
   return {
     input: joinTags(st.tags, stripPreviousImageStyle(c.prefix, st.tags), body.join(', '), pose, frame, suffix),
-    neg: joinTags(c.neg, st.neg, part.neg, fneg, human ? 'child, loli' : ''),
+    neg: joinTags(c.neg, st.neg, part.neg, fneg, human ? 'child' : ''),
     autoNeg: tagList(fneg).filter(t => !manualKeys.has(imagePromptKey(tagKey(t))))
   };
 }
@@ -39876,7 +39894,7 @@ function composeCG(l, opt) {
       stripPreviousImageStyle(l.prompt, st.tags),
       c.parts.cg.suffix
     ),
-    neg: joinTags(c.neg, st.neg, c.parts.cg.neg, n ? 'child, loli' : ''),
+    neg: joinTags(c.neg, st.neg, c.parts.cg.neg, n ? 'child' : ''),
     chars: cast.map(x => ({
       name: x.c.name,
       id: x.c.id,
@@ -41070,10 +41088,18 @@ async function comfyGenerate(prompt, kind, opts, basePrompt = prompt) {
   return blob;
 }
 let NAI_TP_OFF = false;
-/* 등장인물은 모두 성인이에요: 미성년으로 읽히는 태그는 그림 요청에서 빼요(직접 적은 태그·AI가 쓴 태그 모두) */
+/* 2026.11.20.54 모든 게임: 아이로 그리는 태그만 빼고 teen·young·중학생 태그는 허용한다(원작 외형 재현).
+   loli·shota는 지우지 않고 체형·나이대 태그로 바꾼다. 사람 그림 네거티브는 child. */
 const MINOR_TAGS =
-  /^(loli|lolicon|shota|shotacon|child|children|kid|kids|toddler|baby|infant|young child|young girl|young boy|little girl|little boy|preteen|pre-teen|underage|minor|teen|teens|teenage|teenager|aged down|elementary school student|middle school student|elementary schooler|middle schooler|kindergartener)$/i;
-const stripMinor = s => imagePromptVisit(s, key => !MINOR_TAGS.test(key));
+  /^(loli|lolicon|shota|shotacon|child|children|kid|kids|toddler|baby|infant|young child|little girl|little boy|preteen|pre-teen|underage|minor|aged down|elementary school student|elementary schooler|kindergartener)$/i;
+const MINOR_TAG_SWAP = { loli: 'petite, teenage', shota: 'slim, teenage' };
+function swapMinorTags(s) {
+  return String(s || '').replace(
+    /(^|[,{}\[\]()|:]\s*)(loli|shota)(?=\s*(?:$|[,{}\[\]()|:]))/gi,
+    (all, head, tag) => head + MINOR_TAG_SWAP[tag.toLowerCase()]
+  );
+}
+const stripMinor = s => imagePromptVisit(swapMinorTags(s), key => !MINOR_TAGS.test(key));
 let activeImageRequests = 0;
 async function naiGenerate(prompt, kind, opts) {
   if (window.__NOFLUSH && BACKUP_BUSY) throw Error('이미지 저장소 작업이 끝난 뒤 다시 시도해 주세요.');
@@ -49730,7 +49756,7 @@ function openNewPickup(pre) {
       )}</select>
       <p class="muted" style="margin:4px 0 0;font-size:.78rem">외전 이격은 이벤트 스토리에만 나오고, 메인 스토리에서는 원래 모습으로 나와요. 정사 이격은 그 뒤 메인 스토리에서 이 모습으로 나와요. 같은 사람의 다른 모습(수영복, 정장, 각성, 과거 등)이에요. 별도의 ${esc(T('crew'))}로 뽑을 수 있고, 속성·역할·스킬이 달라요. 아래 칸에 테마를 적어 주세요.</p></div>
     <div id="pu_colw" hidden><div class="g2"><div><label class="f" for="pu_src">작품 이름</label><input class="in" id="pu_src" placeholder="예: 작품 이름"></div><div><label class="f" for="pu_who">캐릭터 이름 (비우면 AI가 고르기)</label><input class="in" id="pu_who" placeholder="예: 캐릭터 이름"></div></div>
-      <p class="muted" style="margin:4px 0 0;font-size:.78rem">원작의 성인 캐릭터만 나와요. 원작에서 미성년자·학생인 캐릭터는 만들지 않아요. 개인 감상용으로만 써 주세요.</p></div>
+      <p class="muted" style="margin:4px 0 0;font-size:.78rem">원작 캐릭터를 원작 외형·성격 그대로 만들어요. 개인 감상용으로만 써 주세요.</p></div>
     <label class="f" for="pu_c">어떤 ${esc(T('crew'))}인가요? (설정, 성격, 외모, 무기 등 자유롭게) <span class="muted" style="font-size:.78rem">콜라보는 비워도 돼요</span></label><textarea class="in" id="pu_c" style="min-height:110px" placeholder="예: 몰락한 기사단의 마지막 단장. 말수가 적고 단 것을 좋아한다. 은발, 검은 갑옷, 대검."></textarea>
     <div class="g2"><div><label class="f" for="pu_r">희귀도</label><select class="in" id="pu_r">${opt(
       [
@@ -49893,7 +49919,7 @@ async function puStoryBg(c, lim, bn) {
         ab
           ? `이격 ${T('crew')} 「${c.name}」의 픽업 기념 이벤트 스토리. ${c.altCanon ? '정사 이야기: 이 사건으로 ' + ab.name + '이(가) 지금의 모습이 되고, 이 변화는 이후 메인 스토리에 이어진다.' : '외전 이야기: 세계관의 실제 사건으로 다루며 변화가 지속될 수도 있다. 본편 핵심 갈등을 임의 해결하지 않는다.'} 익숙한 ${ab.name}이(가) 지금까지와 다른 모습(${c.name.replace(ab.name, '').replace(/[()]/g, '') || '새 모습'})으로 ${playerName()} 앞에 나타나는 이야기. 성격과 말투는 ${ab.name} 그대로지만, 이 모습이라서 생기는 설렘·웃음·사건을 보여 준다. 이 모습일 때의 대사 이름은 반드시 「${c.name}」로 쓴다. 프로필: ${String(c.profile || '').slice(0, 300)}. 기존 ${T('crew')} 1~2명이 조연으로 나온다.`
           : c.collab
-            ? `「${c.collab}」 콜라보 이벤트. 다른 세계에서 온 「${c.name}」이(가) 이 세계에 떨어져 ${playerName()}와(과) 만나는 이야기. 서로의 세계 차이에서 오는 웃음과 긴장, 함께 싸우며 믿음을 쌓는 과정, 마지막은 돌아가기 전까지 동료로 함께하기로 하는 여운. 원작 설정과 말투를 지키고, 원작의 미성년자·학생 캐릭터는 등장시키지 않는다. 학교 배경은 쓰지 않는다. 프로필: ${String(c.profile || '').slice(0, 300)}.`
+            ? `「${c.collab}」 콜라보 이벤트. 다른 세계에서 온 「${c.name}」이(가) 이 세계에 떨어져 ${playerName()}와(과) 만나는 이야기. 서로의 세계 차이에서 오는 웃음과 긴장, 함께 싸우며 믿음을 쌓는 과정, 마지막은 돌아가기 전까지 동료로 함께하기로 하는 여운. 원작 설정과 말투를 지킨다. 프로필: ${String(c.profile || '').slice(0, 300)}.`
             : ex
               ? `${T('crew')} 「${c.name}」의 픽업 기념 이벤트 스토리. ${c.name}이(가) 주인공이다. 소환 보유 여부로 작중 적/아군 소속을 바꾸지 않는다. 지금까지의 관계와 스토리를 이어 가면서, 아직 보여 주지 않았던 면모나 사연이 드러나는 사건을 그린다. 처음 만나는 이야기로 쓰지 않는다. 프로필: ${String(c.profile || '').slice(0, 300)}.${mates.length ? ` 함께 픽업된 ${mates.map(x => x.name).join(', ')}도 비중 있게 나온다.` : ` 기존 ${T('crew')} 1~2명이 조연으로 나온다.`} 마지막 장면은 ${c.name}와(과) ${playerName()}의 사이가 한층 가까워지는 여운으로 끝낸다.`
               : `신규 ${T('crew')} 「${c.name}」의 픽업 기념 이벤트 스토리. ${c.name}이(가) 주인공으로 처음 등장해 성격·매력·사연을 보여 주고 ${playerName()}와(과) 인연을 맺는다. 프로필: ${String(c.profile || '').slice(0, 300)}. 기존 ${T('crew')} 1~2명이 조연으로 나온다. 마지막 장면은 작중 소속과 성격에 맞는 이후 교류의 여운으로 끝낸다. 동료 합류나 빌런의 전향을 강제하지 않는다.`,
@@ -58928,7 +58954,7 @@ async function buildNewGameDraft(t, draft, sourceProject) {
   const ngSty =
     String((auto ? '' : draft.style) || '').trim() ||
     presetQualityParts(allPresets().find(x => x.id === draft.preset) || {}).tags;
-  const src = !auto && draft.fan ? String(draft.src || '').trim() : '';
+  const src = draft.fan ? String(draft.src || '').trim() : '';
   const hero = Object.assign({ name: '', call: '', gender: '', look: '', bio: '', hide: false }, draft.hero || {}),
     gen = genderCode(hero.gender),
     heroBlank = !String(hero.gender || '').trim() && !String(hero.look || '').trim();
@@ -58945,9 +58971,7 @@ async function buildNewGameDraft(t, draft, sourceProject) {
   let STY = SC.plot
     ? `\n플레이어가 직접 짠 스토리(이 줄거리를 그대로 따른다. 인물 이름·설정·사건 순서를 바꾸지 않고, 빈 곳만 자연스럽게 채운다):\n${SC.plot}`
     : '';
-  const FAN = src
-    ? `\n2차 창작: 원작 「${src}」을(를) 바탕으로 한다. 세계관·세력·용어·인물을 원작 설정에 최대한 충실하게 쓰고, 원작 캐릭터는 원작 이름 그대로 쓴다. 원작에서 미성년자이거나 학생인 캐릭터는 등장시키지 않고 성인 캐릭터만 고른다(모자라면 원작 세계에 있을 법한 오리지널 성인 캐릭터로 채운다). 학교 배경은 쓰지 않는다.`
-    : '';
+  const FAN = src ? '\n' + fanSourceRule(src) : '';
   const DK = JSON.stringify({
     revision: 4,
     input: initialDraftIdentity(draft),
@@ -59188,6 +59212,8 @@ async function buildNewGameDraft(t, draft, sourceProject) {
         name: String(f.name || DEFAULT_META.farms[i].name)
       }));
     ng.world = Object.assign(ng.world, { name: ng.meta.title, summary: kw }, a.world || {});
+    // 2026.11.20.50 캐릭터 요청(씨앗 안내) 전에 원작을 기록한다.
+    ng.world.source = src;
     ng.meta.storyActors = (Array.isArray(a.world?.storyActors) ? a.world.storyActors : []).map((x, i) => ({
       ...x,
       id: x.id || 'actor-' + i,
@@ -60590,8 +60616,7 @@ function drTabHTML(k) {
       [...new Set([+d.n || 6, 6, 8, 10, 12])].sort((a, b) => a - b).map(n => [n, n + '명']),
       d.n
     )}</select></div></div>
-    <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ng_fan" ${d.fan ? 'checked' : ''} onchange="document.getElementById('ng_srcw').hidden=!this.checked"><span><b>2차 창작</b> <span class="muted" style="font-size:.8rem">(원작 세계관·캐릭터로 만들기)</span></span></label>
-    <div id="ng_srcw" ${d.fan ? '' : 'hidden'}><label class="f" for="ng_src">원작 이름</label><input class="in" id="ng_src" value="${esc(d.src)}" placeholder="예: 작품 이름"><p class="muted" style="margin:4px 0 0;font-size:.78rem">원작에서 미성년자·학생인 캐릭터는 넣지 않고 성인 캐릭터만 써요. 개인 감상용으로만 써 주세요.</p></div>
+    ${drFanHTML(d)}
     ${economyFormHTML(d)}<label class="f"><input type="checkbox" id="dr_faction_design" ${d.factionDesign === true ? 'checked' : ''} ${SAMPLE ? '' : 'disabled'}> 소속별 캐릭터 디자인 통일</label>${drOutfitMixHTML(d)}
     ${storyFormHTML({ plot: d.story, stages: d.stages, len: d.len, depth: d.depth, newc: d.newc, storyRatio: storyRatioValue(d) }, false)}
     <button class="btn sm ghost" data-act="drpolish" data-k="story">✦ 스토리 개요 AI로 다듬기</button>`
@@ -60793,9 +60818,11 @@ function drAutoHTML() {
       [...new Set([+d.n || 6, 6, 8, 10, 12])].sort((a, b) => a - b).map(n => [n, n + '명']),
       d.n
     )}</select>
+    ${drFanHTML(d)}
     ${economyFormHTML(d)}<label class="f"><input type="checkbox" id="dr_faction_design" ${d.factionDesign === true ? 'checked' : ''} ${SAMPLE ? '' : 'disabled'}> 소속별 캐릭터 디자인 통일</label>${drOutfitMixHTML(d)}
     <details class="optbox" style="margin-top:10px" ${d.hero.name || d.hero.gender || d.hero.look ? 'open' : ''}><summary><b>주인공</b> <span class="muted" style="font-size:.8rem">(선택 · 비우면 AI가 정해요)</span></summary>${drHeroHTML()}</details>
     <div class="row" style="margin-top:12px"><button class="btn" data-act="drmake" ${SAMPLE ? '' : 'disabled'}>이 내용으로 새 게임 만들기</button></div>
+    <div class="row" style="margin-top:6px"><button class="btn sm ghost" data-act="drtestcast" data-n="30" ${SAMPLE ? '' : 'disabled'}>(테스트) 인물 30종 생성</button></div>
     <div class="row" style="margin-top:6px"><button class="btn sm ghost" data-act="drtestcast" ${SAMPLE ? '' : 'disabled'}>(테스트) 인물 50종 생성</button></div>
     ${SAMPLE ? '' : '<p class="muted" style="font-size:.8rem;margin:6px 0 0">글 AI를 등록하면 만들 수 있어요.</p>'}<p class="muted" id="ng_stat" style="margin:6px 0 0"></p><button class="linkb" data-act="ailog" style="margin-top:4px;font-size:.8rem">🔍 AI 기록 보기 (안 만들어질 때 원인 확인)</button>`;
 }
@@ -60825,7 +60852,7 @@ function openDraft(tab) {
     ${writingModeHTML('ng_depth', DR2.depth)}
     ${newGameDraftNoticeHTML()}<div class="dr-intro"><p class="muted" style="margin:0">적은 내용은 그대로 살리고, 빈 곳만 AI가 채워요.</p>
       <p class="muted" style="margin:6px 0">전체 <b id="drCount">${nf(drLen())}</b>자</p>
-      <div class="row"><button class="btn" data-act="drmake" ${SAMPLE ? '' : 'disabled'}>이 설정으로 새 게임 만들기</button><button class="btn sm ghost" data-act="drtestcast" ${SAMPLE ? '' : 'disabled'}>(테스트) 인물 50종 생성</button><button class="btn sm ghost" data-act="drmanual" title="글 AI 없이 적은 내용 그대로 게임을 만들어요">✍ AI 없이 직접 시작</button><button class="btn sm ghost" data-act="drdedup" title="AI 없이, 여러 칸에 똑같이 들어 있는 문장을 한 번만 남겨요">🧹 겹치는 문장 정리</button><button class="btn sm ghost" data-act="drharmony" ${SAMPLE ? '' : 'disabled'}>✦ 전체를 서로 맞춰 다듬기</button>${DR2.undo ? `<button class="btn sm ghost" data-act="drundo">↶ 되돌리기 (${esc(DR2.undo.label || '')})</button>` : ''}<button class="btn sm ghost" data-act="drpreview">AI에 들어가는 설정 보기</button><button class="btn sm ghost" data-act="drclear">초안 비우기</button></div>
+      <div class="row"><button class="btn" data-act="drmake" ${SAMPLE ? '' : 'disabled'}>이 설정으로 새 게임 만들기</button><button class="btn sm ghost" data-act="drtestcast" data-n="30" ${SAMPLE ? '' : 'disabled'}>(테스트) 인물 30종 생성</button><button class="btn sm ghost" data-act="drtestcast" ${SAMPLE ? '' : 'disabled'}>(테스트) 인물 50종 생성</button><button class="btn sm ghost" data-act="drmanual" title="글 AI 없이 적은 내용 그대로 게임을 만들어요">✍ AI 없이 직접 시작</button><button class="btn sm ghost" data-act="drdedup" title="AI 없이, 여러 칸에 똑같이 들어 있는 문장을 한 번만 남겨요">🧹 겹치는 문장 정리</button><button class="btn sm ghost" data-act="drharmony" ${SAMPLE ? '' : 'disabled'}>✦ 전체를 서로 맞춰 다듬기</button>${DR2.undo ? `<button class="btn sm ghost" data-act="drundo">↶ 되돌리기 (${esc(DR2.undo.label || '')})</button>` : ''}<button class="btn sm ghost" data-act="drpreview">AI에 들어가는 설정 보기</button><button class="btn sm ghost" data-act="drclear">초안 비우기</button></div>
       ${SAMPLE ? '' : '<p class="muted" style="font-size:.8rem;margin:6px 0 0">글 AI 없이도 「✍ AI 없이 직접 시작」으로 적은 내용 그대로 게임을 만들 수 있어요. 나중에 글 AI를 등록하면 써 둔 내용을 바탕으로 다듬어요.</p>'}<p class="muted" id="ng_stat" style="margin:6px 0 0"></p><button class="linkb" data-act="ailog" style="margin-top:4px;font-size:.8rem">🔍 AI 기록 보기 (안 만들어질 때 원인 확인)</button></div>
     <div class="chips dr-tabs">${DR_TABS.map(([k, l]) => `<button class="chip ${DRTAB === k ? 'on' : ''}" data-act="drtab" data-k="${k}">${l}</button>`).join('')}</div>
     ${DR_TABS.map(([k]) => drTabHTML(k)).join('')}</div>`,
@@ -60949,7 +60976,9 @@ function drCtx(skip) {
   const d = DR2,
     L = [];
   const th = drTheme(d).map(x =>
-    x.startsWith('2차 창작') ? x + ' (원작 설정을 따르고, 원작의 미성년자·학생 캐릭터는 쓰지 않는다)' : x
+    x.startsWith('2차 창작')
+      ? x + ' (원작 캐릭터의 이름·성격·관계·능력 모티프를 따르고, 세계관이 원작과 다르면 그 세계관에 맞게 재배치한다)'
+      : x
   );
   if (th.length) L.push('[테마]\n' + th.join('\n'));
   if (skip !== 'world' && d.world.trim()) L.push('[세계관]\n' + d.world.trim().slice(0, 6000));
@@ -61511,7 +61540,15 @@ function newGameDraftNoticeHTML() {
 // 2026.11.20.39 대표 원형 안내(세계관 입력칸 플레이스홀더)와 의상 혼합 토글(베타, 기본 끔).
 // 2026.11.20.44 오타쿠 감성 빼기(서브컬처/절충/현실). 기본값: 작가 글에 현실 의상 요청이 있으면 현실, 아니면 서브컬처.
 const DR_REAL_HINT = /현실적|리얼|현실 의상|현실 헌터|사실적/;
+// 2026.11.20.50 2차 창작: 오리지널 캐릭터의 오타쿠 감성은 세계관 글로 자동 선택(현실 일상 → 현실, 헌터·능력자 → 절충, 그 외 → 서브컬처).
+function drFanOtaku(d) {
+  const text = [d.auto, d.kw, d.world, d.setting, d.tone].map(x => String(x || '')).join(' ');
+  if (/헌터|각성자|게이트|던전|능력자|이능|초능력/.test(text)) return 'mix';
+  if (/대학|캠퍼스|회사|오피스|직장|현대|일상|현실|고등학교|학교생활/.test(text)) return 'real';
+  return 'sub';
+}
 function drOtakuDefault(d) {
+  if (d.fan && String(d.src || '').trim()) return drFanOtaku(d);
   if (['sub', 'mix', 'real'].includes(d.otakuMode)) return d.otakuMode;
   return DR_REAL_HINT.test([d.auto, d.kw, d.world, d.tone].map(x => String(x || '')).join(' ')) ? 'real' : 'sub';
 }
@@ -61524,12 +61561,17 @@ function drOtakuHTML(d) {
     ],
     drOtakuDefault(d)
   )}</select>
-    <template id="dr_otaku_help">캐릭터 기본 의상의 서브컬처 느낌을 줄이는 설정이에요. 스킨·이벤트 의상(수영복·바니 등)은 어느 단계든 그대로 나와요.<br>· 서브컬처: 지금 그대로.<br>· 절충: 메이드·마법소녀·무녀·수녀·왕녀·닌자·기사 같은 코스프레 의상과 짐승귀·악마 같은 종족을 빼고, 전술 조끼·길드 점퍼·라이더 재킷·캐주얼 같은 헌터물 의상을 넣어요. 머리색·액세서리·무기는 애니풍 포인트를 허용하고, 능력자 느낌의 '각성 표식'(빛나는 눈·문양)이 붙을 수 있어요.<br>· 현실: 절충에서 치파오·고스로리·검·거대 무기·바디슈트·오드아이·드릴머리도 빼요. 실제로 있는 옷만 쓰고, 머리색은 자연색 위주에 가끔 염색, 무기는 현실 전술 장비 형태로 그려요. 말투도 ~냥 같은 과장된 어미를 쓰지 않아요.<br>작가 글에 엘프·수인 같은 말을 직접 쓰면 그 원형은 나와요. 이후 새로 만드는 캐릭터에도 계속 적용돼요.</template>`;
+    <template id="dr_otaku_help">캐릭터 기본 의상의 서브컬처 느낌을 줄이는 설정이에요. 스킨·이벤트 의상(수영복·바니 등)은 어느 단계든 그대로 나와요.<br>· 서브컬처: 지금 그대로.<br>· 절충: 메이드·마법소녀·무녀·수녀·왕녀·닌자·기사 같은 코스프레 의상과 짐승귀·악마 같은 종족을 빼고, 현실 옷 기반 의상을 넣어요. 세계관이 헌터·능력자·게이트물이면 전술 조끼·길드 점퍼 같은 헌터물 의상도, 대학·회사 같은 일상물이면 대학생 사복·니트·과잠 같은 일상복 위주로요. 머리색·액세서리·무기는 애니풍 포인트를 허용하고, 능력자 느낌의 '각성 표식'(빛나는 눈·문양)이 붙을 수 있어요.<br>· 현실: 절충에서 치파오·고스로리·검·거대 무기·바디슈트·오드아이·드릴머리도 빼요. 실제로 있는 옷만 쓰고, 머리색은 자연색 위주에 가끔 염색, 무기는 현실 전술 장비 형태로 그려요. 말투도 ~냥 같은 과장된 어미를 쓰지 않아요.<br>작가 글에 엘프·수인 같은 말을 직접 쓰면 그 원형은 나와요. 이후 새로 만드는 캐릭터에도 계속 적용돼요.</template>`;
 }
 const DR_FOCUS_HELP_TEMPLATE = (id = 'dr_auto_help') =>
   '<template id="' +
   id +
   '">캐릭터 의상·종족을 한쪽으로 모으려면 이렇게 적어요.<br>· ㅇㅇ 중심의 세계관 → 캐릭터 절반쯤이 ㅇㅇ (예: 해적 중심의 판타지)<br>· ㅇㅇ만 있는 세계관 → 거의 전부 ㅇㅇ (예: 바니걸만 있는 카지노 왕국)<br>ㅇㅇ에는 닌자·쿠노이치·메이드·바니걸·해적·엘프·수인 같은 의상·종족 이름을 써요. 이런 말이 없으면 여러 의상이 골고루 나와요.</template>';
+// 2026.11.20.50 2차 창작 체크박스: 자율주행·디테일 공통. 원작 캐릭터를 원작대로 쓰고, 적은 세계관이 원작과 다르면 그 무대로 옮긴다(AU).
+function drFanHTML(d) {
+  return `<label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ng_fan" ${d.fan ? 'checked' : ''} onchange="document.getElementById('ng_srcw').hidden=!this.checked"><span><b>2차 창작</b> <span class="muted" style="font-size:.8rem">(원작 세계관·캐릭터로 만들기)</span></span></label>
+    <div id="ng_srcw" ${d.fan ? '' : 'hidden'}><label class="f" for="ng_src">원작 이름</label><input class="in" id="ng_src" value="${esc(d.src || '')}" placeholder="예: 작품 이름"><p class="muted" style="margin:4px 0 0;font-size:.78rem">원작 캐릭터는 원작 외형·성격 그대로 나와요. 세계관(요청)에 원작과 다른 무대를 적으면 원작 캐릭터들이 그 무대에 맞는 직업·소속으로 등장해요. 오리지널 캐릭터의 의상 분위기는 세계관에 맞춰 자동으로 정해요. 개인 감상용으로만 써 주세요.</p></div>`;
+}
 function drOutfitMixHTML(d) {
   return `${DR_FOCUS_HELP_TEMPLATE()}${drOtakuHTML(d)}<div class="dr-outfit-mix" data-help-anchor style="display:flex;align-items:center;gap:8px"><label class="f" style="margin:0"><input type="checkbox" id="dr_outfit_mix" ${d.outfitMix === true ? 'checked' : ''}> 의상 혼합 사용 (베타)</label><button type="button" class="v2-help" data-help-bubble data-help-source="dr_outfit_help" aria-label="의상 혼합 도움말" aria-expanded="false">?</button></div>
     <template id="dr_outfit_help">'ㅇㅇ만 있는 세계관'이나 'ㅇㅇ 중심(위주)의 세계관'에서 대표 의상에 다른 의상의 포인트를 1~2개 섞을지 정하는 토글입니다. 켜면 대표 의상 인물의 절반쯤이 포인트를 섞습니다.<br>예시<br>· 쿠노이치 + 메이드 머리장식·앞치마<br>· 바니걸 + 무녀 하카마<br>· 해적 + 기사 망토<br>끄면 섞지 않고, 같은 대표 의상끼리 색·소재·변형 디자인만 다르게 나옵니다. 중세 판타지처럼 대표 원형이 없는 세계관에는 영향이 없습니다.</template>`;
@@ -62735,7 +62777,7 @@ async function aiNewPickupChar(con, rr, btn, col, alt) {
   if (existing) return existing;
   const COL =
     col && col.src
-      ? `\n콜라보 ${T('crew')}: 다른 작품 「${col.src}」${col.who ? '의 「' + col.who + '」' : '의 인상적인 성인 캐릭터 1명'}이(가) 이 세계에 찾아온 콜라보 게스트로 만든다. 이름·외모·성격·말투·능력은 원작에 충실하게 쓰고, 원작에서 미성년자이거나 학생인 캐릭터라면 만들지 말고 대신 그 작품의 성인 캐릭터를 고른다. 학교 배경은 쓰지 않는다. profile에 이 세계에 오게 된 계기(차원 이동·초대·사고 등)를 쓰고, faction은 "콜라보"로 한다. naiPrompt에는 원작 외모 특징을 영어 태그로 자세히 쓴다(성인 체형, mature 등 나이 태그는 넣지 않는다).`
+      ? `\n콜라보 ${T('crew')}: 다른 작품 「${col.src}」${col.who ? '의 「' + col.who + '」' : '의 인상적인 캐릭터 1명'}이(가) 이 세계에 찾아온 콜라보 게스트로 만든다. 이름·외모·성격·말투·능력은 원작에 충실하게 쓴다. profile에 이 세계에 오게 된 계기(차원 이동·초대·사고 등)를 쓰고, faction은 "콜라보"로 한다. naiPrompt에는 원작 외모 특징을 영어 태그로 자세히 쓴다(성인 체형, mature 등 나이 태그는 넣지 않는다).`
       : '';
   await designPrepare();
   const r = await aiJSON(
@@ -67710,7 +67752,7 @@ function ctx(side, focus) {
     .map(ch => ch.title + ': ' + ch.stages.map(s => s.title + (P().cleared[s.id] ? '(완료)' : '')).join(', '))
     .join(' / ');
   return (
-    `게임 "${G.meta.title}". ${w.source ? '원작(2차 창작): ' + w.source + ' — 원작 설정을 따른다. 원작에서 미성년자·학생인 캐릭터는 쓰지 않는다.\n' : ''}세계관 "${w.name}": ${wS}\n${wL ? '상세 설정: ' + wL + '\n' : ''}${side ? '' : `메인 플롯(작가용 비밀 설정 포함): ${wP || '별도 추가 설정 없음'}\n${plot ? '플레이어가 직접 짠 스토리 개요(이 흐름을 반드시 따른다): ' + plot + '\n' : ''}`}${bib ? (side ? '작가 설정(세계관 참고용):\n' + bib.slice(0, 8000) : '작가 설정(이 설정을 그대로 따른다. 비밀은 이야기 흐름에 맞게 천천히 드러낸다):\n' + bib.slice(0, 12000)) + '\n' : ''}세력: ${w.factions.map(f => f.name + '(' + f.desc + ')').join(', ')}\n${side ? '' : `메인 스토리 진행: ${prog}\n`}${T('crew')}: ${G.chars
+    `게임 "${G.meta.title}". ${w.source ? fanSourceRule(w.source) + ' 이 게임의 세계관 설정(아래)이 무대다.\n' : ''}세계관 "${w.name}": ${wS}\n${wL ? '상세 설정: ' + wL + '\n' : ''}${side ? '' : `메인 플롯(작가용 비밀 설정 포함): ${wP || '별도 추가 설정 없음'}\n${plot ? '플레이어가 직접 짠 스토리 개요(이 흐름을 반드시 따른다): ' + plot + '\n' : ''}`}${bib ? (side ? '작가 설정(세계관 참고용):\n' + bib.slice(0, 8000) : '작가 설정(이 설정을 그대로 따른다. 비밀은 이야기 흐름에 맞게 천천히 드러낸다):\n' + bib.slice(0, 12000)) + '\n' : ''}세력: ${w.factions.map(f => f.name + '(' + f.desc + ')').join(', ')}\n${side ? '' : `메인 스토리 진행: ${prog}\n`}${T('crew')}: ${G.chars
       .filter(c => !characterIF(c) && !(c.alt && !c.altCanon))
       .map(
         c =>
@@ -68368,7 +68410,9 @@ function characterPersona(p) {
 function cleanChar0(o, reservedId) {
   o = { ...o, rarity: Math.max(2, Math.min(3, +o?.rarity || 2)) };
   // 2026.11.20.26 생성 요청에서 고른 키트 씨앗을 캐릭터에 붙인다(스킬 생성 때 사용).
-  const offered = typeof v2TakeOfferedSeed === 'function' ? v2TakeOfferedSeed(o) : null;
+  const offered = typeof v2TakeOfferedSeed === 'function' ? v2TakeOfferedSeed(o) : null,
+    // 2026.11.20.50 2차 창작 원작 캐릭터: 외형 씨앗을 붙이지 않는다(키트 씨앗만).
+    canon = o.canon === true && !!String(G?.world?.source || '').trim();
   const sk = o.skill || {},
     tc = o.touch || {},
     w = o.weapon || {},
@@ -68396,7 +68440,8 @@ function cleanChar0(o, reservedId) {
     rarity: [2, 3].includes(+o.rarity) ? +o.rarity : 2,
     role: ROLE[o.role] ? o.role : offered?.role || 'atk',
     ...(offered ? { skillSeed: offered.seed } : {}),
-    ...(offered?.design ? { designSeed: offered.design, designLook: offered.design.look || 'tier3' } : {}),
+    ...(offered?.design && !canon ? { designSeed: offered.design, designLook: offered.design.look || 'tier3' } : {}),
+    ...(canon ? { canon: true } : {}),
     ...(offered ? { seedPick: offered.pick } : {}),
     ...(String(o.charmPoint || '').trim() ? { charmPoint: String(o.charmPoint).trim().slice(0, 120) } : {}),
     ...(characterPersona(o.persona) ? { persona: characterPersona(o.persona) } : {}),
@@ -68547,8 +68592,9 @@ function cleanChar0(o, reservedId) {
     f_pirate: ['해적'],
     m_pirate: ['해적'],
     f_dancer: ['무희', '댄서'],
-    f_katana: ['무사', '검사'],
-    m_katana: ['무사', '검사'],
+    // 2026.11.20.49 '검사'는 검사(檢査·檢事)와 겹쳐 뺐다.
+    f_katana: ['무사', '검객'],
+    m_katana: ['무사', '검객'],
     m_samurai: ['사무라이'],
     f_military: ['군인', '병사'],
     m_military: ['군인', '병사'],
@@ -68662,6 +68708,36 @@ function cleanChar0(o, reservedId) {
   const HETERO_SPECIES = new Set(['f_dog', 'f_darkelf', 'f_cat', 'f_wolf', 'm_cat', 'm_wolf', 'm_darkelf', 'm_dragon']);
   // 왕녀·왕족: 첫 1명은 자유, 두 번째는 관계 필수(세계관 판정 multiRoyal일 때만), 세 번째부터 없음.
   const ROYAL_LOOKS = new Set(['f_princess', 'm_crown']);
+  // 2026.11.20.49 헌터물 전용 원형: 세계관이 헌터·능력자·게이트·던전류일 때만 넣는다(대학·회사 같은 일상 현대물 제외).
+  const HUNTER_WORLD_ONLY = new Set(
+      [
+        'tactical',
+        'guild',
+        'stab',
+        'student',
+        'hotel',
+        'mil',
+        'guard',
+        'security',
+        'detective',
+        'trench',
+        'rescue',
+        'fire',
+        'medic',
+        'site',
+        'exorcist',
+        'gothic',
+        'gunslinger',
+        'cyber',
+        'greatsword',
+        'battleschool'
+      ].flatMap(x => ['f_h_' + x, 'm_h_' + x])
+    ),
+    HUNTER_WORLD =
+      /헌터|각성자|각성한|게이트|던전|능력자|이능|초능력|몬스터|균열|레이드|퇴마|요괴|괴이|길드|이계|마수|\bhunter\b|\bgate\b|\bdungeon\b/i;
+  function hunterWorld(world = {}, wants = {}) {
+    return HUNTER_WORLD.test([world.name, world.summary, world.lore, wants.text].join(' '));
+  }
   const HUNTER_MIX_ONLY = new Set([
     'f_h_exorcist',
     'm_h_exorcist',
@@ -68885,6 +68961,20 @@ function cleanChar0(o, reservedId) {
     ['m_h_hiphop', 'm', 2, '힙합', 'oversized clothes, chain necklace, baseball cap', null, ['능글', '도발적']],
     ['f_h_grunge', 'f', 2, '그런지', 'plaid shirt, torn jeans, boots', null, ['나른함', '음침']],
     ['m_h_grunge', 'm', 2, '그런지', 'plaid shirt, torn jeans, boots', null, ['나른함', '음침']],
+    // 2026.11.20.49 현실·절충 일상 원형(대학·회사 같은 일상 현대물용, 헌터 세계관에서도 쓴다).
+    ['f_h_campus', 'f', 1, '대학생 사복', 'cardigan, blouse, long skirt, tote bag', null, ['다정', '천진']],
+    ['m_h_campus', 'm', 1, '대학생 사복', 'cardigan, white shirt, pants, tote bag', null, ['다정', '나른함']],
+    ['f_h_knit', 'f', 1, '니트 코디', 'sweater, long skirt, shoulder bag', null, ['다정', '소심']],
+    ['m_h_knit', 'm', 1, '니트 코디', 'turtleneck sweater, pants, glasses', null, ['쿨', '다정']],
+    ['f_h_shirt', 'f', 1, '셔츠 코디', 'collared shirt, sleeves rolled up, jeans', null, ['쿨', '활발']],
+    ['m_h_shirt', 'm', 1, '셔츠 코디', 'collared shirt, sleeves rolled up, jeans', null, ['쿨', '능글']],
+    ['f_h_dress', 'f', 1, '원피스', 'dress, cardigan, shoulder bag', null, ['천진', '다정']],
+    ['f_h_crop', 'f', 2, '크롭 코디', 'crop top, wide-leg pants, sneakers', null, ['도발적', '활발']],
+    ['m_h_slacks', 'm', 2, '슬랙스 코디', 'jacket, white shirt, pants, loafers', null, ['엄격', '능글']],
+    ['f_h_parttime', 'f', 2, '알바 유니폼', 'apron, polo shirt, name tag', null, ['활발', '소심']],
+    ['m_h_parttime', 'm', 2, '알바 유니폼', 'apron, polo shirt, name tag', null, ['나른함', '다정']],
+    ['f_h_varsity', 'f', 2, '과잠', 'letterman jacket, hoodie, jeans', null, ['활발', '열혈']],
+    ['m_h_varsity', 'm', 2, '과잠', 'letterman jacket, hoodie, jeans', null, ['활발', '나른함']],
     ['f_h_exorcist', 'f', 1, '퇴마사 코트', 'long coat, ofuda, rosary', null, ['쿨', '음침']],
     ['m_h_exorcist', 'm', 1, '퇴마사 코트', 'long coat, ofuda, rosary', null, ['쿨', '과묵']],
     ['f_h_gothic', 'f', 1, '고딕 헌터', 'black coat, cross, gloves', null, ['쿨', '오만']],
@@ -69360,7 +69450,7 @@ function cleanChar0(o, reservedId) {
   function modernText(text) {
     return ISEKAI.test(text)
       ? /근미래|아이돌/.test(text)
-      : /현대|근미래|현실 세계|21세기|학원|학교|회사|아이돌/.test(text);
+      : /현대|근미래|현실 세계|21세기|학원|학교|대학|캠퍼스|회사|아이돌/.test(text);
   }
   function schoolText(text) {
     return ISEKAI.test(text)
@@ -69389,12 +69479,14 @@ function cleanChar0(o, reservedId) {
     return new Set([...(wants.cond || []), ...(fit?.core || [])].filter(id => CONDITIONAL[id]));
   }
   function looksFor(g, world, fit, kind = 'outfit', wants = {}) {
-    const enabled = enabledConditional(fit, wants);
+    const enabled = enabledConditional(fit, wants),
+      hunter = hunterWorld(world, wants);
     return LOOKS.filter(
       l =>
         l.g === g &&
         l.kind === kind &&
         styleModeAllows(l, wants) &&
+        (hunter || !HUNTER_WORLD_ONLY.has(l.id)) &&
         (l.cond ? enabled.has(l.id) : fitOf(l, world, fit) !== 'drop')
     );
   }
@@ -69894,6 +69986,7 @@ function cleanChar0(o, reservedId) {
     focusRequested,
     focusOf,
     styleModeAllows,
+    hunterWorld,
     lookMentions,
     FACE_COVER,
     NINJA_MASK_CHANCE,
@@ -69933,13 +70026,25 @@ function designSeedBag(game = G) {
   if (!D || !game?.prog) return null;
   const generation = typeof v2CurrentGeneration === 'function' ? v2CurrentGeneration() : 1,
     fit = designFit(game),
-    fitKey = fit ? fit.world : 'heuristic';
+    fitKey = fit ? fit.world : 'heuristic',
+    wants = designWants(game);
   let bag = game.prog.designSeedBag;
-  if (!bag || bag.version !== D.BAG_VERSION || bag.generation !== generation || bag.fitKey !== fitKey) {
+  // 2026.11.20.49 첫 주머니에도 오타쿠 감성 빼기(wants)를 넘긴다. 모드가 바뀌면 주머니를 새로 만든다.
+  if (
+    !bag ||
+    bag.version !== D.BAG_VERSION ||
+    bag.generation !== generation ||
+    bag.fitKey !== fitKey ||
+    (bag.otaku || 'sub') !== wants.otaku
+  ) {
     const used = {};
     for (const c of game.chars || [])
       if (c.designLook && c.designLook !== 'none') used[c.designLook] = (used[c.designLook] || 0) + 1;
-    bag = game.prog.designSeedBag = { ...D.freshBag(generation, game.world, fit, used), fitKey };
+    bag = game.prog.designSeedBag = {
+      ...D.freshBag(generation, game.world, fit, used, wants),
+      fitKey,
+      otaku: wants.otaku
+    };
     mark('prog');
   }
   return bag;
@@ -69991,8 +70096,15 @@ function designAuthorText(game = G) {
     .map(x => String(x || ''))
     .join('\n');
 }
+// 2026.11.20.49 원형 요청 판정(조건부·대표 원형·직접 언급)은 AI가 쓴 세계관 요약을 빼고 작가 입력만 읽는다.
+function designOwnText(game = G) {
+  const m = game?.meta || {},
+    d = m.draft || {};
+  return [m.bible, m.tone, m.story?.plot, d.kw, d.auto, d.world, d.tone].map(x => String(x || '')).join('\n');
+}
 function designWants(game = G) {
   const text = designAuthorText(game),
+    own = designOwnText(game),
     tags = [game?.meta?.artTags, game?.meta?.draft?.style].map(x => String(x || '')).join(',');
   return {
     halo: /헤일로|광륜|\bhalos?\b/i.test(text + ',' + tags),
@@ -70000,11 +70112,11 @@ function designWants(game = G) {
     grey: /회색\s*피부|잿빛\s*피부|\bgr[ae]y skin\b/i.test(text),
     hetero: /오드\s*아이|홍채\s*이색|heterochromia/i.test(text),
     eyepatch: /안대|애꾸|eyepatch/i.test(text),
-    cond: root_GGMDesignSeeds()?.conditionalRequested(text) || [],
-    focus: root_GGMDesignSeeds()?.focusRequested?.(text) || { mode: '', looks: [] },
+    cond: root_GGMDesignSeeds()?.conditionalRequested(own) || [],
+    focus: root_GGMDesignSeeds()?.focusRequested?.(own) || { mode: '', looks: [] },
     // 2026.11.20.44 오타쿠 감성 빼기(기본 의상만): 작가가 직접 적은 원형은 허용한다.
     otaku: designOtakuMode(game),
-    asked: root_GGMDesignSeeds()?.lookMentions?.(text) || [],
+    asked: root_GGMDesignSeeds()?.lookMentions?.(own) || [],
     text,
     muscle: /근육|복근|muscular|\babs\b/i.test(text)
   };
@@ -70125,7 +70237,7 @@ function designProgressStep(message) {
 }
 // 겹침 검사(규칙 기반) 뒤 겹친 캐릭터와 3등급 매력 포인트가 빠진 캐릭터만 외형을 한 번 다시 요청한다(최대 3명).
 function designNeedsFix(c, game = G) {
-  if (!c || c.npc || c.visualLoreManual) return null;
+  if (!c || c.npc || c.visualLoreManual || c.canon) return null;
   const D = root_GGMDesignSeeds(),
     twin = (game.chars || []).find(x => x !== c && !x.npc && D.sameLook(x.naiPrompt, c.naiPrompt));
   if (twin) return { twin };
@@ -70167,7 +70279,7 @@ function designHooksMissing(c) {
 const DESIGN_MUSCLE_TAG = /^(?:muscular(?: female| male)?|abs|toned abs|six pack)$/i;
 function designStripMuscle(c, game = G) {
   const seed = c?.designSeed;
-  if (!seed || c.npc || c.visualLoreManual) return false;
+  if (!seed || c.npc || c.visualLoreManual || c.canon) return false;
   if (['f_muscle', 'm_muscle'].includes(seed.look) || seed.feature === 'm_muscle' || designWants(game).muscle)
     return false;
   const tags = typeof tagList === 'function' ? tagList(c.naiPrompt || '') : String(c.naiPrompt || '').split(','),
@@ -70181,7 +70293,14 @@ function designStripMuscle(c, game = G) {
 // 2026.11.20.47 현실·절충 모드에서 씨앗·작가 요청과 상관없이 들어간 서브컬처 의상 태그 목록(규칙 검사).
 function designOtakuLeak(c, game = G) {
   const D = root_GGMDesignSeeds();
-  if (!D?.OTAKU_OUTFIT_TAGS || !c?.designSeed || c.npc || c.visualLoreManual || designOtakuMode(game) === 'sub')
+  if (
+    !D?.OTAKU_OUTFIT_TAGS ||
+    !c?.designSeed ||
+    c.npc ||
+    c.visualLoreManual ||
+    c.canon ||
+    designOtakuMode(game) === 'sub'
+  )
     return [];
   const wants = designWants(game),
     allowed = new Set([
@@ -70199,7 +70318,7 @@ function designOtakuLeak(c, game = G) {
   return out;
 }
 function designStripFaceCover(c, D = root_GGMDesignSeeds()) {
-  if (!c?.designSeed?.noFaceCover || c.npc || c.visualLoreManual || !D?.FACE_COVER) return false;
+  if (!c?.designSeed?.noFaceCover || c.npc || c.visualLoreManual || c.canon || !D?.FACE_COVER) return false;
   const tags = typeof tagList === 'function' ? tagList(c.naiPrompt || '') : String(c.naiPrompt || '').split(','),
     keep = tags.filter(t => !D.FACE_COVER.test(String(t)));
   let changed = keep.length !== tags.length;
@@ -70235,7 +70354,7 @@ const DESIGN_DETAIL_COLOR =
   DESIGN_DETAIL_GARMENT =
     /\b(?:robe|tunic|gown|dress|shirt|blouse|coat|jacket|cloak|cape|uniform|bodysuit|kimono|yukata|hakama|haori|attire|outfit|clothes|garb|suit|sweater|hoodie|vest|armor|armour|skirt|shorts|pants|trousers|leggings|leotard|jumpsuit|apron|qipao|china dress|habit|sarashi|shozoku|tabard|surcoat|corset)\b/;
 function designDetailMissing(c) {
-  if (!c || c.npc || c.visualLoreManual || c.collab) return null;
+  if (!c || c.npc || c.visualLoreManual || c.canon || c.collab) return null;
   const prompt = String(c.naiPrompt || '');
   if (!prompt.trim()) return null;
   const tags = typeof tagList === 'function' ? tagList(prompt) : prompt.split(',').map(x => x.trim()),
@@ -70320,7 +70439,7 @@ async function designFixOverlap(
   }
   // 2026.11.20.35 SSR은 1등급 외형: 3등급이면 반드시, 2등급이면 1등급 카드가 남아 있을 때만 SSR은 그대로 두고 외형만 다시 만든다(예산과 별개).
   for (const c of (chars || []).filter(Boolean)) {
-    if (c.npc || c.visualLoreManual || +c.rarity !== 3 || !c.designSeed || c.designSeed.tier === 1) continue;
+    if (c.npc || c.visualLoreManual || c.canon || +c.rarity !== 3 || !c.designSeed || c.designSeed.tier === 1) continue;
     const bag = designSeedBag(game);
     if (c.designSeed.tier === 2 && !bag?.looks?.[c.designSeed.gender === 'm' ? 'm' : 'f']?.[1]?.length) continue;
     const seed = bag
@@ -70500,6 +70619,7 @@ function designSeedReport(c, game = G) {
     for (const h of p.hooks || []) lines.push(`디자인 근거: ${h.from} → ${h.visual}`);
   } else lines.push('인물 핵심(persona) 없음');
   if (c.visualLoreManual) lines.push('작가 지정 태그 사용: 외형 씨앗 무시');
+  if (c.canon) lines.push('2차 창작 원작 캐릭터: 외형 씨앗 없이 원작 외형');
   const wants = designWants(game);
   lines.push(
     '작가 요청 감지: ' +
@@ -70514,9 +70634,6 @@ function designSeedReport(c, game = G) {
         .filter(Boolean)
         .join(', ') || '없음') +
       (designFit(game)?.costume?.length ? ' · 세계관 의상 키워드: ' + designFit(game).costume.join(', ') : '')
-  );
-  lines.push(
-    '노출 지시: ' + (designExposureWanted(game) ? '적극 사용(작가 요청 감지)' : '언급 없음(실루엣·앵커·색 대비로 매력)')
   );
   const fix = c.designFix;
   if (fix?.reason)
@@ -70547,19 +70664,6 @@ function designSeedReport(c, game = G) {
   return lines;
 }
 // 2026.11.20.34 노출: 작가 글·그림체 태그에서 노출을 원하는지 보고 지시를 바꾼다(부정 표현이 있으면 원하지 않는 것으로 본다).
-function designExposureWanted(game = G) {
-  const m = game?.meta || {},
-    d = m.draft || {},
-    text = [m.bible, m.tone, m.story?.plot, d.kw, d.auto, d.world, d.tone, game?.world?.summary, game?.world?.lore]
-      .map(x => String(x || ''))
-      .join('\n'),
-    tags = [m.artTags, d.style].map(x => String(x || '')).join(',');
-  if (/(노출|선정|섹시|야하)[^.,\n]{0,8}(없|금지|않|자제|피하|빼)/.test(text)) return false;
-  return (
-    /노출|섹시|선정적|야한|야하게|관능|팬\s*서비스|수영복|비키니|헐벗|글래머/.test(text) ||
-    /\b(sexy|nsfw|fanservice|revealing|lingerie)\b|rating:(explicit|questionable)/i.test(text + ',' + tags)
-  );
-}
 // 2026.11.20.44 오타쿠 감성 빼기: sub(서브컬처, 기본) / mix(절충) / real(현실). 게임에 저장해 이후 신규 캐릭터에도 쓴다.
 function designOtakuMode(game = G) {
   const mode = game?.meta?.otakuMode;
@@ -70573,10 +70677,9 @@ function designModeText(game = G) {
     return ' 의상 절충 모드: 기본 의상은 현실 옷·전투복 기반으로 쓰고 코스프레·판타지 의상은 쓰지 않는다. 머리색·액세서리·무기는 애니풍 포인트를 허용한다. 개성은 착용 습관 하나와 기능 디테일, 레이어드 코디·액세서리로 낸다. 같은 소속이면 공통 요소 하나를 둔다. 말투는 ~냥 같은 과장된 어미를 줄인다.';
   return '';
 }
-function designExposureText(game = G) {
-  return designExposureWanted(game)
-    ? '작가가 노출을 원한다: 성인 캐릭터의 의상 노출과 체형 실루엣을 적극적으로 쓰고, 인물마다 노출 부위와 정도를 다르게 한다.'
-    : '매력은 실루엣·대표 앵커·색 대비·의상 구조로 낸다.';
+// 2026.11.20.52 노출 자동 판정 제거(성인 게임 토글은 별도 기획). 매력 지시만 남긴다.
+function designExposureText() {
+  return '매력은 실루엣·대표 앵커·색 대비·의상 구조로 낸다.';
 }
 // 2026.11.20.34 세계관 의상 공통 키워드(세계관 판정에서 받음)를 모든 씨앗에 적용하게 한다.
 function designCostumeText(game = G) {
@@ -76111,11 +76214,13 @@ async function handleStoryAndAuthoringAction(a, t, id, p, e) {
         );
         break;
       }
-      await openNewGameWorkspace(t, a === 'drtestcast' ? { ...clone(DR2), testCast: 50 } : clone(DR2));
+      // 2026.11.20.55 (테스트) 인물 30종·50종: 버튼의 data-n으로 인원을 정한다.
+      const testCount = +t.dataset.n === 30 ? 30 : 50;
+      await openNewGameWorkspace(t, a === 'drtestcast' ? { ...clone(DR2), testCast: testCount } : clone(DR2));
       // 2026.11.20.47 테스트 인물 '새로 만들기': 남긴 결과를 지운 뒤 같은 초안으로 다시 연다.
       while (a === 'drtestcast' && NEW_GAME_TEST_AGAIN && DR2) {
         NEW_GAME_TEST_AGAIN = false;
-        await openNewGameWorkspace(t, { ...clone(DR2), testCast: 50 });
+        await openNewGameWorkspace(t, { ...clone(DR2), testCast: testCount });
       }
       break;
     }
@@ -93846,6 +93951,65 @@ function creationStyleKey(style) {
 }
 
 // 2026.11.20.33 nav: 상세에서 캐릭터·그림체를 좌우로 넘긴다. { actors, styles, styleIndex, photo(styleIndex, c), onClose(styleIndex, c) }
+// 2026.11.20.49 상반신 목록 맨 위 '세계관 정보': 목록을 다시 그리지 않고 위에 겹쳐 연다(닫으면 목록 스크롤·그림체 유지).
+function creationWorldButton() {
+  return '<div class="creation-world-row"><button type="button" class="btn ghost sm" data-world-info>세계관 정보</button></div>';
+}
+function creationWorldInfoHTML(game) {
+  const w = game.world || {},
+    m = game.meta || {},
+    D = typeof root_GGMDesignSeeds === 'function' ? root_GGMDesignSeeds() : null,
+    mode = typeof designOtakuMode === 'function' ? designOtakuMode(game) : 'sub',
+    fit = typeof designFit === 'function' ? designFit(game) : null,
+    lookName = id => D?.LOOKS?.find(l => l.id === id)?.name || id,
+    block = (title, text) =>
+      String(text || '').trim()
+        ? `<section class="panel character-profile-notes"><h3>${title}</h3><p>${esc(String(text).trim())}</p></section>`
+        : '';
+  const facts = [
+    '오타쿠 감성 빼기: ' + ({ sub: '서브컬처', mix: '절충', real: '현실' }[mode] || '서브컬처'),
+    mode === 'sub'
+      ? ''
+      : '헌터물 전용 의상: ' +
+        (D?.hunterWorld?.(w, { text: typeof designOwnText === 'function' ? designOwnText(game) : '' })
+          ? '사용'
+          : '안 씀(일상물)'),
+    fit
+      ? '세계관 판정: 유지 ' +
+        (fit.keep || []).length +
+        ' · 변형 ' +
+        Object.keys(fit.adapt || {}).length +
+        ' · 제외 ' +
+        (fit.drop || []).length +
+        ((fit.core || []).length ? ' · 핵심 ' + fit.core.map(lookName).join(', ') : '')
+      : '세계관 판정: 아직 없음(글 기준 추정)'
+  ].filter(Boolean);
+  return `${block('세계관', [w.name || m.title, w.summary].filter(Boolean).join('\n'))}${block('세계관 상세', w.lore)}${block('메인 줄거리', w.plot)}${
+    (w.factions || []).length
+      ? `<section class="panel character-profile-notes"><h3>세력</h3>${w.factions.map(f => `<p><b>${esc(f.name || '')}</b> ${esc(f.desc || '')}</p>`).join('')}</section>`
+      : ''
+  }<section class="panel character-profile-notes"><h3>캐릭터 생성 기준</h3>${facts.map(x => `<p>${esc(x)}</p>`).join('')}</section>`;
+}
+function openCreationWorldInfo(job, list, opener, game) {
+  if (!game || job.closeCharacterReview) return;
+  const panel = creationPanel(
+    job,
+    `<header class="creation-character-header"><button class="btn ghost" data-character-back aria-label="상반신 목록으로 돌아가기">‹</button><h2>세계관 정보</h2></header>
+  <div class="creation-scroll">${creationWorldInfoHTML(game)}</div>`,
+    'creation-character-panel creation-world-panel'
+  );
+  panel.querySelector('[role=dialog]').setAttribute('aria-label', '세계관 정보');
+  list.inert = true;
+  list.setAttribute('inert', '');
+  job.closeCharacterReview = () => {
+    panel.remove();
+    list.inert = false;
+    list.removeAttribute('inert');
+    job.closeCharacterReview = null;
+    if (opener.isConnected) opener.focus({ preventScroll: true });
+  };
+  panel.querySelector('[data-character-back]').onclick = job.closeCharacterReview;
+}
 function openCreationCharacterReview(job, list, button, c, photo, nav = null) {
   const parts = characterProfileSections(c);
   const charIndex = nav ? nav.actors.indexOf(c) : -1,
@@ -94141,7 +94305,7 @@ async function compareNewGamePortraits(game, draft, id, reuse) {
       newGameRow('review');
       const style = styles[index],
         missing = actors.filter(c => !photos.has(token(style, c))).length;
-      show(`<div class="creation-switch"><button class="btn ghost" aria-label="이전 그림체" data-style-prev>◁</button><div><h2 style="font-size:${Math.max(0.64, Math.min(1.25, 18 / Math.max(1, style.name.length)))}rem">${esc(style.name)}</h2><small>${index + 1}/${styles.length}</small></div><button class="btn ghost" aria-label="다음 그림체" data-style-next>▷</button></div>
+      show(`${creationWorldButton()}<div class="creation-switch"><button class="btn ghost" aria-label="이전 그림체" data-style-prev>◁</button><div><h2 style="font-size:${Math.max(0.64, Math.min(1.25, 18 / Math.max(1, style.name.length)))}rem">${esc(style.name)}</h2><small>${index + 1}/${styles.length}</small></div><button class="btn ghost" aria-label="다음 그림체" data-style-next>▷</button></div>
     <div class="creation-scroll">${crewCardsHTML(
       actors.map(c => ({ ...c, upper: null })),
       new Set(),
@@ -94153,6 +94317,12 @@ async function compareNewGamePortraits(game, draft, id, reuse) {
     ${footer(`${photos.size < total ? '<button class="btn ghost" data-local-next="resume">미생성 상반신 계속 생성</button>' : ''}<button class="btn" data-local-next="apply">이 그림체로 확정</button>`)}`);
       connectCancel();
       panel.addEventListener('click', event => {
+        const world = event.target.closest('[data-world-info]');
+        if (world) {
+          event.stopPropagation();
+          openCreationWorldInfo(job, panel, world, game);
+          return;
+        }
         const button = event.target.closest('[data-act="creation-card"]');
         if (!button) return;
         event.stopPropagation();
@@ -94492,7 +94662,7 @@ async function showNewGameTestCast(game, cleanup = async () => {}, store = null)
     await persist();
     const total = styles.length * actors.length;
     show(
-      `<div class="creation-switch" data-test-switch></div><p class="muted" data-test-status aria-live="polite"></p><div class="creation-scroll" data-test-grid></div><footer><button type="button" class="btn ghost" data-test-stop>그림 생성 멈추기</button>${store ? '<button type="button" class="btn ghost" data-test-again>새로 만들기</button>' : ''}<button type="button" class="btn" data-test-close>닫기${store ? '(결과는 남겨요)' : '(저장 안 함)'}</button></footer>`,
+      `${creationWorldButton()}<div class="creation-switch" data-test-switch></div><p class="muted" data-test-status aria-live="polite"></p><div class="creation-scroll" data-test-grid></div><footer><button type="button" class="btn ghost" data-test-stop>그림 생성 멈추기</button>${store ? '<button type="button" class="btn ghost" data-test-again>새로 만들기</button>' : ''}<button type="button" class="btn" data-test-close>닫기${store ? '(결과는 남겨요)' : '(저장 안 함)'}</button></footer>`,
       'creation-test-cast'
     );
     const testPanel = panel,
@@ -94554,6 +94724,12 @@ async function showNewGameTestCast(game, cleanup = async () => {}, store = null)
       if (turn) {
         index = (index + +turn.dataset.testStyle + styles.length) % styles.length;
         switchStyle();
+        return;
+      }
+      const world = event.target.closest('[data-world-info]');
+      if (world) {
+        event.stopPropagation();
+        openCreationWorldInfo(job, testPanel, world, game);
         return;
       }
       const button = event.target.closest('[data-act="creation-card"]');

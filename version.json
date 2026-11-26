@@ -1,16 +1,16 @@
 {
-  "build": "2026.11.20.55",
+  "build": "2026.11.20.57",
   "notes": [
-    "2차창작 개선 및 검열 완화"
+    "2차 창작 추가개선"
   ],
   "notice": null,
   "html": "www/index.html",
-  "sha256": "9c54005f3035a383fe83a9649d13d5c40f4d09189f69a3ebb43b22314da99da8",
+  "sha256": "104280f85c6786f8a4561c0155f30c21564cd27905b37a8aeedfc6952abb1cda",
   "apk": {
     "url": "https://github.com/jjhk0803/gacha-game-maker/releases/latest",
-    "build": "2026.11.20.55",
+    "build": "2026.11.20.57",
     "minShell": "2026.11.13.3"
   },
   "feedback": "",
-  "at": "2026-11-26T05:40:05.900818Z"
+  "at": "2026-11-26T07:31:56.609526Z"
 }

@@ -35022,8 +35022,8 @@ document.addEventListener('click', e => {
         try {
           t = db.transaction(stores, mode, mode === 'readwrite' ? { durability: 'strict' } : {});
         } catch (e) {
-          if (e.name !== 'TypeError') throw e;
-          t = db.transaction(stores, mode);
+          if (e.name === 'TypeError') { t = db.transaction(stores, mode); }
+          else { db = null; throw e; } /* 연결 종료 시 재연결 유도 */
         }
         let result;
         try {
@@ -35266,6 +35266,13 @@ document.addEventListener('click', e => {
       if (pending.size) queue();
       await tail;
       if (error && !pending.size && error.code !== 'storage_conflict') error = null;
+      if (error && /closing/i.test(String(error.message || ''))) {
+        try { if (db) db.close(); } catch (_) {}
+        db = null;
+        if (pending.size) queue();
+        await tail;
+        if (error && !pending.size && error.code !== 'storage_conflict') error = null;
+      }
       if (error) throw error;
     }
     async function readLive(k) {
@@ -44947,6 +44954,9 @@ function replaceAll(ng) {
 /* 이미지 */
 const imgCache = {};
 const IMGNS = PJ().active === 'main' ? '' : PJ().active + '::';
+/* Cloudflare 터널(trycloudflare.com) 접속 시 이미지를 브라우저에 저장하지 않고 서버에서 직접 표시해요.
+   터널 주소는 서버를 켤 때마다 바뀌어서, 매번 이미지를 전부 내려받으면 브라우저 저장 공간이 계속 쌓여요. */
+const isTunnel=()=>/trycloudflare\.com$/i.test(location.hostname);
 async function idbGetNS(k) {
   try {
     return await idbGet(IMGNS + k);
@@ -45099,7 +45109,23 @@ function imgSrcRaw(o) {
   }
   if (!o || !o.img) return null;
   if (o.img.asset) return null;
-  if (o.img.idb) return imgCache[o.id] || null;
+  if (o.img.idb) {
+    const cached = imgCache[o.id];
+    if (cached) return cached;
+    if (isTunnel()) {
+      try {
+        const pc = PCS();
+        if (pc) {
+          const key = (typeof IMGNS !== 'undefined' ? IMGNS : '') + o.id;
+          let bin = null;
+          try { bin = JSON.parse(localStorage.getItem('__server_bin') || '{}'); } catch (e2) {}
+          const h = bin && (bin[key] || bin[o.id]);
+          if (h) return pc.base + '/api/store/blob/' + h + '?k=' + pc.key;
+        }
+      } catch (e) {}
+    }
+    return null;
+  }
   return null;
 }
 const SKP = { upper: '상반신', illust: '일러스트', lbcg: '돌파 CG' };
@@ -65588,7 +65614,12 @@ async function pcPull(src) {
     await flush();
     const S = (src && src.state) || (await pcApi('/api/store/state', { ok404: true }));
     if (!S) throw Error('PC에 아직 저장된 게임이 없어요');
-    const idx = await syncStageMedia(
+    if (isTunnel()) {
+      try { localStorage.setItem('__server_bin', JSON.stringify(S.bin || {})); } catch (eT) {}
+    }
+    const idx = isTunnel()
+      ? syIdx()
+      : await syncStageMedia(
       S,
       async (k, h) => {
         let error;
@@ -65634,7 +65665,7 @@ async function pcPull(src) {
     return false;
   } finally {
     if (!committed) window.__NOFLUSH = previous;
-    await appStorage.discard(prefix).catch(() => {});
+    if (!(isTunnel() && committed)) await appStorage.discard(prefix).catch(() => {});
     PCJOB = false;
     syBar('');
   }
